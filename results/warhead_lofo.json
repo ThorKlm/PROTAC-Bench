@@ -1,0 +1,45 @@
+{
+  "C0_morgan": {
+    "mean_auroc": 0.6268,
+    "delta_vs_C0": 0.0,
+    "wilcoxon_p": 1.0,
+    "n_targets": 65
+  },
+  "C1_morgan+warhead": {
+    "mean_auroc": 0.6175,
+    "delta_vs_C0": -0.0093,
+    "wilcoxon_p": 0.2756,
+    "n_targets": 65
+  },
+  "C2_morgan+warhead+admet": {
+    "mean_auroc": 0.6187,
+    "delta_vs_C0": -0.0081,
+    "wilcoxon_p": 0.5834,
+    "n_targets": 65
+  },
+  "C3_morgan+warhead+admet_k5": {
+    "mean_auroc": 0.6082,
+    "delta_vs_C0": -0.0186,
+    "wilcoxon_p": 0.1232,
+    "n_targets": 65
+  },
+  "_meta": {
+    "experiment": "EXP37_warhead_LOFO",
+    "description": "Warhead transfer features under Leave-One-Family-Out evaluation",
+    "n_protacs": 10748,
+    "n_eligible_targets": 65,
+    "n_families": 26,
+    "morgan_bits_rf": 512,
+    "morgan_bits_sim": 2048,
+    "k_neighbors_default": 10,
+    "k_neighbors_c3": 5,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "rf_n_estimators": 100,
+    "elapsed_min": 4.8,
+    "note": "warhead_transfer_rate recomputed per LOFO fold from training families only"
+  }
+}

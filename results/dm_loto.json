@@ -1,0 +1,1891 @@
+{
+  "experiment": "exp34_dm_loto",
+  "description": "DegradeMaster three-branch EGNN evaluated under LOTO",
+  "config": {
+    "hidden_size": 128,
+    "n_layers": 2,
+    "attention": false,
+    "batch_size": 64,
+    "lr": 0.0001,
+    "epochs": 200,
+    "patience": 20,
+    "min_target_size": 10,
+    "seeds": [
+      42,
+      123,
+      777
+    ],
+    "feature_mode": "random (feature=False, matching DM default)",
+    "training_mode": "supervised_only (no pseudolabeling)"
+  },
+  "step1_by_target_path": {
+    "mean_auroc": 0.7318,
+    "std_auroc": 0.176,
+    "n_targets": 35,
+    "n_valid_results": 105,
+    "per_target": {
+      "CDK12_Q9NYV4": 1.0,
+      "FAK_Q05397": 0.98,
+      "FLT3-ITD_P36888": 0.9599,
+      "SHP2_Q06124": 0.9524,
+      "JAK2_O60674": 0.9375,
+      "FLT3_P36888": 0.9365,
+      "CDK2_P24941": 0.9048,
+      "BCR-ABL_nan": 0.8879,
+      "CDK6_Q00534": 0.8855,
+      "MDM2_Q00987": 0.8843,
+      "AKT3_Q9Y243": 0.8576,
+      "ALK_Q9UM73": 0.83,
+      "BTK_Q06187": 0.7921,
+      "PARP1_P09874": 0.7782,
+      "CDK4_P11802": 0.7603,
+      "EGFR_P00533": 0.7562,
+      "EGFR L858R/T790M_P00533": 0.7556,
+      "Src_P12931": 0.75,
+      "AR_P10275": 0.7341,
+      "PI3Kalpha_P42336": 0.697,
+      "EGFR e19d_P00533": 0.6939,
+      "BCL-xL_Q07817": 0.6939,
+      "AKT2_P31751": 0.6891,
+      "ER_P03372": 0.6667,
+      "Wee1_P30291": 0.6354,
+      "BRD2_P25440": 0.6335,
+      "BRD3_Q15059": 0.625,
+      "MEK1_Q02750": 0.6173,
+      "BRD4_O60885": 0.6101,
+      "AKT1_P31749": 0.5947,
+      "CRBN_Q96SW2": 0.5611,
+      "IRAK3_Q9Y616": 0.55,
+      "STAT3_P40763": 0.3833,
+      "GSK-3beta_P49841": 0.3556,
+      "ERRalpha_P11474": 0.2639
+    }
+  },
+  "step2_by_uniprot": {
+    "mean_auroc": 0.7021,
+    "std_auroc": 0.1978,
+    "n_targets": 31,
+    "n_valid_results": 93,
+    "per_target": {
+      "Q9Y616": 0.9833,
+      "Q9NYV4": 0.9815,
+      "Q05397": 0.9267,
+      "O60674": 0.9074,
+      "P36888": 0.8858,
+      "P24941": 0.8844,
+      "Q00987": 0.8843,
+      "Q00534": 0.8827,
+      "Q06124": 0.8512,
+      "P12931": 0.8194,
+      "P31751": 0.8013,
+      "P40763": 0.7667,
+      "P31749": 0.7493,
+      "P11802": 0.7456,
+      "Q9UM73": 0.7393,
+      "Q06187": 0.7304,
+      "P10275": 0.7135,
+      "Q07817": 0.6875,
+      "P00533": 0.6731,
+      "P25440": 0.6463,
+      "O60885": 0.6407,
+      "Q15059": 0.6071,
+      "P42336": 0.6061,
+      "P30291": 0.6042,
+      "Q02750": 0.5823,
+      "P09874": 0.5769,
+      "Q96SW2": 0.5444,
+      "P03372": 0.518,
+      "Q9Y243": 0.4549,
+      "P11474": 0.3472,
+      "P49841": 0.0222
+    }
+  },
+  "comparison": {
+    "dm_reported_random_split": 0.878,
+    "dm_loto_by_target_path": 0.7318,
+    "dm_loto_by_uniprot": 0.7021,
+    "our_egnn_loto_merged_data": 0.547
+  },
+  "conclusion": "DM under LOTO gives 0.732, a substantial drop from 0.878. Most of the gap is random-split leakage, though DM may provide modest genuine advantage.",
+  "elapsed_seconds": 32755.6,
+  "raw_results_by_target_path": [
+    {
+      "target": "MDM2_Q00987",
+      "seed": 42,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.875
+    },
+    {
+      "target": "ER_P03372",
+      "seed": 42,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.45945945945945943
+    },
+    {
+      "target": "AR_P10275",
+      "seed": 42,
+      "n": 122,
+      "n_pos": 40,
+      "n_neg": 82,
+      "auroc": 0.7867378048780488
+    },
+    {
+      "target": "BRD4_O60885",
+      "seed": 42,
+      "n": 62,
+      "n_pos": 34,
+      "n_neg": 28,
+      "auroc": 0.6218487394957983
+    },
+    {
+      "target": "CRBN_Q96SW2",
+      "seed": 42,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.48333333333333334
+    },
+    {
+      "target": "BRD2_P25440",
+      "seed": 42,
+      "n": 28,
+      "n_pos": 19,
+      "n_neg": 9,
+      "auroc": 0.6842105263157895
+    },
+    {
+      "target": "BRD3_Q15059",
+      "seed": 42,
+      "n": 21,
+      "n_pos": 13,
+      "n_neg": 8,
+      "auroc": 0.6442307692307693
+    },
+    {
+      "target": "ERRalpha_P11474",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.04166666666666666
+    },
+    {
+      "target": "BTK_Q06187",
+      "seed": 42,
+      "n": 64,
+      "n_pos": 29,
+      "n_neg": 35,
+      "auroc": 0.7862068965517242
+    },
+    {
+      "target": "ALK_Q9UM73",
+      "seed": 42,
+      "n": 57,
+      "n_pos": 28,
+      "n_neg": 29,
+      "auroc": 0.8706896551724138
+    },
+    {
+      "target": "CDK4_P11802",
+      "seed": 42,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7668439716312057
+    },
+    {
+      "target": "CDK6_Q00534",
+      "seed": 42,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.8686974789915967
+    },
+    {
+      "target": "FAK_Q05397",
+      "seed": 42,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.9800000000000001
+    },
+    {
+      "target": "EGFR_P00533",
+      "seed": 42,
+      "n": 24,
+      "n_pos": 6,
+      "n_neg": 18,
+      "auroc": 0.8148148148148149
+    },
+    {
+      "target": "BCR-ABL_nan",
+      "seed": 42,
+      "n": 48,
+      "n_pos": 13,
+      "n_neg": 35,
+      "auroc": 0.8703296703296703
+    },
+    {
+      "target": "MEK1_Q02750",
+      "seed": 42,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.5987654320987654
+    },
+    {
+      "target": "MEK2_P36507",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "STAT3_P40763",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.6
+    },
+    {
+      "target": "EGFR L858R/T790M_P00533",
+      "seed": 42,
+      "n": 28,
+      "n_pos": 10,
+      "n_neg": 18,
+      "auroc": 0.6666666666666667
+    },
+    {
+      "target": "EGFR e19d_P00533",
+      "seed": 42,
+      "n": 26,
+      "n_pos": 11,
+      "n_neg": 15,
+      "auroc": 0.6545454545454547
+    },
+    {
+      "target": "CDK2_P24941",
+      "seed": 42,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.9591836734693878
+    },
+    {
+      "target": "BCL-xL_Q07817",
+      "seed": 42,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.7211538461538461
+    },
+    {
+      "target": "JAK2_O60674",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 0.9375
+    },
+    {
+      "target": "AKT1_P31749",
+      "seed": 42,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.64
+    },
+    {
+      "target": "IRAK3_Q9Y616",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 0.30000000000000004
+    },
+    {
+      "target": "FLT3_P36888",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 7,
+      "n_neg": 3,
+      "auroc": 0.9523809523809524
+    },
+    {
+      "target": "Src_P12931",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.875
+    },
+    {
+      "target": "Wee1_P30291",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.53125
+    },
+    {
+      "target": "PARP1_P09874",
+      "seed": 42,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.5923076923076922
+    },
+    {
+      "target": "SHP2_Q06124",
+      "seed": 42,
+      "n": 15,
+      "n_pos": 1,
+      "n_neg": 14,
+      "auroc": 0.8571428571428572
+    },
+    {
+      "target": "TRKA_P04629",
+      "seed": 42,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "GSK-3beta_P49841",
+      "seed": 42,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.1333333333333333
+    },
+    {
+      "target": "CDK12_Q9NYV4",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 1.0
+    },
+    {
+      "target": "FLT3-ITD_P36888",
+      "seed": 42,
+      "n": 21,
+      "n_pos": 9,
+      "n_neg": 12,
+      "auroc": 0.9722222222222222
+    },
+    {
+      "target": "WDR5_P61964",
+      "seed": 42,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "HPGDS_O60760",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "AKT2_P31751",
+      "seed": 42,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.7884615384615385
+    },
+    {
+      "target": "AKT3_Q9Y243",
+      "seed": 42,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.8125
+    },
+    {
+      "target": "PI3Kalpha_P42336",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.9090909090909091
+    },
+    {
+      "target": "MDM2_Q00987",
+      "seed": 123,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.888888888888889
+    },
+    {
+      "target": "ER_P03372",
+      "seed": 123,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.6216216216216216
+    },
+    {
+      "target": "AR_P10275",
+      "seed": 123,
+      "n": 122,
+      "n_pos": 40,
+      "n_neg": 82,
+      "auroc": 0.7440548780487805
+    },
+    {
+      "target": "BRD4_O60885",
+      "seed": 123,
+      "n": 62,
+      "n_pos": 34,
+      "n_neg": 28,
+      "auroc": 0.585609243697479
+    },
+    {
+      "target": "CRBN_Q96SW2",
+      "seed": 123,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.6
+    },
+    {
+      "target": "BRD2_P25440",
+      "seed": 123,
+      "n": 28,
+      "n_pos": 19,
+      "n_neg": 9,
+      "auroc": 0.5730994152046784
+    },
+    {
+      "target": "BRD3_Q15059",
+      "seed": 123,
+      "n": 21,
+      "n_pos": 13,
+      "n_neg": 8,
+      "auroc": 0.6057692307692308
+    },
+    {
+      "target": "ERRalpha_P11474",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.4166666666666667
+    },
+    {
+      "target": "BTK_Q06187",
+      "seed": 123,
+      "n": 64,
+      "n_pos": 29,
+      "n_neg": 35,
+      "auroc": 0.8009852216748768
+    },
+    {
+      "target": "ALK_Q9UM73",
+      "seed": 123,
+      "n": 57,
+      "n_pos": 28,
+      "n_neg": 29,
+      "auroc": 0.8066502463054187
+    },
+    {
+      "target": "CDK4_P11802",
+      "seed": 123,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7375886524822695
+    },
+    {
+      "target": "CDK6_Q00534",
+      "seed": 123,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.8949579831932774
+    },
+    {
+      "target": "FAK_Q05397",
+      "seed": 123,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.9800000000000001
+    },
+    {
+      "target": "EGFR_P00533",
+      "seed": 123,
+      "n": 24,
+      "n_pos": 6,
+      "n_neg": 18,
+      "auroc": 0.6944444444444444
+    },
+    {
+      "target": "BCR-ABL_nan",
+      "seed": 123,
+      "n": 48,
+      "n_pos": 13,
+      "n_neg": 35,
+      "auroc": 0.8791208791208791
+    },
+    {
+      "target": "MEK1_Q02750",
+      "seed": 123,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.617283950617284
+    },
+    {
+      "target": "MEK2_P36507",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "STAT3_P40763",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.2
+    },
+    {
+      "target": "EGFR L858R/T790M_P00533",
+      "seed": 123,
+      "n": 28,
+      "n_pos": 10,
+      "n_neg": 18,
+      "auroc": 0.7666666666666666
+    },
+    {
+      "target": "EGFR e19d_P00533",
+      "seed": 123,
+      "n": 26,
+      "n_pos": 11,
+      "n_neg": 15,
+      "auroc": 0.7121212121212122
+    },
+    {
+      "target": "CDK2_P24941",
+      "seed": 123,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.8979591836734695
+    },
+    {
+      "target": "BCL-xL_Q07817",
+      "seed": 123,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.6875
+    },
+    {
+      "target": "JAK2_O60674",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 0.9375
+    },
+    {
+      "target": "AKT1_P31749",
+      "seed": 123,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.472
+    },
+    {
+      "target": "IRAK3_Q9Y616",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 0.35000000000000003
+    },
+    {
+      "target": "FLT3_P36888",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 7,
+      "n_neg": 3,
+      "auroc": 0.9047619047619049
+    },
+    {
+      "target": "Src_P12931",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.625
+    },
+    {
+      "target": "Wee1_P30291",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.8125
+    },
+    {
+      "target": "PARP1_P09874",
+      "seed": 123,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.8
+    },
+    {
+      "target": "SHP2_Q06124",
+      "seed": 123,
+      "n": 15,
+      "n_pos": 1,
+      "n_neg": 14,
+      "auroc": 1.0
+    },
+    {
+      "target": "TRKA_P04629",
+      "seed": 123,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "GSK-3beta_P49841",
+      "seed": 123,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.19999999999999996
+    },
+    {
+      "target": "CDK12_Q9NYV4",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 1.0
+    },
+    {
+      "target": "FLT3-ITD_P36888",
+      "seed": 123,
+      "n": 21,
+      "n_pos": 9,
+      "n_neg": 12,
+      "auroc": 0.9074074074074073
+    },
+    {
+      "target": "WDR5_P61964",
+      "seed": 123,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "HPGDS_O60760",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "AKT2_P31751",
+      "seed": 123,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.33653846153846156
+    },
+    {
+      "target": "AKT3_Q9Y243",
+      "seed": 123,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.8437499999999999
+    },
+    {
+      "target": "PI3Kalpha_P42336",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.36363636363636365
+    },
+    {
+      "target": "MDM2_Q00987",
+      "seed": 777,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.888888888888889
+    },
+    {
+      "target": "ER_P03372",
+      "seed": 777,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.9189189189189189
+    },
+    {
+      "target": "AR_P10275",
+      "seed": 777,
+      "n": 122,
+      "n_pos": 40,
+      "n_neg": 82,
+      "auroc": 0.6716463414634146
+    },
+    {
+      "target": "BRD4_O60885",
+      "seed": 777,
+      "n": 62,
+      "n_pos": 34,
+      "n_neg": 28,
+      "auroc": 0.6228991596638656
+    },
+    {
+      "target": "CRBN_Q96SW2",
+      "seed": 777,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.6
+    },
+    {
+      "target": "BRD2_P25440",
+      "seed": 777,
+      "n": 28,
+      "n_pos": 19,
+      "n_neg": 9,
+      "auroc": 0.6432748538011697
+    },
+    {
+      "target": "BRD3_Q15059",
+      "seed": 777,
+      "n": 21,
+      "n_pos": 13,
+      "n_neg": 8,
+      "auroc": 0.625
+    },
+    {
+      "target": "ERRalpha_P11474",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.3333333333333333
+    },
+    {
+      "target": "BTK_Q06187",
+      "seed": 777,
+      "n": 64,
+      "n_pos": 29,
+      "n_neg": 35,
+      "auroc": 0.7891625615763546
+    },
+    {
+      "target": "ALK_Q9UM73",
+      "seed": 777,
+      "n": 57,
+      "n_pos": 28,
+      "n_neg": 29,
+      "auroc": 0.812807881773399
+    },
+    {
+      "target": "CDK4_P11802",
+      "seed": 777,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7765957446808511
+    },
+    {
+      "target": "CDK6_Q00534",
+      "seed": 777,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.8928571428571428
+    },
+    {
+      "target": "FAK_Q05397",
+      "seed": 777,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.9800000000000001
+    },
+    {
+      "target": "EGFR_P00533",
+      "seed": 777,
+      "n": 24,
+      "n_pos": 6,
+      "n_neg": 18,
+      "auroc": 0.7592592592592593
+    },
+    {
+      "target": "BCR-ABL_nan",
+      "seed": 777,
+      "n": 48,
+      "n_pos": 13,
+      "n_neg": 35,
+      "auroc": 0.9142857142857143
+    },
+    {
+      "target": "MEK1_Q02750",
+      "seed": 777,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.6358024691358025
+    },
+    {
+      "target": "MEK2_P36507",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "STAT3_P40763",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.35
+    },
+    {
+      "target": "EGFR L858R/T790M_P00533",
+      "seed": 777,
+      "n": 28,
+      "n_pos": 10,
+      "n_neg": 18,
+      "auroc": 0.8333333333333334
+    },
+    {
+      "target": "EGFR e19d_P00533",
+      "seed": 777,
+      "n": 26,
+      "n_pos": 11,
+      "n_neg": 15,
+      "auroc": 0.7151515151515152
+    },
+    {
+      "target": "CDK2_P24941",
+      "seed": 777,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.8571428571428572
+    },
+    {
+      "target": "BCL-xL_Q07817",
+      "seed": 777,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.6730769230769231
+    },
+    {
+      "target": "JAK2_O60674",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 0.9375
+    },
+    {
+      "target": "AKT1_P31749",
+      "seed": 777,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.6719999999999999
+    },
+    {
+      "target": "IRAK3_Q9Y616",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 1.0
+    },
+    {
+      "target": "FLT3_P36888",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 7,
+      "n_neg": 3,
+      "auroc": 0.9523809523809524
+    },
+    {
+      "target": "Src_P12931",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.7500000000000001
+    },
+    {
+      "target": "Wee1_P30291",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.5625
+    },
+    {
+      "target": "PARP1_P09874",
+      "seed": 777,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.9423076923076924
+    },
+    {
+      "target": "SHP2_Q06124",
+      "seed": 777,
+      "n": 15,
+      "n_pos": 1,
+      "n_neg": 14,
+      "auroc": 1.0
+    },
+    {
+      "target": "TRKA_P04629",
+      "seed": 777,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "GSK-3beta_P49841",
+      "seed": 777,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.7333333333333334
+    },
+    {
+      "target": "CDK12_Q9NYV4",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 2,
+      "n_neg": 8,
+      "auroc": 1.0
+    },
+    {
+      "target": "FLT3-ITD_P36888",
+      "seed": 777,
+      "n": 21,
+      "n_pos": 9,
+      "n_neg": 12,
+      "auroc": 1.0
+    },
+    {
+      "target": "WDR5_P61964",
+      "seed": 777,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "HPGDS_O60760",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "AKT2_P31751",
+      "seed": 777,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.9423076923076924
+    },
+    {
+      "target": "AKT3_Q9Y243",
+      "seed": 777,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.9166666666666667
+    },
+    {
+      "target": "PI3Kalpha_P42336",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.8181818181818182
+    }
+  ],
+  "raw_results_by_uniprot": [
+    {
+      "target": "Q00987",
+      "seed": 42,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.8611111111111112
+    },
+    {
+      "target": "P03372",
+      "seed": 42,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.3918918918918919
+    },
+    {
+      "target": "P10275",
+      "seed": 42,
+      "n": 123,
+      "n_pos": 40,
+      "n_neg": 83,
+      "auroc": 0.7188253012048192
+    },
+    {
+      "target": "O60885",
+      "seed": 42,
+      "n": 67,
+      "n_pos": 38,
+      "n_neg": 29,
+      "auroc": 0.6383847549909256
+    },
+    {
+      "target": "Q96SW2",
+      "seed": 42,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.45
+    },
+    {
+      "target": "P25440",
+      "seed": 42,
+      "n": 29,
+      "n_pos": 20,
+      "n_neg": 9,
+      "auroc": 0.6666666666666667
+    },
+    {
+      "target": "Q15059",
+      "seed": 42,
+      "n": 22,
+      "n_pos": 14,
+      "n_neg": 8,
+      "auroc": 0.6785714285714286
+    },
+    {
+      "target": "P11474",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.3333333333333333
+    },
+    {
+      "target": "Q06187",
+      "seed": 42,
+      "n": 72,
+      "n_pos": 30,
+      "n_neg": 42,
+      "auroc": 0.7785714285714285
+    },
+    {
+      "target": "Q9UM73",
+      "seed": 42,
+      "n": 58,
+      "n_pos": 28,
+      "n_neg": 30,
+      "auroc": 0.7071428571428572
+    },
+    {
+      "target": "P11802",
+      "seed": 42,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7429078014184398
+    },
+    {
+      "target": "Q00534",
+      "seed": 42,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.8739495798319328
+    },
+    {
+      "target": "Q05397",
+      "seed": 42,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.92
+    },
+    {
+      "target": "P00533",
+      "seed": 42,
+      "n": 88,
+      "n_pos": 28,
+      "n_neg": 60,
+      "auroc": 0.694047619047619
+    },
+    {
+      "target": "Q02750",
+      "seed": 42,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.6111111111111112
+    },
+    {
+      "target": "P36507",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "P40763",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.45
+    },
+    {
+      "target": "P24941",
+      "seed": 42,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.9387755102040816
+    },
+    {
+      "target": "Q07817",
+      "seed": 42,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.6923076923076923
+    },
+    {
+      "target": "O60674",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 0.8888888888888888
+    },
+    {
+      "target": "P31749",
+      "seed": 42,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.808
+    },
+    {
+      "target": "Q9Y616",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 1.0
+    },
+    {
+      "target": "P36888",
+      "seed": 42,
+      "n": 43,
+      "n_pos": 27,
+      "n_neg": 16,
+      "auroc": 0.9467592592592592
+    },
+    {
+      "target": "P12931",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.7916666666666667
+    },
+    {
+      "target": "P30291",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.5625
+    },
+    {
+      "target": "P09874",
+      "seed": 42,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.48846153846153845
+    },
+    {
+      "target": "Q06124",
+      "seed": 42,
+      "n": 18,
+      "n_pos": 4,
+      "n_neg": 14,
+      "auroc": 0.8214285714285714
+    },
+    {
+      "target": "P04629",
+      "seed": 42,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "P49841",
+      "seed": 42,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.0
+    },
+    {
+      "target": "Q9NYV4",
+      "seed": 42,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 1.0
+    },
+    {
+      "target": "P61964",
+      "seed": 42,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "O60760",
+      "seed": 42,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "P31751",
+      "seed": 42,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.7307692307692307
+    },
+    {
+      "target": "Q9Y243",
+      "seed": 42,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.40625
+    },
+    {
+      "target": "P42336",
+      "seed": 42,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.8181818181818182
+    },
+    {
+      "target": "Q00987",
+      "seed": 123,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.9166666666666666
+    },
+    {
+      "target": "P03372",
+      "seed": 123,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.44594594594594594
+    },
+    {
+      "target": "P10275",
+      "seed": 123,
+      "n": 123,
+      "n_pos": 40,
+      "n_neg": 83,
+      "auroc": 0.7325301204819278
+    },
+    {
+      "target": "O60885",
+      "seed": 123,
+      "n": 67,
+      "n_pos": 38,
+      "n_neg": 29,
+      "auroc": 0.6805807622504537
+    },
+    {
+      "target": "Q96SW2",
+      "seed": 123,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.5666666666666667
+    },
+    {
+      "target": "P25440",
+      "seed": 123,
+      "n": 29,
+      "n_pos": 20,
+      "n_neg": 9,
+      "auroc": 0.6055555555555556
+    },
+    {
+      "target": "Q15059",
+      "seed": 123,
+      "n": 22,
+      "n_pos": 14,
+      "n_neg": 8,
+      "auroc": 0.5625
+    },
+    {
+      "target": "P11474",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.41666666666666663
+    },
+    {
+      "target": "Q06187",
+      "seed": 123,
+      "n": 72,
+      "n_pos": 30,
+      "n_neg": 42,
+      "auroc": 0.7071428571428571
+    },
+    {
+      "target": "Q9UM73",
+      "seed": 123,
+      "n": 58,
+      "n_pos": 28,
+      "n_neg": 30,
+      "auroc": 0.7404761904761905
+    },
+    {
+      "target": "P11802",
+      "seed": 123,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7544326241134752
+    },
+    {
+      "target": "Q00534",
+      "seed": 123,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.8634453781512605
+    },
+    {
+      "target": "Q05397",
+      "seed": 123,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.9400000000000001
+    },
+    {
+      "target": "P00533",
+      "seed": 123,
+      "n": 88,
+      "n_pos": 28,
+      "n_neg": 60,
+      "auroc": 0.6699404761904761
+    },
+    {
+      "target": "Q02750",
+      "seed": 123,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.4938271604938272
+    },
+    {
+      "target": "P36507",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "P40763",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.9
+    },
+    {
+      "target": "P24941",
+      "seed": 123,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.7551020408163265
+    },
+    {
+      "target": "Q07817",
+      "seed": 123,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.6538461538461537
+    },
+    {
+      "target": "O60674",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 0.8888888888888888
+    },
+    {
+      "target": "P31749",
+      "seed": 123,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.8240000000000001
+    },
+    {
+      "target": "Q9Y616",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 1.0
+    },
+    {
+      "target": "P36888",
+      "seed": 123,
+      "n": 43,
+      "n_pos": 27,
+      "n_neg": 16,
+      "auroc": 0.9583333333333333
+    },
+    {
+      "target": "P12931",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.9583333333333334
+    },
+    {
+      "target": "P30291",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.5
+    },
+    {
+      "target": "P09874",
+      "seed": 123,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.4538461538461539
+    },
+    {
+      "target": "Q06124",
+      "seed": 123,
+      "n": 18,
+      "n_pos": 4,
+      "n_neg": 14,
+      "auroc": 0.875
+    },
+    {
+      "target": "P04629",
+      "seed": 123,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "P49841",
+      "seed": 123,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.06666666666666665
+    },
+    {
+      "target": "Q9NYV4",
+      "seed": 123,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 0.9444444444444444
+    },
+    {
+      "target": "P61964",
+      "seed": 123,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "O60760",
+      "seed": 123,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "P31751",
+      "seed": 123,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.8653846153846154
+    },
+    {
+      "target": "Q9Y243",
+      "seed": 123,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.5520833333333334
+    },
+    {
+      "target": "P42336",
+      "seed": 123,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.5454545454545454
+    },
+    {
+      "target": "Q00987",
+      "seed": 777,
+      "n": 15,
+      "n_pos": 3,
+      "n_neg": 12,
+      "auroc": 0.875
+    },
+    {
+      "target": "P03372",
+      "seed": 777,
+      "n": 39,
+      "n_pos": 2,
+      "n_neg": 37,
+      "auroc": 0.7162162162162162
+    },
+    {
+      "target": "P10275",
+      "seed": 777,
+      "n": 123,
+      "n_pos": 40,
+      "n_neg": 83,
+      "auroc": 0.6890060240963856
+    },
+    {
+      "target": "O60885",
+      "seed": 777,
+      "n": 67,
+      "n_pos": 38,
+      "n_neg": 29,
+      "auroc": 0.602994555353902
+    },
+    {
+      "target": "Q96SW2",
+      "seed": 777,
+      "n": 17,
+      "n_pos": 5,
+      "n_neg": 12,
+      "auroc": 0.6166666666666667
+    },
+    {
+      "target": "P25440",
+      "seed": 777,
+      "n": 29,
+      "n_pos": 20,
+      "n_neg": 9,
+      "auroc": 0.6666666666666666
+    },
+    {
+      "target": "Q15059",
+      "seed": 777,
+      "n": 22,
+      "n_pos": 14,
+      "n_neg": 8,
+      "auroc": 0.5803571428571428
+    },
+    {
+      "target": "P11474",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.2916666666666667
+    },
+    {
+      "target": "Q06187",
+      "seed": 777,
+      "n": 72,
+      "n_pos": 30,
+      "n_neg": 42,
+      "auroc": 0.7055555555555555
+    },
+    {
+      "target": "Q9UM73",
+      "seed": 777,
+      "n": 58,
+      "n_pos": 28,
+      "n_neg": 30,
+      "auroc": 0.7702380952380953
+    },
+    {
+      "target": "P11802",
+      "seed": 777,
+      "n": 71,
+      "n_pos": 24,
+      "n_neg": 47,
+      "auroc": 0.7393617021276595
+    },
+    {
+      "target": "Q00534",
+      "seed": 777,
+      "n": 62,
+      "n_pos": 28,
+      "n_neg": 34,
+      "auroc": 0.9107142857142857
+    },
+    {
+      "target": "Q05397",
+      "seed": 777,
+      "n": 15,
+      "n_pos": 10,
+      "n_neg": 5,
+      "auroc": 0.92
+    },
+    {
+      "target": "P00533",
+      "seed": 777,
+      "n": 88,
+      "n_pos": 28,
+      "n_neg": 60,
+      "auroc": 0.6553571428571429
+    },
+    {
+      "target": "Q02750",
+      "seed": 777,
+      "n": 33,
+      "n_pos": 6,
+      "n_neg": 27,
+      "auroc": 0.6419753086419753
+    },
+    {
+      "target": "P36507",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 0,
+      "n_neg": 11,
+      "auroc": null
+    },
+    {
+      "target": "P40763",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 10,
+      "n_neg": 1,
+      "auroc": 0.95
+    },
+    {
+      "target": "P24941",
+      "seed": 777,
+      "n": 14,
+      "n_pos": 7,
+      "n_neg": 7,
+      "auroc": 0.9591836734693878
+    },
+    {
+      "target": "Q07817",
+      "seed": 777,
+      "n": 29,
+      "n_pos": 16,
+      "n_neg": 13,
+      "auroc": 0.7163461538461537
+    },
+    {
+      "target": "O60674",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 0.9444444444444444
+    },
+    {
+      "target": "P31749",
+      "seed": 777,
+      "n": 30,
+      "n_pos": 5,
+      "n_neg": 25,
+      "auroc": 0.6160000000000001
+    },
+    {
+      "target": "Q9Y616",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 2,
+      "n_neg": 10,
+      "auroc": 0.9500000000000001
+    },
+    {
+      "target": "P36888",
+      "seed": 777,
+      "n": 43,
+      "n_pos": 27,
+      "n_neg": 16,
+      "auroc": 0.7523148148148148
+    },
+    {
+      "target": "P12931",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 4,
+      "n_neg": 6,
+      "auroc": 0.7083333333333333
+    },
+    {
+      "target": "P30291",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 4,
+      "n_neg": 8,
+      "auroc": 0.75
+    },
+    {
+      "target": "P09874",
+      "seed": 777,
+      "n": 36,
+      "n_pos": 10,
+      "n_neg": 26,
+      "auroc": 0.7884615384615384
+    },
+    {
+      "target": "Q06124",
+      "seed": 777,
+      "n": 18,
+      "n_pos": 4,
+      "n_neg": 14,
+      "auroc": 0.8571428571428572
+    },
+    {
+      "target": "P04629",
+      "seed": 777,
+      "n": 14,
+      "n_pos": 14,
+      "n_neg": 0,
+      "auroc": null
+    },
+    {
+      "target": "P49841",
+      "seed": 777,
+      "n": 16,
+      "n_pos": 1,
+      "n_neg": 15,
+      "auroc": 0.0
+    },
+    {
+      "target": "Q9NYV4",
+      "seed": 777,
+      "n": 11,
+      "n_pos": 2,
+      "n_neg": 9,
+      "auroc": 1.0
+    },
+    {
+      "target": "P61964",
+      "seed": 777,
+      "n": 21,
+      "n_pos": 0,
+      "n_neg": 21,
+      "auroc": null
+    },
+    {
+      "target": "O60760",
+      "seed": 777,
+      "n": 10,
+      "n_pos": 0,
+      "n_neg": 10,
+      "auroc": null
+    },
+    {
+      "target": "P31751",
+      "seed": 777,
+      "n": 30,
+      "n_pos": 4,
+      "n_neg": 26,
+      "auroc": 0.8076923076923077
+    },
+    {
+      "target": "Q9Y243",
+      "seed": 777,
+      "n": 28,
+      "n_pos": 4,
+      "n_neg": 24,
+      "auroc": 0.40625
+    },
+    {
+      "target": "P42336",
+      "seed": 777,
+      "n": 12,
+      "n_pos": 11,
+      "n_neg": 1,
+      "auroc": 0.45454545454545453
+    }
+  ]
+}

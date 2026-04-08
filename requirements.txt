@@ -1,0 +1,8 @@
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+rdkit  # or rdkit-pypi
+scipy>=1.10
+optuna>=3.0  # for HPO only
+torch>=2.0  # for GNN baselines only
+matplotlib>=3.7  # for figure generation only

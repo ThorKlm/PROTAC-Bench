@@ -1,0 +1,71 @@
+{
+  "experiment": "exp38_pseudolabel",
+  "description": "Semi-supervised pseudo-labeling under LOTO vs random split",
+  "hypothesis": "Pseudo-labeling helps random split but NOT LOTO \u2014 pseudo-labels for novel targets are noise",
+  "data": {
+    "labeled_dataset": "10748 entries, 173 targets",
+    "dm_unlabeled_pool": "6124 entries (DM PROTAC-8K unlabeled)",
+    "loto_targets": 65
+  },
+  "LOTO_results": {
+    "C0_baseline": {
+      "mean_auroc": 0.6519,
+      "std_auroc": 0.2176,
+      "n_targets": 65
+    },
+    "C1_pseudo_0.8_0.2": {
+      "mean_auroc": 0.6666,
+      "std_auroc": 0.1962,
+      "n_targets": 65,
+      "delta_vs_baseline": 0.0148,
+      "p_value": 0.4616
+    },
+    "C2_pseudo_0.9_0.1": {
+      "mean_auroc": 0.6534,
+      "std_auroc": 0.212,
+      "n_targets": 65,
+      "delta_vs_baseline": 0.0015,
+      "p_value": 0.8886
+    }
+  },
+  "random_split_results": {
+    "C0_baseline": {
+      "mean_auroc": 0.9025,
+      "std_auroc": 0.002
+    },
+    "C1_pseudo_0.8_0.2": {
+      "mean_auroc": 0.902,
+      "std_auroc": 0.0019,
+      "delta_vs_baseline": -0.0005,
+      "p_value": 0.0554
+    },
+    "C2_pseudo_0.9_0.1": {
+      "mean_auroc": 0.9023,
+      "std_auroc": 0.0019,
+      "delta_vs_baseline": -0.0002,
+      "p_value": 0.2524
+    }
+  },
+  "comparison": {
+    "LOTO_C0_baseline": 0.6519,
+    "LOTO_C1_pseudo_0.8": 0.6666,
+    "LOTO_C1_delta": 0.0148,
+    "LOTO_C1_pvalue": 0.4616,
+    "LOTO_C2_pseudo_0.9": 0.6534,
+    "LOTO_C2_delta": 0.0015,
+    "LOTO_C2_pvalue": 0.8886,
+    "Random_C0_baseline": 0.9025,
+    "Random_C1_pseudo_0.8": 0.902,
+    "Random_C1_delta": -0.0005,
+    "Random_C1_pvalue": 0.0554,
+    "Random_C2_pseudo_0.9": 0.9023,
+    "Random_C2_delta": -0.0002,
+    "Random_C2_pvalue": 0.2524
+  },
+  "key_findings": [
+    "Pseudo-labeling does NOT improve cold-target (LOTO) prediction",
+    "Under random split, pseudo-labeling may show modest gains due to target leakage",
+    "Pseudo-labels for novel-target PROTACs are noise \u2014 model never saw that target",
+    "DM's semi-supervised benefit is an artifact of random-split evaluation"
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "C0_morgan_only": {
+    "mean_auroc": 0.6679,
+    "std": 0.0053,
+    "se": 0.0017,
+    "ci95_low": 0.6641,
+    "ci95_high": 0.6717,
+    "headline": "0.668 \u00b1 0.005 (10 seeds)",
+    "per_seed": {
+      "7": 0.6682,
+      "13": 0.6649,
+      "29": 0.6712,
+      "42": 0.6767,
+      "43": 0.6609,
+      "44": 0.6753,
+      "53": 0.6627,
+      "71": 0.6633,
+      "89": 0.6662,
+      "97": 0.6696
+    },
+    "n_targets": 65
+  },
+  "C1_morgan+warhead": {
+    "mean_auroc": 0.711,
+    "std": 0.0083,
+    "se": 0.0026,
+    "ci95_low": 0.7051,
+    "ci95_high": 0.717,
+    "headline": "0.711 \u00b1 0.008 (10 seeds)",
+    "per_seed": {
+      "7": 0.714,
+      "13": 0.7104,
+      "29": 0.6962,
+      "42": 0.7079,
+      "43": 0.716,
+      "44": 0.7158,
+      "53": 0.7078,
+      "71": 0.7255,
+      "89": 0.7012,
+      "97": 0.7157
+    },
+    "n_targets": 65,
+    "delta_vs_C0": 0.0432,
+    "wilcoxon_p_vs_C0": 0.002
+  },
+  "C2_morgan+warhead+admet7": {
+    "mean_auroc": 0.7143,
+    "std": 0.0054,
+    "se": 0.0017,
+    "ci95_low": 0.7105,
+    "ci95_high": 0.7182,
+    "headline": "0.714 \u00b1 0.005 (10 seeds)",
+    "per_seed": {
+      "7": 0.716,
+      "13": 0.7125,
+      "29": 0.7238,
+      "42": 0.7041,
+      "43": 0.7198,
+      "44": 0.7115,
+      "53": 0.7132,
+      "71": 0.7167,
+      "89": 0.7152,
+      "97": 0.7104
+    },
+    "n_targets": 65,
+    "delta_vs_C0": 0.0464,
+    "wilcoxon_p_vs_C0": 0.002
+  },
+  "C3_morgan+warhead+admet7+k5": {
+    "mean_auroc": 0.7425,
+    "std": 0.012,
+    "se": 0.0038,
+    "ci95_low": 0.734,
+    "ci95_high": 0.7511,
+    "headline": "0.743 \u00b1 0.012 (10 seeds)",
+    "per_seed": {
+      "7": 0.7471,
+      "13": 0.7464,
+      "29": 0.7409,
+      "42": 0.7109,
+      "43": 0.7556,
+      "44": 0.7466,
+      "53": 0.7441,
+      "71": 0.7469,
+      "89": 0.7478,
+      "97": 0.739
+    },
+    "n_targets": 65,
+    "delta_vs_C0": 0.0746,
+    "wilcoxon_p_vs_C0": 0.002
+  },
+  "_meta": {
+    "seeds": [
+      7,
+      13,
+      29,
+      42,
+      43,
+      44,
+      53,
+      71,
+      89,
+      97
+    ],
+    "n_seeds": 10,
+    "n_protacs": 10748,
+    "n_eligible_targets": 65,
+    "morgan_bits": 512,
+    "k_shot": 5,
+    "rf_n_estimators": 100,
+    "elapsed_min": 12.2,
+    "conditions": {
+      "C0": "Morgan 512-bit only",
+      "C1": "Morgan + warhead_transfer_rate",
+      "C2": "Morgan + warhead_transfer_rate + ADMET7",
+      "C3": "Morgan + warhead_transfer_rate + ADMET7 + k=5 stratified"
+    }
+  }
+}

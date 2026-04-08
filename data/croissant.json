@@ -1,0 +1,165 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {"@id": "cr:data", "@type": "@json"},
+    "dataType": {"@id": "cr:dataType", "@type": "@vocab"},
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {"@id": "cr:examples", "@type": "@json"},
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "samplingRate": "cr:samplingRate",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "PROTAC-PLM-Bench",
+  "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "url": "https://huggingface.co/datasets/ThorKlm/protac-plm-bench",
+  "version": "1.0.0",
+  "citeAs": "@inproceedings{protacbench2025, title={PROTAC-PLM-Bench: A Cold-Target Benchmark for PROTAC Degradation Prediction}, booktitle={NeurIPS Datasets and Benchmarks Track}, year={2025}}",
+  "datePublished": "2026-04-07",
+  "creator": {
+    "@type": "sc:Organization",
+    "name": "PROTAC-PLM-Bench Authors"
+  },
+  "keywords": [
+    "PROTAC",
+    "protein degradation",
+    "drug discovery",
+    "benchmark",
+    "cold-target evaluation",
+    "binary classification"
+  ],
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "protac_bench.csv",
+      "name": "protac_bench.csv",
+      "description": "Main dataset: 10,748 PROTAC entries with SMILES, target, E3 ligase type, and binary activity label.",
+      "contentUrl": "data/protac_bench.csv",
+      "encodingFormat": "text/csv",
+      "sha256": "6d273d9fbfb1921f5b2da9ba94a74d46fe787ffd3f6a766058c8d1c3c76d30fa"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "loto_folds.json",
+      "name": "loto_folds.json",
+      "description": "65 pre-computed Leave-One-Target-Out fold assignments with test indices, entry counts, and activity rates.",
+      "contentUrl": "data/loto_folds.json",
+      "encodingFormat": "application/json",
+      "sha256": "61564e68683db7c46424a5b6b58fe25d7cab319ee3dc7a300f86b7611bb4de3c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "admet_scores.csv",
+      "name": "admet_scores.csv",
+      "description": "7-property ADMET cascade scores for all 10,748 entries.",
+      "contentUrl": "data/admet_scores.csv",
+      "encodingFormat": "text/csv",
+      "sha256": "db5c33175ec6c1f1f9608cc230f655b2dd823b1e745df36e34d0616ec056d7e0"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "protac_entries",
+      "name": "protac_entries",
+      "description": "Individual PROTAC degradation entries.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/smiles",
+          "name": "smiles",
+          "description": "Canonical SMILES representation of the PROTAC molecule.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "smiles"}
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/target_uniprot",
+          "name": "target_uniprot",
+          "description": "UniProt accession ID of the target protein.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "target_uniprot"}
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/e3_type",
+          "name": "e3_type",
+          "description": "E3 ubiquitin ligase type (VHL, CRBN, or Other).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "e3_type"}
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/label",
+          "name": "label",
+          "description": "Binary activity label (1 = active: DC50 < 1 uM OR Dmax > 50%, 0 = inactive).",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "label"}
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/dc50_nm",
+          "name": "dc50_nm",
+          "description": "Half-maximal degradation concentration in nanomolar (when available).",
+          "dataType": "sc:Float",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "dc50_nm"}
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "protac_entries/dmax_pct",
+          "name": "dmax_pct",
+          "description": "Maximum degradation percentage (when available).",
+          "dataType": "sc:Float",
+          "source": {
+            "fileObject": {"@id": "protac_bench.csv"},
+            "extract": {"column": "dmax_pct"}
+          }
+        }
+      ]
+    }
+  ]
+}

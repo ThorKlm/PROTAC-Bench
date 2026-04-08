@@ -1,0 +1,47 @@
+{
+  "C0_morgan_only": {
+    "mean_auroc": 0.6709,
+    "delta_vs_baseline": 0.0,
+    "wilcoxon_p": 1.0,
+    "n_targets": 65
+  },
+  "C1_morgan+pooled_transfer": {
+    "mean_auroc": 0.7132,
+    "delta_vs_baseline": 0.0423,
+    "wilcoxon_p": 0.0005,
+    "n_targets": 65
+  },
+  "C2_morgan+e3specific_transfer": {
+    "mean_auroc": 0.7114,
+    "delta_vs_baseline": 0.0405,
+    "wilcoxon_p": 0.0009,
+    "n_targets": 65
+  },
+  "C3_morgan+both": {
+    "mean_auroc": 0.724,
+    "delta_vs_baseline": 0.0531,
+    "wilcoxon_p": 0.0011,
+    "n_targets": 65
+  },
+  "_comparisons": {
+    "C2_vs_C1_delta": -0.0018,
+    "C2_vs_C1_p": 0.6172,
+    "C2_better_than_C1": false
+  },
+  "_meta": {
+    "n_protacs": 10748,
+    "n_eligible_targets": 65,
+    "n_vhl": 2896,
+    "n_crbn": 7727,
+    "n_other_e3": 125,
+    "k_neighbors": 10,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "rf_n_estimators": 100,
+    "corr_pooled_e3specific": 0.993,
+    "elapsed_min": 3.3
+  }
+}

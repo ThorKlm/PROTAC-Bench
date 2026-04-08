@@ -1,0 +1,113 @@
+{
+  "experiment": "exp39_stan_combined",
+  "description": "Combine STAN attention with warhead transfer + ADMET + few-shot",
+  "n_targets": 64,
+  "conditions": {
+    "C0": {
+      "name": "RF+Morgan (baseline)",
+      "mean_auroc": 0.6688,
+      "median_auroc": 0.6854,
+      "std_auroc": 0.1944,
+      "delta_vs_C0": 0.0,
+      "wilcoxon_p_vs_C0": 1.0,
+      "time_s": 48.2
+    },
+    "C1": {
+      "name": "STAN attention only",
+      "mean_auroc": 0.6562,
+      "median_auroc": 0.6577,
+      "std_auroc": 0.203,
+      "delta_vs_C0": -0.0126,
+      "wilcoxon_p_vs_C0": 0.821263,
+      "time_s": 1997.0
+    },
+    "C2": {
+      "name": "RF+Morgan+wh+ADMET",
+      "mean_auroc": 0.7095,
+      "median_auroc": 0.7312,
+      "std_auroc": 0.1873,
+      "delta_vs_C0": 0.0406,
+      "wilcoxon_p_vs_C0": 0.001203,
+      "time_s": 49.0
+    },
+    "C3": {
+      "name": "STAN+warhead",
+      "mean_auroc": 0.6709,
+      "median_auroc": 0.6731,
+      "std_auroc": 0.2124,
+      "delta_vs_C0": 0.002,
+      "wilcoxon_p_vs_C0": 0.611278,
+      "time_s": 1992.8
+    },
+    "C4": {
+      "name": "STAN+wh+ADMET",
+      "mean_auroc": 0.662,
+      "median_auroc": 0.6992,
+      "std_auroc": 0.2164,
+      "delta_vs_C0": -0.0069,
+      "wilcoxon_p_vs_C0": 0.773681,
+      "time_s": 2035.8
+    },
+    "C5": {
+      "name": "STAN+wh+ADMET+k=5",
+      "mean_auroc": 0.6895,
+      "median_auroc": 0.678,
+      "std_auroc": 0.2138,
+      "delta_vs_C0": 0.0207,
+      "wilcoxon_p_vs_C0": 0.238984,
+      "time_s": 1977.6
+    },
+    "C6": {
+      "name": "RF+Morgan*E3+wh+ADMET",
+      "mean_auroc": 0.6884,
+      "median_auroc": 0.7251,
+      "std_auroc": 0.2057,
+      "delta_vs_C0": 0.0196,
+      "wilcoxon_p_vs_C0": 0.017358,
+      "time_s": 190.3
+    }
+  },
+  "pairwise_tests": {
+    "C3_vs_C1": {
+      "label": "STAN+wh vs STAN_only",
+      "delta": 0.0147,
+      "p": 0.175245
+    },
+    "C4_vs_C1": {
+      "label": "STAN+wh+ADMET vs STAN_only",
+      "delta": 0.0058,
+      "p": 0.32686
+    },
+    "C4_vs_C2": {
+      "label": "STAN+wh+ADMET vs RF+wh+ADMET",
+      "delta": -0.0475,
+      "p": 0.127282
+    },
+    "C5_vs_C4": {
+      "label": "STAN+wh+ADMET+k5 vs STAN+wh+ADMET",
+      "delta": 0.0275,
+      "p": 0.207461
+    },
+    "C5_vs_C0": {
+      "label": "ceiling vs baseline",
+      "delta": 0.0207,
+      "p": 0.238984
+    },
+    "C6_vs_C4": {
+      "label": "RF_interaction vs STAN+wh+ADMET",
+      "delta": 0.0265,
+      "p": 0.445836
+    },
+    "C6_vs_C2": {
+      "label": "RF_interaction vs RF+wh+ADMET",
+      "delta": -0.021,
+      "p": 0.012148
+    }
+  },
+  "total_time_min": 138.2,
+  "interpretation": [
+    "STAN + warhead + ADMET (0.662) does NOT beat max(STAN=0.656, RF+wh+ADMET=0.710) => signals redundant",
+    "Few-shot adds +0.027 on top of STAN+wh+ADMET => new ceiling 0.690",
+    "Morgan*E3 interaction (0.688) < STAN (0.662) => attention captures more than linear E3 interaction"
+  ]
+}

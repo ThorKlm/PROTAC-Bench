@@ -1,0 +1,15 @@
+{
+  "experiment": "exp38_stan_full",
+  "model": "TernaryAttentionNet (simplified STAN)",
+  "description": "Cross-attention: Q=PROTAC(Morgan2048), K/V=concat(POI_ESM650M, E3_onehot)",
+  "n_targets": 64,
+  "seed": 42,
+  "mean_auroc": 0.7178,
+  "median_auroc": 0.7434,
+  "std_auroc": 0.2008,
+  "baseline_auroc": 0.666,
+  "delta_vs_baseline": 0.0518,
+  "wilcoxon_p": 0.025499,
+  "significant": true,
+  "total_time_s": 650.0
+}

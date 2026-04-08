@@ -1,0 +1,18 @@
+{
+  "all": {
+    "auroc": 0.666,
+    "n_targets": 64
+  },
+  "non_kinase": {
+    "auroc": 0.6466,
+    "n_targets": 40
+  },
+  "kinase_only": {
+    "auroc": 0.6678,
+    "n_targets": 24
+  },
+  "no_kinase_bromo": {
+    "auroc": 0.6222,
+    "n_targets": 34
+  }
+}

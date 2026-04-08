@@ -1,0 +1,158 @@
+{
+  "experiment": "Exp 8C: Multi-ADMET Cascade Classifier",
+  "n_protacs": 10748,
+  "n_loto_targets": 65,
+  "admet_classifiers": {
+    "PAMPA_NCATS": {
+      "n_training": 2034,
+      "cv_metrics": {
+        "auroc": 0.7898954383991026,
+        "auroc_std": 0.0212003269262041,
+        "accuracy": 0.8736471357161012,
+        "brier": 0.09984602683838172
+      },
+      "description": "PAMPA permeability"
+    },
+    "HIA_Hou": {
+      "n_training": 578,
+      "cv_metrics": {
+        "auroc": 0.9293416666666665,
+        "auroc_std": 0.04308702756566581,
+        "accuracy": 0.9152173913043479,
+        "brier": 0.06545237384340503
+      },
+      "description": "Human intestinal absorption"
+    },
+    "Solubility_AqSolDB": {
+      "n_training": 9982,
+      "cv_metrics": {
+        "auroc": 0.9397393914008305,
+        "auroc_std": 0.006835270742367494,
+        "accuracy": 0.8643579096099059,
+        "brier": 0.09804938441617253
+      },
+      "description": "Aqueous solubility"
+    },
+    "Pgp_Broccatelli": {
+      "n_training": 1218,
+      "cv_metrics": {
+        "auroc": 0.9476497915994889,
+        "auroc_std": 0.006293001101711731,
+        "accuracy": 0.8940936382648588,
+        "brier": 0.08411093039225774
+      },
+      "description": "P-gp inhibition"
+    },
+    "Lipophilicity_AstraZeneca": {
+      "n_training": 4200,
+      "cv_metrics": {
+        "auroc": 0.8810031412723669,
+        "auroc_std": 0.010951920299980534,
+        "accuracy": 0.7959523809523809,
+        "brier": 0.1401235899738007
+      },
+      "description": "Lipophilicity"
+    },
+    "Clearance_Hepatocyte_AZ": {
+      "n_training": 1213,
+      "cv_metrics": {
+        "auroc": 0.7479802956216599,
+        "auroc_std": 0.014446398001142698,
+        "accuracy": 0.6817807706696596,
+        "brier": 0.20353290783676053
+      },
+      "description": "Hepatocyte clearance"
+    }
+  },
+  "admet_correlations": {
+    "Caco2_Wang": {
+      "rho": 0.10754339572681344,
+      "p": 5.083752700683869e-29,
+      "mean_active": 0.4118422907693258,
+      "mean_inactive": 0.3906485631018385
+    },
+    "PAMPA_NCATS": {
+      "rho": 0.025196274374551107,
+      "p": 0.008994235456432983,
+      "mean_active": 0.39657254101016587,
+      "mean_inactive": 0.39140107786499556
+    },
+    "HIA_Hou": {
+      "rho": 0.06301401974393983,
+      "p": 6.21125616509585e-11,
+      "mean_active": 0.35733240985787823,
+      "mean_inactive": 0.34687611452161504
+    },
+    "Solubility_AqSolDB": {
+      "rho": -0.1178242977174991,
+      "p": 1.5517286596603035e-34,
+      "mean_active": 0.16813986841523412,
+      "mean_inactive": 0.18426953820149927
+    },
+    "Pgp_Broccatelli": {
+      "rho": 0.1419258328961969,
+      "p": 1.7767397324241536e-49,
+      "mean_active": 0.7421817069498684,
+      "mean_inactive": 0.7134178904844415
+    },
+    "Lipophilicity_AstraZeneca": {
+      "rho": 0.273288837141915,
+      "p": 2.083095166315552e-183,
+      "mean_active": 0.5903123957496487,
+      "mean_inactive": 0.5333317396175435
+    },
+    "Clearance_Hepatocyte_AZ": {
+      "rho": -0.03849285336864017,
+      "p": 6.56102305052311e-05,
+      "mean_active": 0.533101829365517,
+      "mean_inactive": 0.5368271989317104
+    }
+  },
+  "top3_admet": [
+    "Lipophilicity_AstraZeneca",
+    "Pgp_Broccatelli",
+    "Solubility_AqSolDB"
+  ],
+  "conditions": {
+    "C0_morgan_baseline": {
+      "auroc": 0.6658968045588533
+    },
+    "C1_morgan+caco2+desc17": {
+      "auroc": 0.6833656758643619,
+      "delta": 0.01746887130550867,
+      "p": 0.035131976633607245
+    },
+    "C2_morgan+admet7": {
+      "auroc": 0.6867488410248958,
+      "delta": 0.02085203646604237,
+      "p": 0.013984361352572682
+    },
+    "C3_morgan+admet7+desc17": {
+      "auroc": 0.6826228354817305,
+      "delta": 0.016726030922877312,
+      "p": 0.06268207949284652
+    },
+    "C4_morgan+admet7+fewshot5": {
+      "auroc": 0.7156635163648127,
+      "delta": 0.049766711805959554,
+      "p": 8.174361819478792e-06
+    },
+    "C5_morgan+admet7+desc17+fewshot5": {
+      "auroc": 0.721473857219327,
+      "delta": 0.05557705266047373,
+      "p": 2.266687078501716e-06
+    },
+    "C6_morgan+top3_admet": {
+      "auroc": 0.6783054731066974,
+      "delta": 0.012408668547844118,
+      "p": 0.13468541696105696,
+      "top3": [
+        "Lipophilicity_AstraZeneca",
+        "Pgp_Broccatelli",
+        "Solubility_AqSolDB"
+      ]
+    }
+  },
+  "best_condition": "C5_morgan+admet7+desc17+fewshot5",
+  "elapsed_minutes": 23.044519301255544
+}

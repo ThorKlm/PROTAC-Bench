@@ -1,0 +1,15 @@
+{
+  "train_CRBN_test_VHL": {
+    "auroc": 0.6059,
+    "n_train": 7727,
+    "n_test": 2896
+  },
+  "train_VHL_test_CRBN": {
+    "auroc": 0.6431,
+    "n_train": 2896,
+    "n_test": 7727
+  },
+  "reference_loto": {
+    "auroc": 0.666
+  }
+}

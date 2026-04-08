@@ -1,0 +1,21 @@
+{
+  "baseline_morgan": 0.666,
+  "smina_docking_scores": 0.661,
+  "contact_features": 0.669,
+  "ffc_linker_feasibility": 0.67,
+  "lysine_accessibility": 0.672,
+  "interaction_fps_IFP54": 0.615,
+  "egnn_af_cluster_v1": 0.542,
+  "egnn_v3_improved_pockets": 0.547,
+  "egnn_v4_cocrystal_pockets": 0.547,
+  "egnn_cocrystal_binding_modes": 0.497,
+  "egnn_hybrid_dm_poses": 0.563,
+  "pocket_descriptors": 0.667,
+  "pocket_similarity": 0.667,
+  "energy_scoring": 0.67,
+  "dm_loto_their_data": 0.702,
+  "dm_vs_rf_same_targets": 0.694,
+  "dm_reported_random_split": 0.878,
+  "dm_architecture_our_data": 0.563,
+  "dm_hybrid_with_their_poses": 0.541
+}

@@ -1,0 +1,54 @@
+{
+  "experiment": "exp38_stan_ablation",
+  "description": "Ablation: attention mechanism vs ESM-650M embeddings in STAN",
+  "n_targets": 64,
+  "seed": 42,
+  "baseline_rf_morgan": 0.666,
+  "conditions": {
+    "C0": {
+      "name": "C0_Full_STAN",
+      "mean_auroc": 0.7178,
+      "median_auroc": 0.7434,
+      "std_auroc": 0.1993,
+      "delta_vs_baseline": 0.0518,
+      "wilcoxon_p_vs_baseline": 0.025499,
+      "time_s": 666.7
+    },
+    "C1": {
+      "name": "C1_STAN_zeroPOI",
+      "mean_auroc": 0.7139,
+      "median_auroc": 0.7725,
+      "std_auroc": 0.2055,
+      "delta_vs_baseline": 0.0479,
+      "wilcoxon_p_vs_baseline": 0.032894,
+      "time_s": 744.0
+    },
+    "C2": {
+      "name": "C2_STAN_randomPOI",
+      "mean_auroc": 0.7117,
+      "median_auroc": 0.7562,
+      "std_auroc": 0.2005,
+      "delta_vs_baseline": 0.0457,
+      "wilcoxon_p_vs_baseline": 0.040389,
+      "time_s": 758.5
+    },
+    "C3": {
+      "name": "C3_RF_Morgan_ESM",
+      "mean_auroc": 0.6564,
+      "median_auroc": 0.6478,
+      "std_auroc": 0.2091,
+      "delta_vs_baseline": -0.0096,
+      "wilcoxon_p_vs_baseline": 0.890956,
+      "time_s": 137.6
+    }
+  },
+  "pairwise_tests": {
+    "C0_vs_C1_p": 0.626997,
+    "C0_vs_C2_p": 0.498375,
+    "C0_vs_C3_p": 0.004237
+  },
+  "interpretation": [
+    "Attention mechanism helps without target identity (C0 ~ C1)",
+    "PLM alone doesn't help in RF (C3 ~ baseline), consistent with exp15"
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "experiment": "Exp 35: ADMET Individual Feature Ablation",
+  "admet_features": [
+    "Caco2_Wang",
+    "PAMPA_NCATS",
+    "HIA_Hou",
+    "Solubility_AqSolDB",
+    "Pgp_Broccatelli",
+    "Lipophilicity_AstraZeneca",
+    "Clearance_Hepatocyte_AZ"
+  ],
+  "n_loto_targets": 65,
+  "seeds": 1,
+  "baselines": {
+    "morgan_only": 0.6650304132559184,
+    "morgan_admet7": 0.6934135385847637,
+    "admet7_delta": 0.028383125328845335,
+    "admet7_p": 0.002436313616987692,
+    "admet_only": 0.6528005333810661
+  },
+  "leave_one_out": {
+    "Caco2_Wang": {
+      "auroc_without": 0.6830823869652277,
+      "drop_from_full": 0.010331151619536016,
+      "delta_vs_morgan": 0.0180519737093093,
+      "p_vs_morgan": 0.012816359501264312
+    },
+    "PAMPA_NCATS": {
+      "auroc_without": 0.6768076201960217,
+      "drop_from_full": 0.016605918388742036,
+      "delta_vs_morgan": 0.011777206940103294,
+      "p_vs_morgan": 0.0643763095019019
+    },
+    "HIA_Hou": {
+      "auroc_without": 0.6721061281338222,
+      "drop_from_full": 0.021307410450941533,
+      "delta_vs_morgan": 0.007075714877903742,
+      "p_vs_morgan": 0.06938977766245163
+    },
+    "Solubility_AqSolDB": {
+      "auroc_without": 0.6781796601283,
+      "drop_from_full": 0.015233878456463734,
+      "delta_vs_morgan": 0.013149246872381509,
+      "p_vs_morgan": 0.2891107428131168
+    },
+    "Pgp_Broccatelli": {
+      "auroc_without": 0.6750197249301166,
+      "drop_from_full": 0.018393813654647095,
+      "delta_vs_morgan": 0.009989311674198191,
+      "p_vs_morgan": 0.4552557920984551
+    },
+    "Lipophilicity_AstraZeneca": {
+      "auroc_without": 0.6755066408692113,
+      "drop_from_full": 0.017906897715552428,
+      "delta_vs_morgan": 0.010476227613292836,
+      "p_vs_morgan": 0.1242629697532879
+    },
+    "Clearance_Hepatocyte_AZ": {
+      "auroc_without": 0.6894285771882612,
+      "drop_from_full": 0.003984961396502507,
+      "delta_vs_morgan": 0.02439816393234279,
+      "p_vs_morgan": 0.0044953531696991815
+    }
+  },
+  "add_one_in": {
+    "Caco2_Wang": {
+      "auroc": 0.6729806959539437,
+      "improvement": 0.007950282698025335,
+      "delta_paired": 0.007950282698025508,
+      "p_value": 0.16786473294771675
+    },
+    "PAMPA_NCATS": {
+      "auroc": 0.6612062174241378,
+      "improvement": -0.003824195831780619,
+      "delta_paired": -0.0038241958317807205,
+      "p_value": 0.6848698469621812
+    },
+    "HIA_Hou": {
+      "auroc": 0.6660901681972119,
+      "improvement": 0.0010597549412935114,
+      "delta_paired": 0.0010597549412935516,
+      "p_value": 0.2749274280316326
+    },
+    "Solubility_AqSolDB": {
+      "auroc": 0.6710685952721097,
+      "improvement": 0.006038182016191329,
+      "delta_paired": 0.006038182016191255,
+      "p_value": 0.921808956684776
+    },
+    "Pgp_Broccatelli": {
+      "auroc": 0.6684551076689798,
+      "improvement": 0.003424694413061369,
+      "delta_paired": 0.0034246944130615006,
+      "p_value": 0.5753032601918493
+    },
+    "Lipophilicity_AstraZeneca": {
+      "auroc": 0.6763979004467101,
+      "improvement": 0.011367487190791725,
+      "delta_paired": 0.0113674871907918,
+      "p_value": 0.16625775307456936
+    },
+    "Clearance_Hepatocyte_AZ": {
+      "auroc": 0.6747481330428831,
+      "improvement": 0.009717719786964674,
+      "delta_paired": 0.009717719786964642,
+      "p_value": 0.047029163207793344
+    }
+  },
+  "admet_only_auroc": 0.6528005333810661,
+  "correlation_matrix": {
+    "features": [
+      "Caco2_Wang",
+      "PAMPA_NCATS",
+      "HIA_Hou",
+      "Solubility_AqSolDB",
+      "Pgp_Broccatelli",
+      "Lipophilicity_AstraZeneca",
+      "Clearance_Hepatocyte_AZ"
+    ],
+    "matrix": [
+      [
+        1.0,
+        0.9129749138182491,
+        0.8571704050031876,
+        -0.6766120538829014,
+        0.6549885750887758,
+        0.6574371434328282,
+        -0.09323474332104571
+      ],
+      [
+        0.9129749138182491,
+        1.0,
+        0.8846493065840971,
+        -0.5940372741624509,
+        0.532076257474823,
+        0.5201236499318433,
+        -0.11737883492033148
+      ],
+      [
+        0.8571704050031878,
+        0.8846493065840972,
+        1.0,
+        -0.5648627872126412,
+        0.4812640622414785,
+        0.5112019303623553,
+        -0.16270936829470173
+      ],
+      [
+        -0.6766120538829014,
+        -0.5940372741624509,
+        -0.5648627872126412,
+        1.0,
+        -0.7520694137544974,
+        -0.6896010273231198,
+        -0.075717038500627
+      ],
+      [
+        0.654988575088776,
+        0.532076257474823,
+        0.4812640622414785,
+        -0.7520694137544974,
+        1.0,
+        0.7706126565811863,
+        0.1961359544808531
+      ],
+      [
+        0.6574371434328282,
+        0.5201236499318433,
+        0.5112019303623552,
+        -0.6896010273231198,
+        0.7706126565811862,
+        1.0,
+        0.032383475013078325
+      ],
+      [
+        -0.09323474332104571,
+        -0.11737883492033147,
+        -0.16270936829470173,
+        -0.075717038500627,
+        0.19613595448085314,
+        0.03238347501307832,
+        1.0
+      ]
+    ]
+  },
+  "redundant_pairs": [
+    [
+      "Caco2_Wang",
+      "PAMPA_NCATS",
+      0.9129749138182491
+    ],
+    [
+      "Caco2_Wang",
+      "HIA_Hou",
+      0.8571704050031876
+    ],
+    [
+      "PAMPA_NCATS",
+      "HIA_Hou",
+      0.8846493065840971
+    ]
+  ],
+  "recommended_minimal_set": [
+    "Lipophilicity_AstraZeneca",
+    "Clearance_Hepatocyte_AZ",
+    "Caco2_Wang",
+    "Solubility_AqSolDB",
+    "Pgp_Broccatelli",
+    "HIA_Hou",
+    "PAMPA_NCATS"
+  ],
+  "minimal_set_auroc": 0.6934135385847637,
+  "elapsed_minutes": 11.80477230946223
+}

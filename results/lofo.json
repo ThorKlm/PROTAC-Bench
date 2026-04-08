@@ -1,0 +1,321 @@
+{
+  "experiment": "EXP_F3_LOFO",
+  "description": "Leave-One-Family-Out vs Leave-One-Target-Out",
+  "n_targets": 65,
+  "n_families": 26,
+  "lofo_mean_auroc": 0.6122,
+  "loto_mean_auroc": 0.674,
+  "delta_lofo_minus_loto": -0.0619,
+  "wilcoxon_stat": 156.5,
+  "wilcoxon_pval": 0.0001,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "fp_bits": 2048,
+  "fp_radius": 2,
+  "family_assignments": {
+    "Bromodomain": [
+      "O60674",
+      "O60760",
+      "O60885",
+      "P25440",
+      "Q15059",
+      "Q9NWZ3"
+    ],
+    "DUB": [
+      "Q93009"
+    ],
+    "E3_ligase": [
+      "P40337"
+    ],
+    "GPX4": [
+      "P36969"
+    ],
+    "HAT_CBP_p300": [
+      "Q09472",
+      "Q92793",
+      "Q92793/Q09472"
+    ],
+    "HCFC1": [
+      "Q92918"
+    ],
+    "HDAC": [
+      "O15379",
+      "Q9BY41",
+      "Q9UBN7"
+    ],
+    "IAP": [
+      "P98170"
+    ],
+    "IDO1": [
+      "P14902"
+    ],
+    "Kinase": [
+      "P00533",
+      "P06239",
+      "P08581",
+      "P11802",
+      "P15056",
+      "P24941",
+      "P30530",
+      "P33981",
+      "P36888",
+      "P36897",
+      "P49336",
+      "P49840",
+      "P50750",
+      "Q02750",
+      "Q06187",
+      "Q07889",
+      "Q08881",
+      "Q13422",
+      "Q14004",
+      "Q16539",
+      "Q5S007",
+      "Q96SW2",
+      "Q9NYV4",
+      "Q9UM73"
+    ],
+    "NAMPT": [
+      "P43490"
+    ],
+    "Nuclear_receptor": [
+      "P03372",
+      "P10275"
+    ],
+    "PARP": [
+      "P09874"
+    ],
+    "PRC2": [
+      "O75530"
+    ],
+    "Phosphatase": [
+      "P17706",
+      "P18031",
+      "Q06124"
+    ],
+    "RAS": [
+      "P01116",
+      "P01116/P04049",
+      "P01116/Q07889"
+    ],
+    "SMARCA": [
+      "P51531",
+      "P51531/P51532",
+      "P51532"
+    ],
+    "STAT": [
+      "P40763"
+    ],
+    "Steroid_enzyme": [
+      "P11474"
+    ],
+    "Synuclein": [
+      "P37840"
+    ],
+    "Tau": [
+      "P10636"
+    ],
+    "Translation_factor": [
+      "P15170"
+    ],
+    "singleton_O43924": [
+      "O43924"
+    ],
+    "singleton_Q00534": [
+      "Q00534"
+    ],
+    "singleton_Q9Y2I7": [
+      "Q9Y2I7"
+    ],
+    "singleton_Q9Y616": [
+      "Q9Y616"
+    ]
+  },
+  "per_family_summary": [
+    {
+      "family": "HAT_CBP_p300",
+      "n_targets": 3,
+      "mean_lofo": 0.5372,
+      "mean_loto": 0.9075333333333333,
+      "mean_drop": -0.37033333333333324
+    },
+    {
+      "family": "RAS",
+      "n_targets": 3,
+      "mean_lofo": 0.4566666666666667,
+      "mean_loto": 0.6643,
+      "mean_drop": -0.2076333333333333
+    },
+    {
+      "family": "Phosphatase",
+      "n_targets": 3,
+      "mean_lofo": 0.7407,
+      "mean_loto": 0.8592333333333334,
+      "mean_drop": -0.11853333333333334
+    },
+    {
+      "family": "SMARCA",
+      "n_targets": 3,
+      "mean_lofo": 0.5942333333333334,
+      "mean_loto": 0.7054666666666667,
+      "mean_drop": -0.1112333333333333
+    },
+    {
+      "family": "Bromodomain",
+      "n_targets": 6,
+      "mean_lofo": 0.6891833333333333,
+      "mean_loto": 0.7958833333333333,
+      "mean_drop": -0.10670000000000002
+    },
+    {
+      "family": "Kinase",
+      "n_targets": 24,
+      "mean_lofo": 0.651975,
+      "mean_loto": 0.6948083333333334,
+      "mean_drop": -0.042833333333333334
+    },
+    {
+      "family": "Nuclear_receptor",
+      "n_targets": 2,
+      "mean_lofo": 0.49855,
+      "mean_loto": 0.5376000000000001,
+      "mean_drop": -0.03905000000000003
+    },
+    {
+      "family": "E3_ligase",
+      "n_targets": 1,
+      "mean_lofo": 0.7604,
+      "mean_loto": 0.7604,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "NAMPT",
+      "n_targets": 1,
+      "mean_lofo": 0.5031,
+      "mean_loto": 0.5031,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "IAP",
+      "n_targets": 1,
+      "mean_lofo": 0.601,
+      "mean_loto": 0.601,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "HCFC1",
+      "n_targets": 1,
+      "mean_lofo": 0.7639,
+      "mean_loto": 0.7639,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "GPX4",
+      "n_targets": 1,
+      "mean_lofo": 0.769,
+      "mean_loto": 0.769,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "PRC2",
+      "n_targets": 1,
+      "mean_lofo": 0.4333,
+      "mean_loto": 0.4333,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "IDO1",
+      "n_targets": 1,
+      "mean_lofo": 0.4756,
+      "mean_loto": 0.4756,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "PARP",
+      "n_targets": 1,
+      "mean_lofo": 0.2601,
+      "mean_loto": 0.2601,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "DUB",
+      "n_targets": 1,
+      "mean_lofo": 0.6282,
+      "mean_loto": 0.6282,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "singleton_Q9Y2I7",
+      "n_targets": 1,
+      "mean_lofo": 0.4691,
+      "mean_loto": 0.4691,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "STAT",
+      "n_targets": 1,
+      "mean_lofo": 0.3838,
+      "mean_loto": 0.3838,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "Steroid_enzyme",
+      "n_targets": 1,
+      "mean_lofo": 0.6667,
+      "mean_loto": 0.6667,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "Synuclein",
+      "n_targets": 1,
+      "mean_lofo": 0.5186,
+      "mean_loto": 0.5186,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "Tau",
+      "n_targets": 1,
+      "mean_lofo": 0.4329,
+      "mean_loto": 0.4329,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "Translation_factor",
+      "n_targets": 1,
+      "mean_lofo": 0.2564,
+      "mean_loto": 0.2564,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "singleton_O43924",
+      "n_targets": 1,
+      "mean_lofo": 0.4074,
+      "mean_loto": 0.4074,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "singleton_Q00534",
+      "n_targets": 1,
+      "mean_lofo": 0.8265,
+      "mean_loto": 0.8265,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "singleton_Q9Y616",
+      "n_targets": 1,
+      "mean_lofo": 0.8611,
+      "mean_loto": 0.8611,
+      "mean_drop": 0.0
+    },
+    {
+      "family": "HDAC",
+      "n_targets": 3,
+      "mean_lofo": 0.6698333333333334,
+      "mean_loto": 0.6201333333333333,
+      "mean_drop": 0.0497
+    }
+  ]
+}
