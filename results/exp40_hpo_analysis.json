@@ -1,0 +1,202 @@
+{
+  "head_type_seed0": {
+    "all_frac": {
+      "xgboost": 0.4416,
+      "mlp": 0.2032,
+      "rf": 0.1922,
+      "attention": 0.163
+    },
+    "top50_frac": {
+      "xgboost": 0.94,
+      "mlp": 0.02,
+      "rf": 0.02,
+      "attention": 0.02
+    },
+    "top50_count": {
+      "xgboost": 47,
+      "mlp": 1,
+      "rf": 1,
+      "attention": 1
+    }
+  },
+  "head_type_seed1": {
+    "all_frac": {
+      "rf": 0.4487,
+      "mlp": 0.2022,
+      "attention": 0.1911,
+      "xgboost": 0.1579
+    },
+    "top50_frac": {
+      "rf": 0.96,
+      "xgboost": 0.02,
+      "attention": 0.02
+    },
+    "top50_count": {
+      "rf": 48,
+      "xgboost": 1,
+      "attention": 1
+    }
+  },
+  "warhead_transfer_seed0": {
+    "all_frac": {
+      "False": 0.6408,
+      "True": 0.3592
+    },
+    "top50_frac": {
+      "False": 0.96,
+      "True": 0.04
+    },
+    "top50_count": {
+      "False": 48,
+      "True": 2
+    },
+    "enrichment_true_top50_vs_all": 0.111
+  },
+  "warhead_transfer_seed1": {
+    "all_frac": {
+      "False": 0.6419,
+      "True": 0.3581
+    },
+    "top50_frac": {
+      "False": 0.98,
+      "True": 0.02
+    },
+    "top50_count": {
+      "False": 49,
+      "True": 1
+    },
+    "enrichment_true_top50_vs_all": 0.056
+  },
+  "attention_head_seed0": {
+    "in_top50": 1,
+    "in_all": 162,
+    "total_trials": 994
+  },
+  "attention_head_seed1": {
+    "in_top50": 1,
+    "in_all": 190,
+    "total_trials": 994
+  },
+  "mol_encoder_seed0": {
+    "all_frac": {
+      "chemberta": 0.327,
+      "morgan_1024_r2": 0.172,
+      "morgan_2048_r2": 0.1398,
+      "rdkit_200": 0.1217,
+      "maccs_167": 0.1207,
+      "molformer": 0.1187
+    },
+    "top50_frac": {
+      "chemberta": 0.9,
+      "morgan_1024_r2": 0.06,
+      "molformer": 0.02,
+      "morgan_2048_r2": 0.02
+    },
+    "top50_count": {
+      "chemberta": 45,
+      "morgan_1024_r2": 3,
+      "molformer": 1,
+      "morgan_2048_r2": 1
+    }
+  },
+  "mol_encoder_seed1": {
+    "all_frac": {
+      "chemberta": 0.3732,
+      "maccs_167": 0.1459,
+      "molformer": 0.1308,
+      "morgan_1024_r2": 0.1227,
+      "rdkit_200": 0.1197,
+      "morgan_2048_r2": 0.1076
+    },
+    "top50_frac": {
+      "chemberta": 0.96,
+      "maccs_167": 0.02,
+      "morgan_2048_r2": 0.02
+    },
+    "top50_count": {
+      "chemberta": 48,
+      "maccs_167": 1,
+      "morgan_2048_r2": 1
+    }
+  },
+  "prot_encoder_seed0": {
+    "all_frac": {
+      "none": 0.3008,
+      "esm2_150M": 0.1207,
+      "esm2_8M": 0.0936,
+      "ankh_large": 0.0926,
+      "prot_t5_xl": 0.0865,
+      "esm2_3B": 0.0855,
+      "prostt5": 0.0805,
+      "esm2_650M": 0.0785,
+      "esm2_35M": 0.0614
+    },
+    "top50_frac": {
+      "none": 0.84,
+      "esm2_150M": 0.06,
+      "esm2_3B": 0.04,
+      "prot_t5_xl": 0.02,
+      "prostt5": 0.02,
+      "ankh_large": 0.02
+    },
+    "top50_count": {
+      "none": 42,
+      "esm2_150M": 3,
+      "esm2_3B": 2,
+      "prot_t5_xl": 1,
+      "prostt5": 1,
+      "ankh_large": 1
+    }
+  },
+  "prot_encoder_seed1": {
+    "all_frac": {
+      "esm2_3B": 0.335,
+      "prostt5": 0.0915,
+      "prot_t5_xl": 0.0905,
+      "ankh_large": 0.0895,
+      "esm2_35M": 0.0895,
+      "esm2_8M": 0.0855,
+      "esm2_650M": 0.0765,
+      "none": 0.0714,
+      "esm2_150M": 0.0704
+    },
+    "top50_frac": {
+      "esm2_3B": 0.92,
+      "esm2_650M": 0.02,
+      "esm2_35M": 0.02,
+      "esm2_8M": 0.02,
+      "none": 0.02
+    },
+    "top50_count": {
+      "esm2_3B": 46,
+      "esm2_650M": 1,
+      "esm2_35M": 1,
+      "esm2_8M": 1,
+      "none": 1
+    }
+  },
+  "cross_seed_consistency": {
+    "n_common_configs": 12,
+    "spearman_rho": 0.7895,
+    "spearman_pval": 0.002259400370755149,
+    "n_unique_seed0": 744,
+    "n_unique_seed1": 582,
+    "top50_config_overlap": 0
+  },
+  "summary_seed0": {
+    "n_completed": 994,
+    "best_auroc": 0.7638,
+    "median_auroc": 0.6501,
+    "mean_auroc": 0.6323,
+    "top50_mean_auroc": 0.7338,
+    "top50_min_auroc": 0.7225
+  },
+  "summary_seed1": {
+    "n_completed": 994,
+    "best_auroc": 0.7601,
+    "median_auroc": 0.6443,
+    "mean_auroc": 0.6302,
+    "top50_mean_auroc": 0.7389,
+    "top50_min_auroc": 0.7309
+  }
+}

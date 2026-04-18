@@ -1,0 +1,611 @@
+{
+  "task10_publication_year": {},
+  "task11_deduplication": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "morgan_bits": 512
+    },
+    "elapsed_s": 1163.79
+  },
+  "task12_consistency_filter": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "morgan_bits": 512,
+      "cell_line_norm": "lowercase + strip [\\s\\-_.]",
+      "timepoint_tolerance_h": 0.5
+    },
+    "elapsed_s": 972.61
+  },
+  "task13_cellline_stratified": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "morgan_bits": 512,
+      "min_cl_train": 20
+    },
+    "elapsed_s": 658.74
+  },
+  "task14_within_target_cross_lab": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "rf": {
+        "n_estimators": 200,
+        "max_depth": 12,
+        "min_samples_leaf": 3,
+        "class_weight": "balanced"
+      },
+      "min_entries_per_target": 20,
+      "min_papers_per_target": 3,
+      "min_entries_per_paper": 5
+    },
+    "n_rows": 10748,
+    "n_eligible_targets": 36,
+    "summary": {
+      "n_targets": 36,
+      "cross_lab": {
+        "macro_mean": 0.6776320708185581,
+        "macro_std": 0.2246237013702058,
+        "n": 35
+      },
+      "random_cv": {
+        "macro_mean": 0.7941917390852653,
+        "macro_std": 0.10767326283417263,
+        "n": 36
+      },
+      "loto": {
+        "macro_mean": 0.6497834814602039,
+        "macro_std": 0.1835411325556506,
+        "n": 36
+      },
+      "gap_cross_lab_vs_random": {
+        "mean": -0.12439371795485782,
+        "std": 0.22158172707170404,
+        "n": 35
+      },
+      "paired": {
+        "n": 35,
+        "cross_lab_mean": 0.6776320708185581,
+        "random_cv_mean": 0.8020257887734158,
+        "loto_mean": 0.6532466829713117,
+        "cross_lab_minus_random_cv": -0.12439371795485782,
+        "cross_lab_minus_loto": 0.0243853878472463,
+        "random_cv_minus_loto": 0.14877910580210413
+      }
+    },
+    "elapsed_s": 1072.28
+  },
+  "task15_metadata_regression": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "max_depth": 15,
+      "min_target_n": 10,
+      "metadata_feature_names": [
+        "cell_VCaP",
+        "cell_MDA-MB-231",
+        "cell_MM.1S",
+        "cell_MCF-7",
+        "cell_A549",
+        "cell_HEK293",
+        "cell_U87",
+        "cell_HCT116",
+        "cell_Jurkat",
+        "cell_LNCaP",
+        "cell_A375",
+        "cell_Ramos",
+        "cell_MV4-11",
+        "cell_HEK293T",
+        "cell_RS4;11",
+        "cell_OTHER",
+        "cell_MISSING",
+        "readout_AlphaScreen",
+        "readout_ELISA",
+        "readout_HTRF",
+        "readout_TR-FRET",
+        "readout_Western blot",
+        "readout_degradation reporter",
+        "readout_mass spectrometry",
+        "readout_other",
+        "readout_MISSING",
+        "timepoint_h",
+        "timepoint_h_MISSING",
+        "pub_year",
+        "pub_year_MISSING"
+      ],
+      "top_cell_lines": [
+        "VCaP",
+        "MDA-MB-231",
+        "MM.1S",
+        "MCF-7",
+        "A549",
+        "HEK293",
+        "U87",
+        "HCT116",
+        "Jurkat",
+        "LNCaP",
+        "A375",
+        "Ramos",
+        "MV4-11",
+        "HEK293T",
+        "RS4;11"
+      ]
+    },
+    "elapsed_s": 1894.2
+  },
+  "task16_residual_prediction": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "max_depth": 15,
+      "min_target_n": 10,
+      "metadata_feature_names": [
+        "cell_VCaP",
+        "cell_MDA-MB-231",
+        "cell_MM.1S",
+        "cell_MCF-7",
+        "cell_A549",
+        "cell_HEK293",
+        "cell_U87",
+        "cell_HCT116",
+        "cell_Jurkat",
+        "cell_LNCaP",
+        "cell_A375",
+        "cell_Ramos",
+        "cell_MV4-11",
+        "cell_HEK293T",
+        "cell_RS4;11",
+        "cell_OTHER",
+        "cell_MISSING",
+        "readout_AlphaScreen",
+        "readout_ELISA",
+        "readout_HTRF",
+        "readout_TR-FRET",
+        "readout_Western blot",
+        "readout_degradation reporter",
+        "readout_mass spectrometry",
+        "readout_other",
+        "readout_MISSING",
+        "timepoint_h",
+        "timepoint_h_MISSING",
+        "pub_year",
+        "pub_year_MISSING"
+      ],
+      "top_cell_lines": [
+        "VCaP",
+        "MDA-MB-231",
+        "MM.1S",
+        "MCF-7",
+        "A549",
+        "HEK293",
+        "U87",
+        "HCT116",
+        "Jurkat",
+        "LNCaP",
+        "A375",
+        "Ramos",
+        "MV4-11",
+        "HEK293T",
+        "RS4;11"
+      ]
+    },
+    "elapsed_s": 1562.7
+  },
+  "task17_ordinal_classification": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "max_depth": 15,
+      "metadata_feature_names": [
+        "cell_VCaP",
+        "cell_MDA-MB-231",
+        "cell_MM.1S",
+        "cell_MCF-7",
+        "cell_A549",
+        "cell_HEK293",
+        "cell_U87",
+        "cell_HCT116",
+        "cell_Jurkat",
+        "cell_LNCaP",
+        "cell_A375",
+        "cell_Ramos",
+        "cell_MV4-11",
+        "cell_HEK293T",
+        "cell_RS4;11",
+        "cell_OTHER",
+        "cell_MISSING",
+        "readout_AlphaScreen",
+        "readout_ELISA",
+        "readout_HTRF",
+        "readout_TR-FRET",
+        "readout_Western blot",
+        "readout_degradation reporter",
+        "readout_mass spectrometry",
+        "readout_other",
+        "readout_MISSING",
+        "timepoint_h",
+        "timepoint_h_MISSING",
+        "pub_year",
+        "pub_year_MISSING"
+      ],
+      "top_cell_lines": [
+        "VCaP",
+        "MDA-MB-231",
+        "MM.1S",
+        "MCF-7",
+        "A549",
+        "HEK293",
+        "U87",
+        "HCT116",
+        "Jurkat",
+        "LNCaP",
+        "A375",
+        "Ramos",
+        "MV4-11",
+        "HEK293T",
+        "RS4;11"
+      ]
+    },
+    "elapsed_s": 1657.1
+  },
+  "task18_adaptive_threshold": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "max_depth": 15,
+      "min_target_n": 10,
+      "min_ctx_n": 5,
+      "metadata_feature_names": [
+        "cell_VCaP",
+        "cell_MDA-MB-231",
+        "cell_MM.1S",
+        "cell_MCF-7",
+        "cell_A549",
+        "cell_HEK293",
+        "cell_U87",
+        "cell_HCT116",
+        "cell_Jurkat",
+        "cell_LNCaP",
+        "cell_A375",
+        "cell_Ramos",
+        "cell_MV4-11",
+        "cell_HEK293T",
+        "cell_RS4;11",
+        "cell_OTHER",
+        "cell_MISSING",
+        "readout_AlphaScreen",
+        "readout_ELISA",
+        "readout_HTRF",
+        "readout_TR-FRET",
+        "readout_Western blot",
+        "readout_degradation reporter",
+        "readout_mass spectrometry",
+        "readout_other",
+        "readout_MISSING",
+        "timepoint_h",
+        "timepoint_h_MISSING",
+        "pub_year",
+        "pub_year_MISSING"
+      ],
+      "top_cell_lines": [
+        "VCaP",
+        "MDA-MB-231",
+        "MM.1S",
+        "MCF-7",
+        "A549",
+        "HEK293",
+        "U87",
+        "HCT116",
+        "Jurkat",
+        "LNCaP",
+        "A375",
+        "Ramos",
+        "MV4-11",
+        "HEK293T",
+        "RS4;11"
+      ],
+      "timepoint_bins": [
+        "le6h",
+        "6-12h",
+        "12-24h",
+        "24-48h",
+        "gt48h",
+        "MISSING"
+      ]
+    },
+    "n_eligible_targets": 36,
+    "elapsed_s": 299.9
+  },
+  "task19_multitask": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "min_target_n": 10,
+      "metadata_feature_names": [
+        "cell_VCaP",
+        "cell_MDA-MB-231",
+        "cell_MM.1S",
+        "cell_MCF-7",
+        "cell_A549",
+        "cell_HEK293",
+        "cell_U87",
+        "cell_HCT116",
+        "cell_Jurkat",
+        "cell_LNCaP",
+        "cell_A375",
+        "cell_Ramos",
+        "cell_MV4-11",
+        "cell_HEK293T",
+        "cell_RS4;11",
+        "cell_OTHER",
+        "cell_MISSING",
+        "readout_AlphaScreen",
+        "readout_ELISA",
+        "readout_HTRF",
+        "readout_TR-FRET",
+        "readout_Western blot",
+        "readout_degradation reporter",
+        "readout_mass spectrometry",
+        "readout_other",
+        "readout_MISSING",
+        "timepoint_h",
+        "timepoint_h_MISSING",
+        "pub_year",
+        "pub_year_MISSING"
+      ],
+      "top_cell_lines": [
+        "VCaP",
+        "MDA-MB-231",
+        "MM.1S",
+        "MCF-7",
+        "A549",
+        "HEK293",
+        "U87",
+        "HCT116",
+        "Jurkat",
+        "LNCaP",
+        "A375",
+        "Ramos",
+        "MV4-11",
+        "HEK293T",
+        "RS4;11"
+      ]
+    },
+    "elapsed_s": 2220.0
+  },
+  "task1_assay_stratified": {
+    "config": {
+      "min_entries": 500,
+      "min_targets_per_assay": 5,
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ]
+    },
+    "elapsed_s": 2392.08
+  },
+  "task20_crosslab_regression": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "min_entries_per_target": 20,
+      "min_papers_per_target": 3,
+      "min_entries_per_paper": 5
+    },
+    "n_eligible_targets": 17,
+    "summary": {
+      "n_targets": 17,
+      "cross_lab": {
+        "macro_r2": -7.417431534065456,
+        "macro_rho": 0.32797887646931634
+      },
+      "random_cv": {
+        "macro_r2": -0.3426170469812324,
+        "macro_rho": 0.580106627348997
+      },
+      "loto": {
+        "macro_r2": -0.30458631319058943,
+        "macro_rho": 0.2812894184821346
+      },
+      "paired_gap_cl_vs_rcv": {
+        "mean_dr2": -7.074814487084223,
+        "mean_drho": -0.2521277508796806,
+        "n": 17
+      }
+    },
+    "elapsed_s": 1393.1
+  },
+  "task21_lab_rate": {},
+  "task22_gap_decomposition": {},
+  "task2_label_conflicts": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300
+    },
+    "elapsed_s": 3237.66
+  },
+  "task3_leave_one_paper_out": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300
+    },
+    "n_eligible_rows": 9428,
+    "n_rows_with_doi": 2381,
+    "n_unique_dois": 262,
+    "n_qualifying_papers": 63,
+    "elapsed_s": 1530.92
+  },
+  "task4_timepoint_normalization": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "dc50_threshold_nM": 100.0,
+      "ref_timepoint_h": 24.0
+    },
+    "n_rows_with_dc50_and_tp": 1244,
+    "threshold_sanity_agreement": 0.932475884244373,
+    "elapsed_s": 2405.9169883728027
+  },
+  "task5_concentration_normalization": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "efficiency_thresholds_swept": [
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        40.0,
+        50.0
+      ],
+      "loto_thresholds_run": [
+        20.0,
+        30.0
+      ],
+      "log10_conc_clamp_min": 0.5
+    },
+    "n_rows_with_conc_ladder": 1052,
+    "original_label_rate_in_subset": 0.311787072243346,
+    "elapsed_s": 2352.3637657165527
+  },
+  "task6_readout_aware_threshold": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "thresholds_by_assay": {
+        "western_blot": 60.0,
+        "degradation_reporter": 50.0,
+        "tr_fret": 50.0,
+        "alphascreen": 50.0,
+        "htrf": 50.0,
+        "elisa": 50.0,
+        "mass_spec": 40.0,
+        "other": 50.0,
+        "unknown": 50.0
+      }
+    },
+    "n_rows_with_dmax": 890,
+    "label_changes_vs_original": 300,
+    "label_changes_vs_flat50": 11,
+    "agreement_vs_original": 0.6629213483146067,
+    "elapsed_s": 1663.4908707141876
+  },
+  "task7_confound_detection": {
+    "config": {
+      "seeds": [
+        42,
+        43,
+        44,
+        53,
+        71
+      ],
+      "n_estimators": 300,
+      "min_class_n": 25,
+      "threshold_for_confound": 0.6
+    },
+    "n_rows_evaluated": 2939,
+    "n_classes_confounded": 6,
+    "n_classes_evaluated": 6,
+    "multiclass_macro_ovr_auroc": 0.9784989435891015,
+    "multiclass_macro_ovr_auroc_std": 0.0009163276747107731,
+    "verdict": "CONFOUNDED: assay choice is predictable from chemistry",
+    "elapsed_s": 99.4052381515503
+  },
+  "task8_feature_conditions": {},
+  "task9_continuous_warhead": {}
+}

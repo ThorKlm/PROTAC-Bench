@@ -1,0 +1,79 @@
+{
+  "config": {
+    "seeds": [
+      42,
+      43,
+      44,
+      53,
+      71
+    ],
+    "n_estimators": 300,
+    "min_class_n": 25,
+    "threshold_for_confound": 0.6
+  },
+  "n_rows_evaluated": 2939,
+  "classes_evaluated": [
+    "degradation_reporter",
+    "western_blot",
+    "other",
+    "tr_fret",
+    "alphascreen",
+    "elisa"
+  ],
+  "per_class_one_vs_rest": [
+    {
+      "class": "degradation_reporter",
+      "n_positive": 2104,
+      "n_negative": 835,
+      "mean_auroc": 0.9622987997537329,
+      "std_auroc": 0.003218364761426357,
+      "confounded_at_0.6": true
+    },
+    {
+      "class": "western_blot",
+      "n_positive": 342,
+      "n_negative": 2597,
+      "mean_auroc": 0.9823680112445542,
+      "std_auroc": 0.002492740798408855,
+      "confounded_at_0.6": true
+    },
+    {
+      "class": "other",
+      "n_positive": 330,
+      "n_negative": 2609,
+      "mean_auroc": 0.9438528845273171,
+      "std_auroc": 0.006101129896081598,
+      "confounded_at_0.6": true
+    },
+    {
+      "class": "tr_fret",
+      "n_positive": 93,
+      "n_negative": 2846,
+      "mean_auroc": 0.9909426441518756,
+      "std_auroc": 0.0054373570920676975,
+      "confounded_at_0.6": true
+    },
+    {
+      "class": "alphascreen",
+      "n_positive": 33,
+      "n_negative": 2906,
+      "mean_auroc": 0.9857671446005638,
+      "std_auroc": 0.018990814323996137,
+      "confounded_at_0.6": true
+    },
+    {
+      "class": "elisa",
+      "n_positive": 29,
+      "n_negative": 2910,
+      "mean_auroc": 0.9890229095074456,
+      "std_auroc": 0.009116612167783948,
+      "confounded_at_0.6": true
+    }
+  ],
+  "n_classes_confounded": 6,
+  "n_classes_evaluated": 6,
+  "multiclass_macro_ovr_auroc": 0.9784989435891015,
+  "multiclass_macro_ovr_auroc_std": 0.0009163276747107731,
+  "verdict": "CONFOUNDED: assay choice is predictable from chemistry",
+  "elapsed_s": 99.4052381515503
+}

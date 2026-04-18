@@ -1,0 +1,322 @@
+{
+  "experiment": "exp40_hpo_v2_validation",
+  "description": "5-seed validation of top-10 HPO V2 configs on 65 LOTO targets",
+  "validation_seeds": [
+    42,
+    43,
+    44,
+    53,
+    71
+  ],
+  "n_targets": 65,
+  "n_entries": 10748,
+  "configs": [
+    {
+      "rank": 1,
+      "hpo_auroc": 0.7637965202949599,
+      "head": "mlp",
+      "params": {
+        "mol_encoder": "molformer",
+        "fragment_mode": "linker_only",
+        "prot_encoder": "esm2_3B",
+        "e3_onehot": true,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "mlp",
+        "ternary_attention": true,
+        "mlp_layers": 1,
+        "mlp_hidden": 128,
+        "mlp_dropout": 0.4973343189152132,
+        "mlp_lr": 0.0007494678692270079,
+        "mlp_batch_size": 64
+      },
+      "validated_auroc": 0.6027,
+      "std": 0.0124,
+      "seeds": [
+        0.6031,
+        0.6219,
+        0.5987,
+        0.6063,
+        0.5834
+      ],
+      "regression": 0.1610965202949599
+    },
+    {
+      "rank": 2,
+      "hpo_auroc": 0.7601294728254945,
+      "head": "rf",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "linker_only",
+        "prot_encoder": "esm2_3B",
+        "e3_onehot": false,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "rf",
+        "ternary_attention": true,
+        "rf_n_estimators": 500,
+        "rf_max_depth": "15",
+        "rf_min_samples_leaf": 4
+      },
+      "validated_auroc": 0.6729,
+      "std": 0.0083,
+      "seeds": [
+        0.6658,
+        0.6651,
+        0.6709,
+        0.6748,
+        0.6878
+      ],
+      "regression": 0.08722947282549443
+    },
+    {
+      "rank": 3,
+      "hpo_auroc": 0.7573460344024218,
+      "head": "rf",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "linker_only",
+        "prot_encoder": "esm2_3B",
+        "e3_onehot": false,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "rf",
+        "ternary_attention": true,
+        "rf_n_estimators": 500,
+        "rf_max_depth": "15",
+        "rf_min_samples_leaf": 5
+      },
+      "validated_auroc": 0.6789,
+      "std": 0.0125,
+      "seeds": [
+        0.6787,
+        0.6767,
+        0.6718,
+        0.7022,
+        0.6654
+      ],
+      "regression": 0.07844603440242182
+    },
+    {
+      "rank": 4,
+      "hpo_auroc": 0.7569463573118733,
+      "head": "xgboost",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "all_fragments",
+        "prot_encoder": "esm2_150M",
+        "e3_onehot": true,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "xgboost",
+        "ternary_attention": true,
+        "xgb_max_depth": 9,
+        "xgb_eta": 0.01737598063225606,
+        "xgb_subsample": 0.7409984514471215,
+        "xgb_n_rounds": 300
+      },
+      "validated_auroc": 0.6682,
+      "std": 0.0069,
+      "seeds": [
+        0.6758,
+        0.6708,
+        0.6719,
+        0.6558,
+        0.6669
+      ],
+      "regression": 0.0887463573118733
+    },
+    {
+      "rank": 5,
+      "hpo_auroc": 0.7551719117998219,
+      "head": "xgboost",
+      "params": {
+        "mol_encoder": "morgan_2048_r2",
+        "fragment_mode": "none",
+        "prot_encoder": "prot_t5_xl",
+        "e3_onehot": false,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "xgboost",
+        "ternary_attention": true,
+        "xgb_max_depth": 10,
+        "xgb_eta": 0.017749495406143234,
+        "xgb_subsample": 0.7430875797230596,
+        "xgb_n_rounds": 300
+      },
+      "validated_auroc": 0.6730671248309579,
+      "std": 0.010934354978404228,
+      "seeds": [
+        0.6635,
+        0.663,
+        0.6716,
+        0.6931082613834519,
+        0.6741273627713376
+      ],
+      "regression": 0.08210478696886403
+    },
+    {
+      "rank": 6,
+      "hpo_auroc": 0.7524553551975852,
+      "head": "xgboost",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "none",
+        "prot_encoder": "none",
+        "e3_onehot": true,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "xgboost",
+        "ternary_attention": true,
+        "xgb_max_depth": 10,
+        "xgb_eta": 0.01787756387623758,
+        "xgb_subsample": 0.5262567879754045,
+        "xgb_n_rounds": 200
+      },
+      "validated_auroc": 0.6584426685831413,
+      "std": 0.005950303625537134,
+      "seeds": [
+        0.6677191795920251,
+        0.6548760757156692,
+        0.6567606904573046,
+        0.6622302123519395,
+        0.650627184798768
+      ],
+      "regression": 0.09401268661444395
+    },
+    {
+      "rank": 7,
+      "hpo_auroc": 0.7499909193929319,
+      "head": "rf",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "warhead_only",
+        "prot_encoder": "esm2_650M",
+        "e3_onehot": false,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "rf",
+        "ternary_attention": true,
+        "rf_n_estimators": 500,
+        "rf_max_depth": "15",
+        "rf_min_samples_leaf": 10
+      },
+      "validated_auroc": 0.667664487964365,
+      "std": 0.007411401943374943,
+      "seeds": [
+        0.6688641646169491,
+        0.653601466993855,
+        0.6699297996359914,
+        0.6756229991632318,
+        0.6703040094117975
+      ],
+      "regression": 0.08232643142856699
+    },
+    {
+      "rank": 8,
+      "hpo_auroc": 0.7474450936744622,
+      "head": "xgboost",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "none",
+        "prot_encoder": "none",
+        "e3_onehot": true,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "xgboost",
+        "ternary_attention": true,
+        "xgb_max_depth": 10,
+        "xgb_eta": 0.020292121078326605,
+        "xgb_subsample": 0.5505973182442653,
+        "xgb_n_rounds": 200
+      },
+      "validated_auroc": 0.6658491809466214,
+      "std": 0.006710254768971009,
+      "seeds": [
+        0.677555921417768,
+        0.6627384300355829,
+        0.65800393091813,
+        0.6683533335979398,
+        0.6625942887636861
+      ],
+      "regression": 0.08159591272784084
+    },
+    {
+      "rank": 9,
+      "hpo_auroc": 0.7442773457074718,
+      "head": "xgboost",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "none",
+        "prot_encoder": "none",
+        "e3_onehot": true,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": false,
+        "normalize": true,
+        "head_type": "xgboost",
+        "ternary_attention": true,
+        "xgb_max_depth": 10,
+        "xgb_eta": 0.018058939534427648,
+        "xgb_subsample": 0.5381639587437471,
+        "xgb_n_rounds": 200
+      },
+      "validated_auroc": 0.6609187852073614,
+      "std": 0.005987264894248734,
+      "seeds": [
+        0.6536700024292278,
+        0.6629827260460606,
+        0.6711241271564345,
+        0.6600938076654383,
+        0.6567232627396453
+      ],
+      "regression": 0.08335856050011048
+    },
+    {
+      "rank": 10,
+      "hpo_auroc": 0.7440443737589153,
+      "head": "rf",
+      "params": {
+        "mol_encoder": "chemberta",
+        "fragment_mode": "linker_only",
+        "prot_encoder": "esm2_3B",
+        "e3_onehot": false,
+        "rdkit_desc": true,
+        "admet_features": false,
+        "warhead_transfer": true,
+        "normalize": true,
+        "head_type": "rf",
+        "ternary_attention": true,
+        "rf_n_estimators": 200,
+        "rf_max_depth": "15",
+        "rf_min_samples_leaf": 5
+      },
+      "validated_auroc": 0.6683906533328223,
+      "std": 0.004422745098441627,
+      "seeds": [
+        0.6734956799436398,
+        0.6634863979014209,
+        0.662691425097995,
+        0.6709246662388723,
+        0.6713550974821835
+      ],
+      "regression": 0.07565372042609297
+    }
+  ]
+}
