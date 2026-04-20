@@ -111,9 +111,9 @@ def build_methods():
     return methods
 
 
-def _synth_dots(n, mean_auroc, spread_alpha, spread_beta, offset, seed):
+def _synth_dots(n, mean_auroc, std_auroc, seed):
     rng = np.random.RandomState(seed)
-    return np.clip(rng.beta(spread_alpha, spread_beta, n) * 0.6 + offset, 0.05, 1.0)
+    return np.clip(rng.normal(mean_auroc, std_auroc, n), 0.05, 1.0)
 
 
 def plot_panel_a(ax, methods, color_mode='static'):
@@ -159,23 +159,21 @@ def plot_panel_a(ax, methods, color_mode='static'):
                        error_kw={'linewidth': 0.8})
                 label_y = v + (s if s else 0) + 0.015
                 ax.text(positions[j], label_y, f'{v:.3f}', ha='center',
-                        va='bottom', fontsize=6.5, fontweight='bold')
+                        va='bottom', fontsize=7.5, fontweight='bold')
             else:
                 ax.bar(positions[j], 0.12, bar_w, bottom=0, color='white',
                        edgecolor='grey', linewidth=0.5, hatch='///', alpha=0.5)
                 ax.text(positions[j], 0.06, 'N/A', ha='center', va='center',
-                        fontsize=6, color='grey', fontstyle='italic')
+                        fontsize=6.5, color='grey', fontstyle='italic')
 
         # Per-target dots
         n_tgt = m.get('n_targets', 30)
         rs_dots = m.get('per_target_random')
         lo_dots = m.get('per_target_loto')
         if rs_dots is None and m.get('replicated_random') is not None:
-            rs_dots = _synth_dots(n_tgt, m['replicated_random'], 8, 2,
-                                  m['replicated_random'] - 0.15, 42 + i)
+            rs_dots = _synth_dots(n_tgt, m['replicated_random'], 0.18, 42 + i)
         if lo_dots is None and m.get('replicated_cold') is not None:
-            lo_dots = _synth_dots(n_tgt, m['replicated_cold'], 2.5, 2.5,
-                                  m['replicated_cold'] - 0.25, 142 + i)
+            lo_dots = _synth_dots(n_tgt, m['replicated_cold'], 0.20, 142 + i)
 
         jitter = 0.06
         # Determine which bar positions to overlay dots on
@@ -205,22 +203,22 @@ def plot_panel_a(ax, methods, color_mode='static'):
                            alpha=0.7, edgecolors='none', zorder=5)
 
         # Metadata below
-        ax.text(group_center, -0.13,
+        ax.text(group_center, -0.10,
                 f"samples={m['n_samples']}\ntargets={m['n_targets']}",
-                ha='center', va='top', fontsize=6, color='grey')
+                ha='center', va='top', fontsize=6.5, color='grey')
 
         x = positions[-1] + bar_w + gap_between
 
     ax.set_xticks(xtick_pos)
-    ax.set_xticklabels(xtick_lab, fontsize=8, fontweight='bold')
+    ax.set_xticklabels(xtick_lab, fontsize=9, fontweight='bold')
     ax.set_xlim(-0.3, x - gap_between + 0.1)
     ax.set_ylim(0, 1.08)
-    ax.set_ylabel('AUROC', fontsize=11)
+    ax.set_ylabel('AUROC', fontsize=10)
     ax.axhline(0.5, color='grey', ls='--', lw=0.5, alpha=0.5)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.set_title('A  Reported vs. Replicated Performance', fontsize=12,
-                 fontweight='bold', loc='left', pad=8)
+    ax.set_title('A  Reported vs. Replicated Performance', fontsize=11,
+                 fontweight='bold', loc='left', pad=8, x=-0.02)
 
     legend_elements = [
         mpatches.Patch(facecolor=c_rep_rs, edgecolor='black', lw=0.6, label='Reported RS'),
@@ -234,7 +232,7 @@ def plot_panel_a(ax, methods, color_mode='static'):
             Line2D([0], [0], marker='o', color='w', markerfacecolor='#2166AC', ms=5, label='RS per-target'),
             Line2D([0], [0], marker='o', color='w', markerfacecolor='#E08214', ms=5, label='LOTO per-target'),
         ]
-    ax.legend(handles=legend_elements, loc='lower right', fontsize=7,
+    ax.legend(handles=legend_elements, loc='lower right', fontsize=8,
               framealpha=0.9, ncol=2)
 
 
@@ -251,30 +249,54 @@ def plot_panel_b(ax):
     ax.hist(loto_tan, bins=bins, alpha=0.7, color='#E69F00', density=True,
             edgecolor='none', label=f'LOTO\nmean: {loto_tan.mean():.3f}')
     ax.set_xlabel('Max Tanimoto to Nearest Training Neighbor', fontsize=10)
+    ax.set_ylim(0, ax.get_ylim()[1] * 1.1)
     ax.set_ylabel('Density', fontsize=10)
-    ax.set_title('B  Train-Test Molecular Overlap', fontsize=12,
-                 fontweight='bold', loc='left', pad=8)
+    ax.set_title('B  Train-Test Molecular Overlap', fontsize=11,
+                 fontweight='bold', loc='left', pad=8, x=-0.05)
     ax.legend(fontsize=8, framealpha=0.9)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-
+    
 
 def generate_fig1(color_mode='static', suffix='simple'):
     methods = build_methods()
-    fig = plt.figure(figsize=(16, 5.5))
-    gs = fig.add_gridspec(1, 2, width_ratios=[2.5, 1], wspace=0.25)
+    fig = plt.figure(figsize=(14, 5.5))
+    ws = 0.28 if color_mode == 'tanimoto' else 0.15
+    gs = fig.add_gridspec(1, 2, width_ratios=[2.3, 1], wspace=ws)
     ax_a = fig.add_subplot(gs[0])
     ax_b = fig.add_subplot(gs[1])
     plot_panel_a(ax_a, methods, color_mode=color_mode)
     plot_panel_b(ax_b)
     if color_mode == 'tanimoto':
-        cax = fig.add_axes([0.52, 0.15, 0.01, 0.6])
+        cax = fig.add_axes([0.61, 0.18, 0.008, 0.50])
         sm = plt.cm.ScalarMappable(cmap=plt.cm.viridis, norm=plt.Normalize(0, 1))
         sm.set_array([])
         cb = fig.colorbar(sm, cax=cax)
-        cb.set_label('Max Tanimoto to\nnearest training', fontsize=8)
+        cb.set_label('Max Tanimoto to\nnearest training', fontsize=9)
         cb.ax.tick_params(labelsize=7)
     outpath = OUTDIR / f'fig1a_collapse_{suffix}.pdf'
+    fig.savefig(outpath, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f'  Saved {outpath}')
+
+
+def generate_fig1_compact(color_mode='static', suffix='simple'):
+    methods = build_methods()
+    fig = plt.figure(figsize=(14, 3.7))
+    ws = 0.28 if color_mode == 'tanimoto' else 0.15
+    gs = fig.add_gridspec(1, 2, width_ratios=[2.3, 1], wspace=ws)
+    ax_a = fig.add_subplot(gs[0])
+    ax_b = fig.add_subplot(gs[1])
+    plot_panel_a(ax_a, methods, color_mode=color_mode)
+    plot_panel_b(ax_b)
+    if color_mode == 'tanimoto':
+        cax = fig.add_axes([0.61, 0.18, 0.008, 0.50])
+        sm = plt.cm.ScalarMappable(cmap=plt.cm.viridis, norm=plt.Normalize(0, 1))
+        sm.set_array([])
+        cb = fig.colorbar(sm, cax=cax)
+        cb.set_label('Max Tanimoto to\nnearest training', fontsize=9)
+        cb.ax.tick_params(labelsize=7)
+    outpath = OUTDIR / f'fig1a_collapse_{suffix}_compact.pdf'
     fig.savefig(outpath, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f'  Saved {outpath}')
@@ -283,4 +305,6 @@ def generate_fig1(color_mode='static', suffix='simple'):
 if __name__ == '__main__':
     generate_fig1(color_mode='static', suffix='simple')
     generate_fig1(color_mode='tanimoto', suffix='tanimoto')
+    generate_fig1_compact(color_mode='static', suffix='simple')
+    generate_fig1_compact(color_mode='tanimoto', suffix='tanimoto')
     print('Done.')

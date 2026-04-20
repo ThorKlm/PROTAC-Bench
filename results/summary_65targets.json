@@ -1,0 +1,1531 @@
+{
+  "experiment": "exp13_gin_dmpnn_65targets",
+  "description": "Rerun of exp13 GIN on all 65 eligible LOTO targets (3-layer, hidden=64, node_dim=20, epochs=30). Also runs D-MPNN (chemprop defaults: d_h=300, depth=3) on 65 targets. Parallelized across GPU 0 (forward) and GPU 1 (reverse).",
+  "n_targets_evaluated": 65,
+  "n_targets_total": 65,
+  "n_targets_with_all_seeds_gin": 65,
+  "n_targets_with_all_seeds_dmpnn": 65,
+  "seeds": [
+    42,
+    43,
+    44,
+    53,
+    71
+  ],
+  "epochs": 30,
+  "gin_config": {
+    "n_layers": 3,
+    "hidden": 64,
+    "node_dim": 20,
+    "lr": 0.001,
+    "batch_size": 64
+  },
+  "dmpnn_config": {
+    "d_h": 300,
+    "depth": 3,
+    "lr": 0.001,
+    "batch_size": 64,
+    "library": "chemprop"
+  },
+  "overall_mean_auroc": {
+    "GIN": 0.6112,
+    "D-MPNN": 0.6727
+  },
+  "per_target": [
+    {
+      "target": "P10275",
+      "n_test": 1968,
+      "rate": 0.7673,
+      "gin_auroc_mean": 0.5371,
+      "gin_auroc_std": 0.022,
+      "gin_seeds": [
+        0.5059,
+        0.5725,
+        0.5449,
+        0.5373,
+        0.5251
+      ],
+      "dmpnn_auroc_mean": 0.5121,
+      "dmpnn_auroc_std": 0.024,
+      "dmpnn_seeds": [
+        0.5108,
+        0.5021,
+        0.5068,
+        0.5565,
+        0.4844
+      ]
+    },
+    {
+      "target": "P03372",
+      "n_test": 1291,
+      "rate": 0.6538,
+      "gin_auroc_mean": 0.4739,
+      "gin_auroc_std": 0.0296,
+      "gin_seeds": [
+        0.4856,
+        0.4387,
+        0.4391,
+        0.5102,
+        0.496
+      ],
+      "dmpnn_auroc_mean": 0.4351,
+      "dmpnn_auroc_std": 0.0326,
+      "dmpnn_seeds": [
+        0.4441,
+        0.4702,
+        0.4627,
+        0.4178,
+        0.3808
+      ]
+    },
+    {
+      "target": "Q06187",
+      "n_test": 761,
+      "rate": 0.8686,
+      "gin_auroc_mean": 0.5084,
+      "gin_auroc_std": 0.032,
+      "gin_seeds": [
+        0.5489,
+        0.5411,
+        0.494,
+        0.4637,
+        0.494
+      ],
+      "dmpnn_auroc_mean": 0.5585,
+      "dmpnn_auroc_std": 0.0542,
+      "dmpnn_seeds": [
+        0.6079,
+        0.498,
+        0.5038,
+        0.55,
+        0.6327
+      ]
+    },
+    {
+      "target": "P01116",
+      "n_test": 722,
+      "rate": 0.759,
+      "gin_auroc_mean": 0.6176,
+      "gin_auroc_std": 0.0594,
+      "gin_seeds": [
+        0.5786,
+        0.6374,
+        0.5219,
+        0.6739,
+        0.6761
+      ],
+      "dmpnn_auroc_mean": 0.5403,
+      "dmpnn_auroc_std": 0.0297,
+      "dmpnn_seeds": [
+        0.5385,
+        0.5017,
+        0.588,
+        0.5192,
+        0.5543
+      ]
+    },
+    {
+      "target": "P15056",
+      "n_test": 606,
+      "rate": 0.8152,
+      "gin_auroc_mean": 0.6482,
+      "gin_auroc_std": 0.02,
+      "gin_seeds": [
+        0.6577,
+        0.6365,
+        0.6225,
+        0.6431,
+        0.6811
+      ],
+      "dmpnn_auroc_mean": 0.631,
+      "dmpnn_auroc_std": 0.0129,
+      "dmpnn_seeds": [
+        0.643,
+        0.636,
+        0.6321,
+        0.6377,
+        0.6061
+      ]
+    },
+    {
+      "target": "P51531",
+      "n_test": 432,
+      "rate": 0.8403,
+      "gin_auroc_mean": 0.5541,
+      "gin_auroc_std": 0.0241,
+      "gin_seeds": [
+        0.5842,
+        0.5391,
+        0.517,
+        0.5561,
+        0.574
+      ],
+      "dmpnn_auroc_mean": 0.5697,
+      "dmpnn_auroc_std": 0.0083,
+      "dmpnn_seeds": [
+        0.5591,
+        0.5841,
+        0.5722,
+        0.5658,
+        0.5672
+      ]
+    },
+    {
+      "target": "P00533",
+      "n_test": 402,
+      "rate": 0.7612,
+      "gin_auroc_mean": 0.7532,
+      "gin_auroc_std": 0.0141,
+      "gin_seeds": [
+        0.7389,
+        0.7506,
+        0.7803,
+        0.7465,
+        0.7499
+      ],
+      "dmpnn_auroc_mean": 0.8047,
+      "dmpnn_auroc_std": 0.017,
+      "dmpnn_seeds": [
+        0.8096,
+        0.7862,
+        0.8085,
+        0.787,
+        0.8321
+      ]
+    },
+    {
+      "target": "Q9NWZ3",
+      "n_test": 313,
+      "rate": 0.8466,
+      "gin_auroc_mean": 0.7401,
+      "gin_auroc_std": 0.0196,
+      "gin_seeds": [
+        0.7178,
+        0.7631,
+        0.7526,
+        0.7517,
+        0.7153
+      ],
+      "dmpnn_auroc_mean": 0.8048,
+      "dmpnn_auroc_std": 0.0452,
+      "dmpnn_seeds": [
+        0.7259,
+        0.8409,
+        0.7983,
+        0.8028,
+        0.8562
+      ]
+    },
+    {
+      "target": "P51532",
+      "n_test": 271,
+      "rate": 0.4982,
+      "gin_auroc_mean": 0.6216,
+      "gin_auroc_std": 0.0134,
+      "gin_seeds": [
+        0.613,
+        0.6066,
+        0.6147,
+        0.63,
+        0.6436
+      ],
+      "dmpnn_auroc_mean": 0.6538,
+      "dmpnn_auroc_std": 0.0101,
+      "dmpnn_seeds": [
+        0.6692,
+        0.6568,
+        0.6395,
+        0.6569,
+        0.6464
+      ]
+    },
+    {
+      "target": "P10636",
+      "n_test": 210,
+      "rate": 0.3714,
+      "gin_auroc_mean": 0.3088,
+      "gin_auroc_std": 0.0421,
+      "gin_seeds": [
+        0.3122,
+        0.3382,
+        0.2951,
+        0.3608,
+        0.2374
+      ],
+      "dmpnn_auroc_mean": 0.5835,
+      "dmpnn_auroc_std": 0.0471,
+      "dmpnn_seeds": [
+        0.5806,
+        0.604,
+        0.6493,
+        0.5041,
+        0.5795
+      ]
+    },
+    {
+      "target": "O60885",
+      "n_test": 162,
+      "rate": 0.5,
+      "gin_auroc_mean": 0.4759,
+      "gin_auroc_std": 0.0318,
+      "gin_seeds": [
+        0.4667,
+        0.4301,
+        0.5212,
+        0.4614,
+        0.5004
+      ],
+      "dmpnn_auroc_mean": 0.5892,
+      "dmpnn_auroc_std": 0.0355,
+      "dmpnn_seeds": [
+        0.6158,
+        0.5389,
+        0.5883,
+        0.6387,
+        0.5644
+      ]
+    },
+    {
+      "target": "P01116/P04049",
+      "n_test": 139,
+      "rate": 0.7194,
+      "gin_auroc_mean": 0.6567,
+      "gin_auroc_std": 0.0407,
+      "gin_seeds": [
+        0.6927,
+        0.6669,
+        0.6904,
+        0.5812,
+        0.6522
+      ],
+      "dmpnn_auroc_mean": 0.7873,
+      "dmpnn_auroc_std": 0.0155,
+      "dmpnn_seeds": [
+        0.8056,
+        0.7964,
+        0.7754,
+        0.7633,
+        0.7956
+      ]
+    },
+    {
+      "target": "Q92793",
+      "n_test": 111,
+      "rate": 0.7658,
+      "gin_auroc_mean": 0.6898,
+      "gin_auroc_std": 0.0291,
+      "gin_seeds": [
+        0.669,
+        0.6939,
+        0.6557,
+        0.6894,
+        0.741
+      ],
+      "dmpnn_auroc_mean": 0.8333,
+      "dmpnn_auroc_std": 0.0097,
+      "dmpnn_seeds": [
+        0.8308,
+        0.8312,
+        0.8208,
+        0.8507,
+        0.833
+      ]
+    },
+    {
+      "target": "P14902",
+      "n_test": 109,
+      "rate": 0.1743,
+      "gin_auroc_mean": 0.3781,
+      "gin_auroc_std": 0.0421,
+      "gin_seeds": [
+        0.3918,
+        0.3515,
+        0.4544,
+        0.3556,
+        0.3374
+      ],
+      "dmpnn_auroc_mean": 0.7057,
+      "dmpnn_auroc_std": 0.0435,
+      "dmpnn_seeds": [
+        0.7404,
+        0.6801,
+        0.7526,
+        0.7216,
+        0.6339
+      ]
+    },
+    {
+      "target": "Q92918",
+      "n_test": 91,
+      "rate": 0.6484,
+      "gin_auroc_mean": 0.684,
+      "gin_auroc_std": 0.1177,
+      "gin_seeds": [
+        0.7421,
+        0.4529,
+        0.7007,
+        0.7632,
+        0.7611
+      ],
+      "dmpnn_auroc_mean": 0.853,
+      "dmpnn_auroc_std": 0.0265,
+      "dmpnn_seeds": [
+        0.8835,
+        0.8745,
+        0.8072,
+        0.8485,
+        0.8512
+      ]
+    },
+    {
+      "target": "Q07889",
+      "n_test": 91,
+      "rate": 0.4176,
+      "gin_auroc_mean": 0.5478,
+      "gin_auroc_std": 0.0601,
+      "gin_seeds": [
+        0.5501,
+        0.5492,
+        0.6038,
+        0.4369,
+        0.5988
+      ],
+      "dmpnn_auroc_mean": 0.5562,
+      "dmpnn_auroc_std": 0.0726,
+      "dmpnn_seeds": [
+        0.5968,
+        0.5566,
+        0.639,
+        0.5655,
+        0.423
+      ]
+    },
+    {
+      "target": "Q92793/Q09472",
+      "n_test": 83,
+      "rate": 0.8072,
+      "gin_auroc_mean": 0.7196,
+      "gin_auroc_std": 0.0752,
+      "gin_seeds": [
+        0.7882,
+        0.6166,
+        0.6502,
+        0.7341,
+        0.8088
+      ],
+      "dmpnn_auroc_mean": 0.9392,
+      "dmpnn_auroc_std": 0.0063,
+      "dmpnn_seeds": [
+        0.9459,
+        0.9478,
+        0.9328,
+        0.9338,
+        0.9356
+      ]
+    },
+    {
+      "target": "Q09472",
+      "n_test": 80,
+      "rate": 0.6,
+      "gin_auroc_mean": 0.6793,
+      "gin_auroc_std": 0.037,
+      "gin_seeds": [
+        0.6562,
+        0.7337,
+        0.6777,
+        0.6263,
+        0.7025
+      ],
+      "dmpnn_auroc_mean": 0.8936,
+      "dmpnn_auroc_std": 0.0151,
+      "dmpnn_seeds": [
+        0.8685,
+        0.8939,
+        0.9108,
+        0.9069,
+        0.888
+      ]
+    },
+    {
+      "target": "P36969",
+      "n_test": 76,
+      "rate": 0.1974,
+      "gin_auroc_mean": 0.8479,
+      "gin_auroc_std": 0.0166,
+      "gin_seeds": [
+        0.8197,
+        0.8623,
+        0.8656,
+        0.8404,
+        0.8514
+      ],
+      "dmpnn_auroc_mean": 0.6905,
+      "dmpnn_auroc_std": 0.1746,
+      "dmpnn_seeds": [
+        0.7617,
+        0.612,
+        0.3956,
+        0.9071,
+        0.776
+      ]
+    },
+    {
+      "target": "Q13422",
+      "n_test": 73,
+      "rate": 0.3562,
+      "gin_auroc_mean": 0.5537,
+      "gin_auroc_std": 0.052,
+      "gin_seeds": [
+        0.4869,
+        0.5499,
+        0.509,
+        0.5974,
+        0.6252
+      ],
+      "dmpnn_auroc_mean": 0.4851,
+      "dmpnn_auroc_std": 0.0375,
+      "dmpnn_seeds": [
+        0.4902,
+        0.5262,
+        0.4493,
+        0.4354,
+        0.5245
+      ]
+    },
+    {
+      "target": "P36888",
+      "n_test": 70,
+      "rate": 0.4857,
+      "gin_auroc_mean": 0.5466,
+      "gin_auroc_std": 0.1503,
+      "gin_seeds": [
+        0.5711,
+        0.2908,
+        0.7116,
+        0.4861,
+        0.6732
+      ],
+      "dmpnn_auroc_mean": 0.5742,
+      "dmpnn_auroc_std": 0.0728,
+      "dmpnn_seeds": [
+        0.5392,
+        0.6013,
+        0.4575,
+        0.6765,
+        0.5964
+      ]
+    },
+    {
+      "target": "P17706",
+      "n_test": 68,
+      "rate": 0.4706,
+      "gin_auroc_mean": 0.7418,
+      "gin_auroc_std": 0.0342,
+      "gin_seeds": [
+        0.7378,
+        0.7726,
+        0.6797,
+        0.7457,
+        0.7734
+      ],
+      "dmpnn_auroc_mean": 0.8257,
+      "dmpnn_auroc_std": 0.017,
+      "dmpnn_seeds": [
+        0.8385,
+        0.7925,
+        0.8377,
+        0.8299,
+        0.8299
+      ]
+    },
+    {
+      "target": "Q9BY41",
+      "n_test": 61,
+      "rate": 0.2623,
+      "gin_auroc_mean": 0.2736,
+      "gin_auroc_std": 0.0274,
+      "gin_seeds": [
+        0.3069,
+        0.2736,
+        0.2681,
+        0.2931,
+        0.2264
+      ],
+      "dmpnn_auroc_mean": 0.3914,
+      "dmpnn_auroc_std": 0.0414,
+      "dmpnn_seeds": [
+        0.4583,
+        0.3403,
+        0.4,
+        0.4028,
+        0.3556
+      ]
+    },
+    {
+      "target": "P18031",
+      "n_test": 59,
+      "rate": 0.4237,
+      "gin_auroc_mean": 0.7861,
+      "gin_auroc_std": 0.0179,
+      "gin_seeds": [
+        0.7988,
+        0.7718,
+        0.8129,
+        0.7635,
+        0.7835
+      ],
+      "dmpnn_auroc_mean": 0.9315,
+      "dmpnn_auroc_std": 0.0123,
+      "dmpnn_seeds": [
+        0.9106,
+        0.9329,
+        0.9271,
+        0.9412,
+        0.9459
+      ]
+    },
+    {
+      "target": "Q00534",
+      "n_test": 57,
+      "rate": 0.5614,
+      "gin_auroc_mean": 0.6927,
+      "gin_auroc_std": 0.0541,
+      "gin_seeds": [
+        0.7175,
+        0.7112,
+        0.6575,
+        0.7675,
+        0.61
+      ],
+      "dmpnn_auroc_mean": 0.8405,
+      "dmpnn_auroc_std": 0.0308,
+      "dmpnn_seeds": [
+        0.8175,
+        0.7988,
+        0.8563,
+        0.8425,
+        0.8875
+      ]
+    },
+    {
+      "target": "P09874",
+      "n_test": 57,
+      "rate": 0.3684,
+      "gin_auroc_mean": 0.3519,
+      "gin_auroc_std": 0.0515,
+      "gin_seeds": [
+        0.336,
+        0.3981,
+        0.3228,
+        0.422,
+        0.2804
+      ],
+      "dmpnn_auroc_mean": 0.3608,
+      "dmpnn_auroc_std": 0.1026,
+      "dmpnn_seeds": [
+        0.4325,
+        0.3108,
+        0.5238,
+        0.2421,
+        0.295
+      ]
+    },
+    {
+      "target": "P36897",
+      "n_test": 57,
+      "rate": 0.4035,
+      "gin_auroc_mean": 0.6543,
+      "gin_auroc_std": 0.0563,
+      "gin_seeds": [
+        0.6439,
+        0.5818,
+        0.6081,
+        0.7199,
+        0.718
+      ],
+      "dmpnn_auroc_mean": 0.5404,
+      "dmpnn_auroc_std": 0.0647,
+      "dmpnn_seeds": [
+        0.6432,
+        0.4527,
+        0.5141,
+        0.5767,
+        0.5153
+      ]
+    },
+    {
+      "target": "P11802",
+      "n_test": 56,
+      "rate": 0.2679,
+      "gin_auroc_mean": 0.7289,
+      "gin_auroc_std": 0.0287,
+      "gin_seeds": [
+        0.7732,
+        0.726,
+        0.7187,
+        0.6854,
+        0.7415
+      ],
+      "dmpnn_auroc_mean": 0.7932,
+      "dmpnn_auroc_std": 0.0242,
+      "dmpnn_seeds": [
+        0.7837,
+        0.8228,
+        0.8146,
+        0.7902,
+        0.7545
+      ]
+    },
+    {
+      "target": "P51531/P51532",
+      "n_test": 48,
+      "rate": 0.5625,
+      "gin_auroc_mean": 0.6653,
+      "gin_auroc_std": 0.0573,
+      "gin_seeds": [
+        0.5802,
+        0.716,
+        0.739,
+        0.6314,
+        0.6596
+      ],
+      "dmpnn_auroc_mean": 0.7093,
+      "dmpnn_auroc_std": 0.0142,
+      "dmpnn_seeds": [
+        0.6861,
+        0.7231,
+        0.7002,
+        0.7213,
+        0.716
+      ]
+    },
+    {
+      "target": "P50750",
+      "n_test": 47,
+      "rate": 0.4681,
+      "gin_auroc_mean": 0.6147,
+      "gin_auroc_std": 0.0704,
+      "gin_seeds": [
+        0.5164,
+        0.5873,
+        0.7227,
+        0.5882,
+        0.6591
+      ],
+      "dmpnn_auroc_mean": 0.6227,
+      "dmpnn_auroc_std": 0.049,
+      "dmpnn_seeds": [
+        0.5882,
+        0.6845,
+        0.6745,
+        0.6073,
+        0.5591
+      ]
+    },
+    {
+      "target": "Q02750",
+      "n_test": 46,
+      "rate": 0.1522,
+      "gin_auroc_mean": 0.4637,
+      "gin_auroc_std": 0.1337,
+      "gin_seeds": [
+        0.2418,
+        0.6154,
+        0.4872,
+        0.3993,
+        0.5751
+      ],
+      "dmpnn_auroc_mean": 0.5846,
+      "dmpnn_auroc_std": 0.0618,
+      "dmpnn_seeds": [
+        0.6154,
+        0.6264,
+        0.6117,
+        0.4615,
+        0.6081
+      ]
+    },
+    {
+      "target": "O15379",
+      "n_test": 43,
+      "rate": 0.2326,
+      "gin_auroc_mean": 0.9982,
+      "gin_auroc_std": 0.0015,
+      "gin_seeds": [
+        0.997,
+        0.997,
+        1.0,
+        0.997,
+        1.0
+      ],
+      "dmpnn_auroc_mean": 0.9982,
+      "dmpnn_auroc_std": 0.0036,
+      "dmpnn_seeds": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.9909
+      ]
+    },
+    {
+      "target": "P98170",
+      "n_test": 39,
+      "rate": 0.8462,
+      "gin_auroc_mean": 0.5939,
+      "gin_auroc_std": 0.0555,
+      "gin_seeds": [
+        0.5505,
+        0.5404,
+        0.6162,
+        0.6919,
+        0.5707
+      ],
+      "dmpnn_auroc_mean": 0.5273,
+      "dmpnn_auroc_std": 0.0104,
+      "dmpnn_seeds": [
+        0.5455,
+        0.5253,
+        0.5202,
+        0.5152,
+        0.5303
+      ]
+    },
+    {
+      "target": "Q9UBN7",
+      "n_test": 39,
+      "rate": 0.6154,
+      "gin_auroc_mean": 0.7394,
+      "gin_auroc_std": 0.02,
+      "gin_seeds": [
+        0.7125,
+        0.7514,
+        0.7431,
+        0.7681,
+        0.7222
+      ],
+      "dmpnn_auroc_mean": 0.4672,
+      "dmpnn_auroc_std": 0.1009,
+      "dmpnn_seeds": [
+        0.4583,
+        0.5194,
+        0.5361,
+        0.275,
+        0.5472
+      ]
+    },
+    {
+      "target": "P49336",
+      "n_test": 38,
+      "rate": 0.1842,
+      "gin_auroc_mean": 0.3613,
+      "gin_auroc_std": 0.0166,
+      "gin_seeds": [
+        0.3594,
+        0.3548,
+        0.341,
+        0.3594,
+        0.3917
+      ],
+      "dmpnn_auroc_mean": 0.3862,
+      "dmpnn_auroc_std": 0.0374,
+      "dmpnn_seeds": [
+        0.3779,
+        0.3963,
+        0.3963,
+        0.3226,
+        0.4378
+      ]
+    },
+    {
+      "target": "P43490",
+      "n_test": 36,
+      "rate": 0.5,
+      "gin_auroc_mean": 0.7432,
+      "gin_auroc_std": 0.0253,
+      "gin_seeds": [
+        0.7284,
+        0.7809,
+        0.7623,
+        0.7346,
+        0.7099
+      ],
+      "dmpnn_auroc_mean": 0.4173,
+      "dmpnn_auroc_std": 0.0886,
+      "dmpnn_seeds": [
+        0.3611,
+        0.3549,
+        0.5772,
+        0.4506,
+        0.3426
+      ]
+    },
+    {
+      "target": "Q9UM73",
+      "n_test": 34,
+      "rate": 0.5294,
+      "gin_auroc_mean": 0.7236,
+      "gin_auroc_std": 0.1785,
+      "gin_seeds": [
+        0.8559,
+        0.8264,
+        0.3785,
+        0.724,
+        0.8333
+      ],
+      "dmpnn_auroc_mean": 0.7962,
+      "dmpnn_auroc_std": 0.0688,
+      "dmpnn_seeds": [
+        0.8403,
+        0.7378,
+        0.691,
+        0.8646,
+        0.8472
+      ]
+    },
+    {
+      "target": "P01116/Q07889",
+      "n_test": 32,
+      "rate": 0.3125,
+      "gin_auroc_mean": 0.5236,
+      "gin_auroc_std": 0.0671,
+      "gin_seeds": [
+        0.6136,
+        0.4273,
+        0.5455,
+        0.5636,
+        0.4682
+      ],
+      "dmpnn_auroc_mean": 0.5664,
+      "dmpnn_auroc_std": 0.0212,
+      "dmpnn_seeds": [
+        0.5636,
+        0.5909,
+        0.5864,
+        0.5591,
+        0.5318
+      ]
+    },
+    {
+      "target": "P25440",
+      "n_test": 32,
+      "rate": 0.4062,
+      "gin_auroc_mean": 0.6166,
+      "gin_auroc_std": 0.1413,
+      "gin_seeds": [
+        0.7834,
+        0.7166,
+        0.4656,
+        0.4312,
+        0.6862
+      ],
+      "dmpnn_auroc_mean": 0.8834,
+      "dmpnn_auroc_std": 0.0231,
+      "dmpnn_seeds": [
+        0.8988,
+        0.8785,
+        0.8462,
+        0.8785,
+        0.915
+      ]
+    },
+    {
+      "target": "Q15059",
+      "n_test": 31,
+      "rate": 0.4194,
+      "gin_auroc_mean": 0.6038,
+      "gin_auroc_std": 0.1183,
+      "gin_seeds": [
+        0.6838,
+        0.7308,
+        0.4573,
+        0.4637,
+        0.6838
+      ],
+      "dmpnn_auroc_mean": 0.7615,
+      "dmpnn_auroc_std": 0.0463,
+      "dmpnn_seeds": [
+        0.7179,
+        0.765,
+        0.7137,
+        0.8419,
+        0.7692
+      ]
+    },
+    {
+      "target": "Q06124",
+      "n_test": 30,
+      "rate": 0.5,
+      "gin_auroc_mean": 0.6729,
+      "gin_auroc_std": 0.0846,
+      "gin_seeds": [
+        0.6622,
+        0.7956,
+        0.5644,
+        0.7378,
+        0.6044
+      ],
+      "dmpnn_auroc_mean": 0.7724,
+      "dmpnn_auroc_std": 0.0215,
+      "dmpnn_seeds": [
+        0.7467,
+        0.7911,
+        0.7467,
+        0.7822,
+        0.7956
+      ]
+    },
+    {
+      "target": "P37840",
+      "n_test": 30,
+      "rate": 0.5333,
+      "gin_auroc_mean": 0.6482,
+      "gin_auroc_std": 0.0291,
+      "gin_seeds": [
+        0.692,
+        0.6384,
+        0.6473,
+        0.6607,
+        0.6027
+      ],
+      "dmpnn_auroc_mean": 0.6045,
+      "dmpnn_auroc_std": 0.0652,
+      "dmpnn_seeds": [
+        0.5045,
+        0.7098,
+        0.6027,
+        0.5938,
+        0.6116
+      ]
+    },
+    {
+      "target": "P30530",
+      "n_test": 28,
+      "rate": 0.2143,
+      "gin_auroc_mean": 0.8394,
+      "gin_auroc_std": 0.0775,
+      "gin_seeds": [
+        0.7576,
+        0.9167,
+        0.9091,
+        0.7348,
+        0.8788
+      ],
+      "dmpnn_auroc_mean": 0.9258,
+      "dmpnn_auroc_std": 0.0162,
+      "dmpnn_seeds": [
+        0.9318,
+        0.9318,
+        0.8939,
+        0.9394,
+        0.9318
+      ]
+    },
+    {
+      "target": "Q9NYV4",
+      "n_test": 28,
+      "rate": 0.6786,
+      "gin_auroc_mean": 0.8386,
+      "gin_auroc_std": 0.0183,
+      "gin_seeds": [
+        0.8421,
+        0.8655,
+        0.8304,
+        0.8099,
+        0.845
+      ],
+      "dmpnn_auroc_mean": 0.7743,
+      "dmpnn_auroc_std": 0.0473,
+      "dmpnn_seeds": [
+        0.8363,
+        0.7368,
+        0.7193,
+        0.7544,
+        0.8246
+      ]
+    },
+    {
+      "target": "P40337",
+      "n_test": 26,
+      "rate": 0.3846,
+      "gin_auroc_mean": 0.6625,
+      "gin_auroc_std": 0.0369,
+      "gin_seeds": [
+        0.6125,
+        0.7063,
+        0.6812,
+        0.625,
+        0.6875
+      ],
+      "dmpnn_auroc_mean": 0.8038,
+      "dmpnn_auroc_std": 0.0378,
+      "dmpnn_seeds": [
+        0.8375,
+        0.8188,
+        0.7875,
+        0.7375,
+        0.8375
+      ]
+    },
+    {
+      "target": "Q14004",
+      "n_test": 26,
+      "rate": 0.4615,
+      "gin_auroc_mean": 0.647,
+      "gin_auroc_std": 0.015,
+      "gin_seeds": [
+        0.6637,
+        0.6667,
+        0.6369,
+        0.631,
+        0.6369
+      ],
+      "dmpnn_auroc_mean": 0.6095,
+      "dmpnn_auroc_std": 0.0187,
+      "dmpnn_seeds": [
+        0.6369,
+        0.6131,
+        0.5833,
+        0.5952,
+        0.619
+      ]
+    },
+    {
+      "target": "P06239",
+      "n_test": 25,
+      "rate": 0.76,
+      "gin_auroc_mean": 0.6912,
+      "gin_auroc_std": 0.0542,
+      "gin_seeds": [
+        0.7193,
+        0.6404,
+        0.7719,
+        0.6228,
+        0.7018
+      ],
+      "dmpnn_auroc_mean": 0.5561,
+      "dmpnn_auroc_std": 0.069,
+      "dmpnn_seeds": [
+        0.4474,
+        0.6579,
+        0.5263,
+        0.5702,
+        0.5789
+      ]
+    },
+    {
+      "target": "P40763",
+      "n_test": 24,
+      "rate": 0.2917,
+      "gin_auroc_mean": 0.5303,
+      "gin_auroc_std": 0.0412,
+      "gin_seeds": [
+        0.5714,
+        0.5462,
+        0.479,
+        0.5714,
+        0.4832
+      ],
+      "dmpnn_auroc_mean": 0.3933,
+      "dmpnn_auroc_std": 0.0595,
+      "dmpnn_seeds": [
+        0.3782,
+        0.3193,
+        0.4538,
+        0.3445,
+        0.4706
+      ]
+    },
+    {
+      "target": "P24941",
+      "n_test": 22,
+      "rate": 0.3182,
+      "gin_auroc_mean": 0.1619,
+      "gin_auroc_std": 0.1043,
+      "gin_seeds": [
+        0.0571,
+        0.3333,
+        0.1143,
+        0.2286,
+        0.0762
+      ],
+      "dmpnn_auroc_mean": 0.499,
+      "dmpnn_auroc_std": 0.1381,
+      "dmpnn_seeds": [
+        0.7048,
+        0.4762,
+        0.5905,
+        0.419,
+        0.3048
+      ]
+    },
+    {
+      "target": "P49840",
+      "n_test": 22,
+      "rate": 0.1364,
+      "gin_auroc_mean": 0.7228,
+      "gin_auroc_std": 0.1291,
+      "gin_seeds": [
+        0.7895,
+        0.7719,
+        0.8421,
+        0.7368,
+        0.4737
+      ],
+      "dmpnn_auroc_mean": 1.0,
+      "dmpnn_auroc_std": 0.0,
+      "dmpnn_seeds": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "target": "Q9Y2I7",
+      "n_test": 21,
+      "rate": 0.1429,
+      "gin_auroc_mean": 0.5852,
+      "gin_auroc_std": 0.1484,
+      "gin_seeds": [
+        0.7407,
+        0.5,
+        0.5926,
+        0.7407,
+        0.3519
+      ],
+      "dmpnn_auroc_mean": 0.7,
+      "dmpnn_auroc_std": 0.046,
+      "dmpnn_seeds": [
+        0.6852,
+        0.7593,
+        0.7407,
+        0.6852,
+        0.6296
+      ]
+    },
+    {
+      "target": "P33981",
+      "n_test": 20,
+      "rate": 0.5,
+      "gin_auroc_mean": 0.88,
+      "gin_auroc_std": 0.0846,
+      "gin_seeds": [
+        0.95,
+        0.87,
+        0.94,
+        0.72,
+        0.92
+      ],
+      "dmpnn_auroc_mean": 0.536,
+      "dmpnn_auroc_std": 0.0612,
+      "dmpnn_seeds": [
+        0.56,
+        0.46,
+        0.64,
+        0.5,
+        0.52
+      ]
+    },
+    {
+      "target": "Q08881",
+      "n_test": 19,
+      "rate": 0.7368,
+      "gin_auroc_mean": 0.7657,
+      "gin_auroc_std": 0.0194,
+      "gin_seeds": [
+        0.7571,
+        0.7429,
+        0.7571,
+        0.8,
+        0.7714
+      ],
+      "dmpnn_auroc_mean": 0.6543,
+      "dmpnn_auroc_std": 0.1176,
+      "dmpnn_seeds": [
+        0.6429,
+        0.4857,
+        0.7,
+        0.6,
+        0.8429
+      ]
+    },
+    {
+      "target": "Q93009",
+      "n_test": 19,
+      "rate": 0.3158,
+      "gin_auroc_mean": 0.5615,
+      "gin_auroc_std": 0.0188,
+      "gin_seeds": [
+        0.5897,
+        0.5513,
+        0.5769,
+        0.5513,
+        0.5385
+      ],
+      "dmpnn_auroc_mean": 0.4872,
+      "dmpnn_auroc_std": 0.1521,
+      "dmpnn_seeds": [
+        0.2949,
+        0.5256,
+        0.5513,
+        0.7179,
+        0.3462
+      ]
+    },
+    {
+      "target": "Q96SW2",
+      "n_test": 17,
+      "rate": 0.2353,
+      "gin_auroc_mean": 0.2885,
+      "gin_auroc_std": 0.0365,
+      "gin_seeds": [
+        0.3462,
+        0.2885,
+        0.25,
+        0.3077,
+        0.25
+      ],
+      "dmpnn_auroc_mean": 0.2885,
+      "dmpnn_auroc_std": 0.0,
+      "dmpnn_seeds": [
+        0.2885,
+        0.2885,
+        0.2885,
+        0.2885,
+        0.2885
+      ]
+    },
+    {
+      "target": "P08581",
+      "n_test": 17,
+      "rate": 0.2941,
+      "gin_auroc_mean": 0.3933,
+      "gin_auroc_std": 0.3655,
+      "gin_seeds": [
+        0.6833,
+        0.0,
+        0.0,
+        0.3667,
+        0.9167
+      ],
+      "dmpnn_auroc_mean": 0.84,
+      "dmpnn_auroc_std": 0.0638,
+      "dmpnn_seeds": [
+        0.95,
+        0.8,
+        0.7667,
+        0.8667,
+        0.8167
+      ]
+    },
+    {
+      "target": "P15170",
+      "n_test": 17,
+      "rate": 0.2353,
+      "gin_auroc_mean": 0.3865,
+      "gin_auroc_std": 0.0876,
+      "gin_seeds": [
+        0.4712,
+        0.375,
+        0.3462,
+        0.4904,
+        0.25
+      ],
+      "dmpnn_auroc_mean": 0.6154,
+      "dmpnn_auroc_std": 0.0769,
+      "dmpnn_seeds": [
+        0.7115,
+        0.4808,
+        0.5962,
+        0.6538,
+        0.6346
+      ]
+    },
+    {
+      "target": "O60674",
+      "n_test": 14,
+      "rate": 0.4286,
+      "gin_auroc_mean": 0.7333,
+      "gin_auroc_std": 0.1583,
+      "gin_seeds": [
+        0.7708,
+        0.6042,
+        0.5,
+        0.8958,
+        0.8958
+      ],
+      "dmpnn_auroc_mean": 0.9958,
+      "dmpnn_auroc_std": 0.0083,
+      "dmpnn_seeds": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.9792
+      ]
+    },
+    {
+      "target": "Q9Y616",
+      "n_test": 14,
+      "rate": 0.1429,
+      "gin_auroc_mean": 0.825,
+      "gin_auroc_std": 0.1099,
+      "gin_seeds": [
+        0.9583,
+        0.625,
+        0.875,
+        0.8333,
+        0.8333
+      ],
+      "dmpnn_auroc_mean": 0.825,
+      "dmpnn_auroc_std": 0.1379,
+      "dmpnn_seeds": [
+        0.875,
+        1.0,
+        0.9167,
+        0.625,
+        0.7083
+      ]
+    },
+    {
+      "target": "Q5S007",
+      "n_test": 13,
+      "rate": 0.2308,
+      "gin_auroc_mean": 0.8967,
+      "gin_auroc_std": 0.0909,
+      "gin_seeds": [
+        0.95,
+        0.9167,
+        0.95,
+        0.7167,
+        0.95
+      ],
+      "dmpnn_auroc_mean": 0.93,
+      "dmpnn_auroc_std": 0.0267,
+      "dmpnn_seeds": [
+        0.9167,
+        0.9167,
+        0.9167,
+        0.9167,
+        0.9833
+      ]
+    },
+    {
+      "target": "O75530",
+      "n_test": 12,
+      "rate": 0.4167,
+      "gin_auroc_mean": 0.58,
+      "gin_auroc_std": 0.0448,
+      "gin_seeds": [
+        0.5714,
+        0.6286,
+        0.5,
+        0.5857,
+        0.6143
+      ],
+      "dmpnn_auroc_mean": 0.5771,
+      "dmpnn_auroc_std": 0.1134,
+      "dmpnn_seeds": [
+        0.4286,
+        0.7714,
+        0.6,
+        0.5714,
+        0.5143
+      ]
+    },
+    {
+      "target": "Q16539",
+      "n_test": 12,
+      "rate": 0.5,
+      "gin_auroc_mean": 0.5667,
+      "gin_auroc_std": 0.1805,
+      "gin_seeds": [
+        0.5833,
+        0.75,
+        0.6389,
+        0.6389,
+        0.2222
+      ],
+      "dmpnn_auroc_mean": 0.85,
+      "dmpnn_auroc_std": 0.0716,
+      "dmpnn_seeds": [
+        0.75,
+        0.9167,
+        0.7778,
+        0.9167,
+        0.8889
+      ]
+    },
+    {
+      "target": "P11474",
+      "n_test": 11,
+      "rate": 0.3636,
+      "gin_auroc_mean": 0.6286,
+      "gin_auroc_std": 0.0535,
+      "gin_seeds": [
+        0.6429,
+        0.5357,
+        0.6071,
+        0.6786,
+        0.6786
+      ],
+      "dmpnn_auroc_mean": 0.5286,
+      "dmpnn_auroc_std": 0.0886,
+      "dmpnn_seeds": [
+        0.4286,
+        0.5,
+        0.6786,
+        0.4643,
+        0.5714
+      ]
+    },
+    {
+      "target": "O43924",
+      "n_test": 10,
+      "rate": 0.1,
+      "gin_auroc_mean": 0.2667,
+      "gin_auroc_std": 0.3556,
+      "gin_seeds": [
+        0.0,
+        0.0,
+        0.8889,
+        0.4444,
+        0.0
+      ],
+      "dmpnn_auroc_mean": 0.6222,
+      "dmpnn_auroc_std": 0.3189,
+      "dmpnn_seeds": [
+        1.0,
+        0.4444,
+        0.4444,
+        1.0,
+        0.2222
+      ]
+    },
+    {
+      "target": "O60760",
+      "n_test": 10,
+      "rate": 0.7,
+      "gin_auroc_mean": 0.5333,
+      "gin_auroc_std": 0.0356,
+      "gin_seeds": [
+        0.5238,
+        0.5714,
+        0.5238,
+        0.5714,
+        0.4762
+      ],
+      "dmpnn_auroc_mean": 0.9333,
+      "dmpnn_auroc_std": 0.0933,
+      "dmpnn_seeds": [
+        1.0,
+        1.0,
+        1.0,
+        0.7619,
+        0.9048
+      ]
+    }
+  ]
+}
