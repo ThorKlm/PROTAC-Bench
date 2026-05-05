@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v10.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v10.
 
 Changes from v9:
 - Fig1A: Random-split dots use proper per-target random-split AUROCs

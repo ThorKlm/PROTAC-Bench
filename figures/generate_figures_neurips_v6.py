@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v6.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v6.
 
 Changes from v5:
 - Fig1A: TWO versions (tanimoto + simple coloring), random dots use same viridis Tanimoto,

@@ -17,6 +17,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
 from src.stats import format_result
+from src.debug import reduce_for_debug
 
 import torch
 import torch.nn as nn
@@ -258,6 +259,7 @@ def main():
     print('Computing Morgan FPs...')
     X = compute_morgan(smiles)
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Eligible targets: {len(eligible)}')
 
     results = {'rf': {}, 'maml': {}}

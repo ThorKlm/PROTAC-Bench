@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate updated NeurIPS figures (v2) for PROTAC-PLM-Bench.
+"""Generate updated NeurIPS figures (v2) for PROTAC-Bench.
 Figures 1-4 and 7, saved as PDF+PNG to /workspace/results/neurips_figures/.
 """
 import json, warnings, sys

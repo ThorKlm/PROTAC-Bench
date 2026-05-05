@@ -1,4 +1,4 @@
-# PROTAC-PLM-Bench Release Manifest
+# PROTAC-Bench Release Manifest
 
 Cross-reference between every numerical claim in `paper/main.tex` and a
 supporting file in this repository (`PROTAC-Bench/`) or, when missing, a

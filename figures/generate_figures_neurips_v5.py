@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v5.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v5.
 
 Changes from v4:
 - Fig1A: circles only (no 'x'), random-split dots from within_target.csv, light blue uniform

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate updated NeurIPS publication figures for PROTAC-PLM-Bench v12.
+"""Generate updated NeurIPS publication figures for PROTAC-Bench v12.
 
 Changes from v10:
 - Fig 1A: Added DM LOTO AUROC (0.702) annotation alongside reported random (0.878)

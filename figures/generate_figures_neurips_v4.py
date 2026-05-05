@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v4.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v4.
 
 Changes from v3:
 - Fig1A: fixed Tanimoto coloring (single per-target array from exp13), alpha=1.0 dots,

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all publication figures for PROTAC-PLM-Bench.
+"""Generate all publication figures for PROTAC-Bench.
 Session 6 update: EGNN replication (0.788), 3D descriptor null, label mismatch.
 
 Run from /workspace: python scripts/generate_figures.py

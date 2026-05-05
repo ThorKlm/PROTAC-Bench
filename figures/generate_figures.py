@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all publication figures for PROTAC-PLM-Bench.
+"""Generate all publication figures for PROTAC-Bench.
 Updated for Session 5: BERT-BFD ablation, top-5 variance, target classes, thresholds.
 
 Main figures (1-8) + supplementary (S1-S3).

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v8.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v8.
 
 Changes from v7:
 - Fig1A simple: ADD BACK random-split dots (royalblue) from within_target.csv

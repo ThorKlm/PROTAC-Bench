@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v3.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v3.
 
 Run from /workspace: python scripts/generate_figures_neurips_v3.py
 """

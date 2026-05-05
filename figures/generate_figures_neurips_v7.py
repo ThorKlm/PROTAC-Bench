@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-PLM-Bench v7.
+"""Generate all NeurIPS publication figures for PROTAC-Bench v7.
 
 Changes from v6:
 - Fig1A: REMOVED random-split dots (were within-target CV AUROCs, misleading).
