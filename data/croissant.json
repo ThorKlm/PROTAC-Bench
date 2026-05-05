@@ -7,10 +7,19 @@
     "conformsTo": "dct:conformsTo",
     "cr": "http://mlcommons.org/croissant/",
     "rai": "http://mlcommons.org/croissant/RAI/",
-    "data": {"@id": "cr:data", "@type": "@json"},
-    "dataType": {"@id": "cr:dataType", "@type": "@vocab"},
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
     "dct": "http://purl.org/dc/terms/",
-    "examples": {"@id": "cr:examples", "@type": "@json"},
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
     "extract": "cr:extract",
     "field": "cr:field",
     "fileProperty": "cr:fileProperty",
@@ -41,13 +50,14 @@
   "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
   "conformsTo": "http://mlcommons.org/croissant/1.0",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "url": "https://huggingface.co/datasets/anonymous-neurips2026/protac-bench",
+  "url": "https://huggingface.co/datasets/ThorKl/protac-bench",
   "version": "1.0.0",
-  "citeAs": "@inproceedings{protacbench2026, title={PROTAC-Bench: A Cold-Target Benchmark for PROTAC Degradation Prediction}, booktitle={NeurIPS Datasets and Benchmarks Track}, year={2026}}",
+  "citeAs": "@inproceedings{klamt2026protacbench, title={PROTAC-Bench: Decomposing the Generalization Gap in PROTAC Activity Prediction}, author={Klamt, Thor and Nejdl, Wolfgang and Tang, Ming}, booktitle={NeurIPS Datasets and Benchmarks Track}, year={2026}}",
   "datePublished": "2026-05-02",
   "creator": {
     "@type": "sc:Organization",
-    "name": "PROTAC-Bench Authors (anonymized for double-blind review)"
+    "name": "Thor Klamt, Wolfgang Nejdl, Ming Tang",
+    "url": "https://github.com/ThorKlm/PROTAC-Bench"
   },
   "keywords": [
     "PROTAC",
@@ -147,8 +157,12 @@
           "description": "Canonical SMILES representation of the PROTAC molecule.",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "smiles"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "smiles"
+            }
           }
         },
         {
@@ -158,8 +172,12 @@
           "description": "UniProt accession ID of the target protein.",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "target_uniprot"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "target_uniprot"
+            }
           }
         },
         {
@@ -169,8 +187,12 @@
           "description": "E3 ubiquitin ligase type (VHL, CRBN, or Other).",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "e3_type"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "e3_type"
+            }
           }
         },
         {
@@ -180,8 +202,12 @@
           "description": "Binary activity label (1 = active: DC50 < 1 uM OR Dmax > 50%, 0 = inactive).",
           "dataType": "sc:Integer",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "label"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "label"
+            }
           }
         },
         {
@@ -191,8 +217,12 @@
           "description": "Half-maximal degradation concentration in nanomolar (when available).",
           "dataType": "sc:Float",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "dc50_nm"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "dc50_nm"
+            }
           }
         },
         {
@@ -202,8 +232,12 @@
           "description": "Maximum degradation percentage (when available).",
           "dataType": "sc:Float",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "dmax_pct"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "dmax_pct"
+            }
           }
         }
       ]
