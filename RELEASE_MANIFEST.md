@@ -280,7 +280,7 @@ All numbers re-cite values already sourced above.
 
 | Claim | Value | Source |
 |---|---|---|
-| GitHub URL | https://github.com/ThorKlm/protac-plm-bench | repo manifest |
+| GitHub URL | https://anonymous.4open.science/r/PROTAC-Bench-21EC | repo manifest |
 | Files: protac_bench.csv, loto_folds.json, evaluate.py, baselines/ | — | `data/protac_bench.csv`, `data/loto_folds.json`, `src/evaluation.py`, `baselines/` |
 | DATASHEET.md | — | **MISSING**: not present in `PROTAC-Bench/` |
 

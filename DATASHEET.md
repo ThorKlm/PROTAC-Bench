@@ -256,7 +256,7 @@ Yes. PROTAC-Bench is publicly released.
 **How will it be distributed?**
 - Repository: this Git repository (containing `data/`, code, and figures).
 - Mirrored release: Hugging Face Hub
-  (`https://huggingface.co/datasets/ThorKlm/protac-plm-bench` per
+  (`https://huggingface.co/datasets/anonymous-neurips2026/protac-bench` per
   `data/croissant.json`).
 - Croissant metadata: `data/croissant.json` (Croissant 1.0; SHA-256 hashes for
   each file).
