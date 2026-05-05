@@ -1,6 +1,6 @@
 # Geometric and 3D-Structural Experiment Inventory — PROTAC-Bench
 
-Scope: every geometric / structure-aware experiment with a result JSON on disk under `/workspace/PROTAC-Bench/results/` or `/workspace/results/`, cross-referenced against the manuscript at `/workspace/protac_plm_bench_2/paper/main.tex` (commit current as of 2026-04-27).
+Scope: every geometric / structure-aware experiment with a result JSON on disk under `/workspace/PROTAC-Bench/results/` or `/workspace/results/`, cross-referenced against the manuscript at `the accompanying manuscript` (commit current as of 2026-04-27).
 
 Manuscript anchors used for citation status:
 - Body: §3D / "EGNN" subsection, line 332–355 (`fig:egnn`, structure ladder enumeration).

@@ -21,7 +21,7 @@ plt.rcParams.update({
 })
 
 OUTDIR = Path(__file__).parent
-INPUT = Path('/workspace/protac_plm_bench_2/results_summary/exp18_label_noise_extended.json')
+INPUT = Path('results/exp18_label_noise_extended.json')
 
 C_DBLUE = '#2166AC'
 C_LBLUE = '#92C5DE'

@@ -5,7 +5,7 @@ supporting file in this repository (`PROTAC-Bench/`) or, when missing, a
 file in `/workspace/results/` or `/workspace/scripts/` that needs to be
 copied in.
 
-Manuscript reference: `/workspace/protac_plm_bench_2/paper/main.tex` (848 lines).
+Manuscript reference: `the accompanying manuscript` (848 lines).
 
 **Excluded by policy** (superseded by post-fix HPO V2):
 - `/workspace/results/exp17*` (5 directories: `exp17_adaptive_k`, `exp17_calibration`, `exp17_feature_importance`, `exp17_learning_curve`, `exp17_top5_ensemble`)
