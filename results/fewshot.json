@@ -1,52 +1,28 @@
 {
-  "C0_morgan_only": {
-    "mean_auroc": 0.6709,
-    "delta_vs_baseline": 0.0,
-    "wilcoxon_p": 1.0,
-    "n_targets": 65
-  },
-  "C1_morgan+warhead": {
-    "mean_auroc": 0.7132,
-    "delta_vs_baseline": 0.0423,
-    "wilcoxon_p": 0.0005,
-    "n_targets": 65
-  },
-  "C2_morgan+k5": {
-    "mean_auroc": 0.6979,
-    "delta_vs_baseline": 0.0269,
-    "wilcoxon_p": 0.0007,
-    "n_targets": 65
-  },
-  "C3_morgan+warhead+k5": {
-    "mean_auroc": 0.7367,
-    "delta_vs_baseline": 0.0658,
-    "wilcoxon_p": 0.0,
-    "n_targets": 65
-  },
-  "C4_morgan+warhead+admet+k5": {
-    "mean_auroc": 0.7377,
-    "delta_vs_baseline": 0.0667,
-    "wilcoxon_p": 0.0,
-    "n_targets": 65
-  },
-  "C5_warhead+k5_noMorgan": {
-    "mean_auroc": 0.712,
-    "delta_vs_baseline": 0.0411,
-    "wilcoxon_p": 0.11,
-    "n_targets": 65
-  },
-  "_meta": {
-    "n_protacs": 10748,
-    "n_eligible_targets": 65,
-    "morgan_bits_rf": 512,
-    "k_neighbors": 10,
-    "k_shot": 5,
-    "seeds": [
-      42,
-      43,
-      44
-    ],
-    "rf_n_estimators": 100,
-    "elapsed_min": 5.1
+  "method": "fewshot_rf_vs_maml",
+  "k_values": [
+    5
+  ],
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "results": {
+    "rf": {
+      "5": {
+        "mean_auroc": 0.698751778828285,
+        "std_auroc": 0.18517344350466305,
+        "n_targets": 0,
+        "k": 5
+      }
+    },
+    "maml": {
+      "5": {
+        "mean_auroc": 0.6085609822148377,
+        "std_auroc": 0.20031534545151805,
+        "k": 5
+      }
+    }
   }
 }

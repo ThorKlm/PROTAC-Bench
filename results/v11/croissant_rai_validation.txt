@@ -1,0 +1,144 @@
+================================================================================
+PROTAC-Bench Croissant + RAI Validation Report
+================================================================================
+
+[STEP 0] LIVE-URL FETCH ATTEMPT
+--------------------------------------------------------------------------------
+URL requested:    https://huggingface.co/datasets/ThorKl/protac-bench
+HF API endpoint:  https://huggingface.co/api/datasets/ThorKl/protac-bench
+HF API result:    HTTP 401 — {"error":"Invalid username or password."}
+                  This response is what HF returns for *non-existent* dataset
+                  repos when the request is unauthenticated, NOT for a public
+                  dataset (public datasets return 200 anonymously).
+
+User namespace check (https://huggingface.co/api/users/ThorKl/overview):
+   ThorKl exists, has 6 datasets:
+     - ThorKl/VHHCorpus-2M-CDR-Annotated         (public)
+     - ThorKl/VHHCorpus-2M-CDR-InterNative-Splits (public)
+     - ThorKl/VHHCorpus-2M-CDR-Deduplicated      (public)
+     - ThorKl/SABDAB_INDI_datasets               (public)
+     - ThorKl/ABPPIGPT_checkpoints_v1            (gated:auto)
+     - ThorKl/ABPPIGPT_benchmark_processed_data  (gated:auto)
+   ** No 'protac-bench' dataset is published under ThorKl. **
+
+User namespace 'ThorKlm' (referenced in local croissant.json url field
+'https://huggingface.co/datasets/ThorKlm/protac-plm-bench'):
+   HTTP 404 — user does not exist on HF.
+
+CONCLUSION: The PROTAC-Bench dataset has NOT been uploaded to HuggingFace.
+The Croissant metadata in the repo claims a HF URL that resolves to nothing.
+Validation therefore proceeds against the LOCAL croissant.json
+(/workspace/PROTAC-Bench/data/croissant.json), staged with referenced data
+files at /tmp/croissant_validation/ for relative-path resolution.
+
+
+==============================================================================
+CROISSANT + MLCommons RAI VALIDATION — PROTAC-Bench
+==============================================================================
+
+Run timestamp:    2026-05-02T09:18:59.033119Z
+Validator:        mlcroissant (/home/claude-runner/.local/lib/python3.12/site-packages/mlcroissant/__init__.py)
+Source file:      /tmp/croissant_validation/croissant.json
+Validator equiv:  JoaquinVanschoren/croissant-checker (HF Space)
+                  Uses mlcroissant.Dataset(...) underneath plus RAI presence checks.
+
+==============================================================================
+[1/4] JSON-LD LOAD
+==============================================================================
+
+PASS  : croissant.json parsed as valid JSON.
+        Top-level keys: ['@context', '@type', 'citeAs', 'conformsTo', 'creator', 'datePublished', 'description', 'distribution', 'keywords', 'license', 'name', 'recordSet', 'url', 'version']
+        @context keys: ['@language', '@vocab', 'citeAs', 'column', 'conformsTo', 'cr', 'data', 'dataType', 'dct', 'examples', 'extract', 'field', 'fileObject', 'fileProperty', 'fileSet', 'format', 'includes', 'isLiveDataset', 'jsonPath', 'key', 'md5', 'parentField', 'path', 'rai', 'recordSet', 'references', 'regex', 'repeated', 'replace', 'samplingRate', 'sc', 'separator', 'source', 'subField', 'transform']
+        conformsTo: http://mlcommons.org/croissant/1.0
+PASS  : RAI namespace declared in @context: http://mlcommons.org/croissant/RAI/
+
+==============================================================================
+[2/4] MLCROISSANT SCHEMA VALIDATION
+==============================================================================
+
+PASS  : mlcroissant.Dataset loaded.
+        name:         PROTAC-PLM-Bench
+        version:      1.0.0
+        license:      ['https://creativecommons.org/licenses/by/4.0/']
+        url:          https://huggingface.co/datasets/ThorKlm/protac-plm-bench
+        recordSets:   ['protac_entries']
+        distribution: 3 file(s)
+PASS  : No schema errors.
+PASS  : No schema warnings beyond context note.
+
+==============================================================================
+[3/4] MLCommons RAI EXTENSION AUDIT
+==============================================================================
+
+Spec: https://docs.mlcommons.org/croissant/docs/croissant-rai-spec.html
+Required for substantive NeurIPS D&B Track RAI compliance.
+
+Field                                      Present    Substantive  Notes
+----------------------------------------------------------------------------------------------------
+rai:dataCollection                         NO         -            Description of how data was collected
+rai:dataCollectionType                     NO         -            Type/method of data collection
+rai:dataCollectionMissingData              NO         -            Information about missing data
+rai:dataCollectionRawData                  NO         -            Whether data is raw or processed
+rai:dataCollectionTimeframe                NO         -            Time period of data collection
+rai:dataAnnotationProtocol                 NO         -            Annotation protocol used
+rai:dataAnnotationPlatform                 NO         -            Annotation platform / tools
+rai:dataAnnotationAnalysis                 NO         -            Analysis of annotations / IAA
+rai:dataAnnotationPerItemTime              NO         -            Time per annotation item
+rai:dataAnnotationDemographics             NO         -            Annotator demographics
+rai:dataAnnotationTools                    NO         -            Tools used for annotation
+rai:dataPreprocessingProtocol              NO         -            Preprocessing protocol
+rai:dataPreprocessingImputation            NO         -            Imputation strategy
+rai:dataPreprocessingManipulation          NO         -            Data manipulation steps
+rai:dataUseCases                           NO         -            Intended use cases
+rai:dataLimitation                         NO         -            Known limitations
+rai:dataBiases                             NO         -            Known biases
+rai:dataSocialImpact                       NO         -            Social impact considerations
+rai:personalSensitiveInformation           NO         -            PII / sensitive data assessment
+rai:dataReleaseMaintenancePlan             NO         -            Maintenance / release plan
+----------------------------------------------------------------------------------------------------
+Summary: 0/20 RAI fields present, 0/20 substantively populated.
+
+MISSING RAI fields (20):
+   - rai:dataCollection                          (Description of how data was collected)
+   - rai:dataCollectionType                      (Type/method of data collection)
+   - rai:dataCollectionMissingData               (Information about missing data)
+   - rai:dataCollectionRawData                   (Whether data is raw or processed)
+   - rai:dataCollectionTimeframe                 (Time period of data collection)
+   - rai:dataAnnotationProtocol                  (Annotation protocol used)
+   - rai:dataAnnotationPlatform                  (Annotation platform / tools)
+   - rai:dataAnnotationAnalysis                  (Analysis of annotations / IAA)
+   - rai:dataAnnotationPerItemTime               (Time per annotation item)
+   - rai:dataAnnotationDemographics              (Annotator demographics)
+   - rai:dataAnnotationTools                     (Tools used for annotation)
+   - rai:dataPreprocessingProtocol               (Preprocessing protocol)
+   - rai:dataPreprocessingImputation             (Imputation strategy)
+   - rai:dataPreprocessingManipulation           (Data manipulation steps)
+   - rai:dataUseCases                            (Intended use cases)
+   - rai:dataLimitation                          (Known limitations)
+   - rai:dataBiases                              (Known biases)
+   - rai:dataSocialImpact                        (Social impact considerations)
+   - rai:personalSensitiveInformation            (PII / sensitive data assessment)
+   - rai:dataReleaseMaintenancePlan              (Maintenance / release plan)
+
+==============================================================================
+[4/4] RECORD-SET MATERIALIZATION CHECK
+==============================================================================
+
+PASS  : First record materialized:
+        {
+          "protac_entries/smiles": "COc1cc(-c2cn(C)c(=O)c3cnccc23)cc(OC)c1CN1CCN(CCOCCOCCOc2cc(-c3scnc3C)ccc2CNC(=O)[C@@H]2C[C@@H](O)CN2C(=O)[C@@H](NC(=O)C2(F)CC2)C(C)(C)C)CC1",
+          "protac_entries/target_uniprot": "Q9H8M2",
+          "protac_entries/e3_type": "VHL",
+          "protac_entries/label": 0,
+          "protac_entries/dc50_nm": null,
+          "protac_entries/dmax_pct": null
+        }
+
+==============================================================================
+FINAL VERDICT
+==============================================================================
+
+Croissant schema validation:    PASS
+RAI extension presence:         0/20 fields
+RAI extension substantiveness:  0/20 fields
+NeurIPS D&B-Track RAI claim:    NOT SUPPORTED — fields missing or non-substantive

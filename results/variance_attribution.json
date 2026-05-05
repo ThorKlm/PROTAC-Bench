@@ -1,0 +1,32 @@
+{
+  "scope": "three_anchor_partial_r2",
+  "n_targets_joined": 20,
+  "bounded_anchors": {
+    "inter_lab": 0.124,
+    "binarization": 0.05,
+    "conflicts_aggregate": 0.008,
+    "residual_aggregate": 0.025
+  },
+  "partial_r2": {
+    "crosslab": 0.012844687088141024,
+    "binarization": 0.0029908630763344365
+  },
+  "shapley": {
+    "crosslab": 0.016259886203142337,
+    "binarization": 0.006475528153264465
+  },
+  "total_r2_two_anchor_model": 0.022735414356406802,
+  "methodology_notes": "Two-anchor OLS uses cross-lab drop and binarization range as per-target predictors of LOTO AUROC. Conflicts and residual contributions are reported as aggregate dataset-wide bounds (0.008 and 0.025 respectively) rather than per-target predictors because they cannot be cleanly factorized at target resolution: label-conflict effects depend on compound-pair overlaps within a target rather than a target-level scalar, and the residual is by construction the unexplained variance after the two anchors plus conflicts. They are therefore retained as aggregate bounds (from prior gap-decomposition analyses) and excluded from the per-target OLS / Shapley attribution.",
+  "data_sources": {
+    "task14_cross_lab": "/workspace/results/exp42_metadata_features/task14_within_target_cross_lab.json",
+    "binarization_current_OR": "/workspace/results/exp18_binarization/loto_original.csv",
+    "binarization_strict_AND": "/workspace/results/exp18_binarization/loto_strict_DC50<1uM_AND_Dmax>50.csv",
+    "binarization_degrademaster_strict": "/workspace/results/exp18_binarization/loto_degrademaster_DC50<100nM_OR_Dmax>80.csv",
+    "binarization_lenient": "/workspace/results/exp18_binarization/loto_lenient_DC50<10uM_OR_Dmax>30.csv",
+    "loto_baseline": "/workspace/results/exp18_binarization/loto_original.csv"
+  },
+  "join_coverage": {
+    "targets_in_at_least_2_schemes": 28,
+    "targets_in_all_4_schemes": 1
+  }
+}

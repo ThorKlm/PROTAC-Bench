@@ -17,9 +17,14 @@ Runs core experiments and prints a comparison table. Takes ~2-3h on CPU.
 
 10,748 binary PROTAC degradation entries across 173 targets (65 LOTO-eligible).
 - `data/protac_bench.csv`: SMILES, target UniProt, E3 type, label, DC50, Dmax
-- `data/loto_folds.json`: 65-fold LOTO assignments
+- `data/loto_folds.json`: 65-fold Leave-One-Target-Out assignments
+- `data/lofo_folds.json`: Leave-One-Family-Out (22 protein families, 61 targets)
+- `data/cross_lab_folds.json`: within-target cross-lab paper holdouts (36 targets with >=3 publications and >=5 entries per holdout publication)
+- `data/temporal_prospective_folds.json`: train pub_year < 2023 (n=1,866), test pub_year == 2024 (n=132)
 - `data/admet_scores.csv`: precomputed ADMET classifier outputs (7 features)
 - `data/croissant.json`: Croissant metadata for dataset discovery
+
+All fold files index into `data/protac_bench.csv` row positions (0-based).
 
 ## Key Results
 

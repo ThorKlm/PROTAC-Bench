@@ -11,28 +11,28 @@ mkdir -p results
 
 echo ''
 echo 'Step 1: Baseline RF+Morgan...'
-python baselines/rf_morgan.py --seeds 42,43,44
+python3 baselines/rf_morgan.py --seeds 42,43,44
 
 echo ''
 echo 'Step 2: Warhead transfer signal...'
-python signals/warhead_transfer.py --seeds 42,43,44
+python3 signals/warhead_transfer.py --seeds 42,43,44
 
 echo ''
 echo 'Step 3: ADMET cascade...'
-python signals/admet_cascade.py
+python3 signals/admet_cascade.py
 
 echo ''
 echo 'Step 4: Few-shot (k=5)...'
-python signals/fewshot.py --k 5
+python3 signals/fewshot.py --k 5
 
 echo ''
 echo 'Step 5: Full stack (best result)...'
-python signals/full_stack.py --seeds 42,43,44
+python3 signals/full_stack.py --seeds 42,43,44
 
 echo ''
 echo 'Step 6: Robustness checks...'
-python robustness/single_source.py
-python robustness/nonkinase.py
+python3 robustness/single_source.py
+python3 robustness/nonkinase.py
 
 echo ''
 echo '============================================='

@@ -1,0 +1,10 @@
+$ mlcroissant validate --jsonld /workspace/PROTAC-Bench/data/croissant.json
+W0502 10:47:56.311108 132096166281536 rdf.py:89] WARNING: The JSON-LD `@context` is not standard. Refer to the official @context (e.g., from the example datasets in https://github.com/mlcommons/croissant/tree/main/datasets/1.0). The different keys are: {'equivalentProperty'}
+I0502 10:47:56.589073 132096166281536 validate.py:53] Done.
+
+Exit code: 0  (PASS)
+
+Note: the single warning is cosmetic — the equivalentProperty extension to @context
+is required by the rai: namespace and does not affect schema conformance.
+
+RAI fields populated: 20 / 20

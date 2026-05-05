@@ -1,0 +1,28 @@
+{
+  "random_phase": {
+    "head_type": 0.24941846242029622,
+    "mol_encoder": 0.22276184777824273,
+    "fragment_mode": 0.1448175780881495,
+    "normalize": 0.13506729252077848,
+    "prot_encoder": 0.1316118778992443,
+    "rdkit_desc": 0.03791963669868374,
+    "warhead_transfer": 0.028315570762053932,
+    "e3_onehot": 0.020736462448973442,
+    "ternary_attention": 0.018291273430933827,
+    "admet_features": 0.011059997952643893
+  },
+  "all_trials": {
+    "head_type": 0.5466185153123133,
+    "mol_encoder": 0.20912336320698008,
+    "normalize": 0.07483824405644075,
+    "prot_encoder": 0.06311421301427834,
+    "fragment_mode": 0.04707118692654908,
+    "rdkit_desc": 0.035856946088358904,
+    "admet_features": 0.010203259777163923,
+    "e3_onehot": 0.004759886385579667,
+    "warhead_transfer": 0.004484424573707331,
+    "ternary_attention": 0.0039299606586285256
+  },
+  "n_random": 200,
+  "n_total": 994
+}

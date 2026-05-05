@@ -1,0 +1,46 @@
+{
+  "experiment": "boltz2_affinity_head_loto_pilot",
+  "status": "BLOCKED_NOT_RUN",
+  "date": "2026-05-02",
+  "objective": "Pre-empt reviewer request for Boltz-2 affinity-head fine-tuning by piloting LOTO on a 5-10 target subset of PROTAC-Bench at seeds {42,43,44}.",
+  "blockers": [
+    {
+      "id": "B1_no_finetune_code_path",
+      "severity": "hard",
+      "description": "Upstream Boltz-2 (github.com/jwohlwend/boltz) does not yet expose a user-facing fine-tuning recipe for the affinity head. README states verbatim: 'Coming soon: updated training code for Boltz-2!' and 'training instructions ... currently for Boltz-1 but soon for Boltz-2'. The Boltz-1 training docs do not describe how to fine-tune the (Boltz-2-specific) affinity head in isolation, and no peer-reviewed reference recipe exists.",
+      "evidence_url": "https://github.com/jwohlwend/boltz",
+      "evidence_fetched": "2026-05-02"
+    },
+    {
+      "id": "B2_package_not_installed",
+      "severity": "soft",
+      "description": "`boltz` python package is not installed in the current environment (pip3 show boltz -> 'Package(s) not found'). torch 2.5.1+cu124 is available. Installation is feasible in principle but blocked by B1 (no fine-tune entry point) and B3 (disk)."
+    },
+    {
+      "id": "B3_disk_budget",
+      "severity": "soft",
+      "description": "Workspace overlay has only 13 GB free of 64 GB. Boltz-2 weights (multi-GB), CCD/MSA cache, and per-entry feature tensors for 5-10 targets x ~30+ entries each would exceed this without aggressive cleanup of existing backups (~tens of GB in BACKUP_*.tar.gz)."
+    },
+    {
+      "id": "B4_task_modality_mismatch",
+      "severity": "conceptual",
+      "description": "The Boltz-2 affinity head is designed for binary protein-ligand pIC50/pKd regression. PROTAC degradation activity is a ternary (E3:PROTAC:target) classification task. A faithful 'affinity-head fine-tune' for PROTAC-Bench would require either (a) a custom ternary adapter not present upstream, or (b) collapsing the ternary problem to a per-target binary surrogate, which is methodologically lossy and would not be the 'obvious extension' the reviewer is asking for. Either choice is a research contribution that warrants discussion with the user, not silent implementation."
+    },
+    {
+      "id": "B5_compute_budget",
+      "severity": "soft",
+      "description": "Available compute is 2x RTX 4090 (24 GB). Even if B1 were resolved, fine-tuning a structure-prediction model end-to-end (or PEFT on the affinity head with frozen trunk) for 5-10 targets x 3 seeds = 15-30 runs, each requiring MSA generation + per-entry feature precomputation for a 30+ entry train set, is days-to-weeks of wallclock on this hardware. Not within the implicit 'pilot' time budget without scoping discussion."
+    }
+  ],
+  "what_would_be_required_to_unblock": [
+    "Upstream release of documented Boltz-2 affinity-head fine-tune recipe (tracked at github.com/jwohlwend/boltz; banner: 'Coming soon').",
+    "Or: explicit user sign-off on a custom ternary adapter design, with a written spec for how PROTAC SMILES + E3 + target would feed the affinity head.",
+    "Free at least ~80 GB of workspace disk and confirm wallclock budget of 3-7 GPU-days on the 2x4090 box.",
+    "Pre-computed MSAs for the chosen target subset (or ColabFold/MMseqs2 server access)."
+  ],
+  "no_outputs_fabricated": true,
+  "per_target_auroc": null,
+  "subset_macro_mean_auroc": null,
+  "seeds_attempted": [],
+  "targets_attempted": []
+}
