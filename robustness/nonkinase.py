@@ -22,6 +22,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
 from src.stats import paired_wilcoxon
+from src.debug import reduce_for_debug
 
 # Family assignments — kinases and bromodomains are the two largest
 KINASE_TARGETS = {
@@ -128,6 +129,7 @@ def main():
     parser.add_argument('--seeds', default='42,43,44')
     parser.add_argument('--output', default='results/nonkinase.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]
@@ -145,6 +147,7 @@ def main():
     admet = np.nan_to_num(admet, nan=0.0)
 
     all_eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     kinase_elig = [t for t in all_eligible if t in KINASE_TARGETS]
     bromo_elig = [t for t in all_eligible if t in BROMO_TARGETS]
     nonkinase_elig = [t for t in all_eligible if t not in KINASE_TARGETS]

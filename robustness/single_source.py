@@ -21,6 +21,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
 from src.stats import paired_wilcoxon, format_result
+from src.debug import reduce_for_debug
 
 K_NEIGHBORS = 10
 SIM_THRESHOLD = 0.5
@@ -121,6 +122,7 @@ def main():
     parser.add_argument('--seeds', default='42,43,44')
     parser.add_argument('--output', default='results/single_source.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]

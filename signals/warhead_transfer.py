@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, get_loto_folds
 from src.stats import paired_wilcoxon, format_result
+from src.debug import reduce_for_debug
 
 
 # ---------- Tanimoto helpers ----------
@@ -177,6 +178,7 @@ def main():
     parser.add_argument('--output', default='results/warhead_transfer.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--test', action='store_true', help='run unit test only')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     if args.test:
@@ -196,6 +198,7 @@ def main():
     print(f'  X shape: {X_fp.shape}')
 
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Eligible targets: {len(eligible)}')
 
     # run unit test first

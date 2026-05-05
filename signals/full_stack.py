@@ -20,6 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
 from src.stats import paired_wilcoxon, format_result, confidence_interval
+from src.debug import reduce_for_debug
 
 
 # --- Tanimoto + transfer (from warhead_transfer.py) ---
@@ -218,6 +219,7 @@ def main():
     parser.add_argument('--k', type=int, default=5, help='few-shot k')
     parser.add_argument('--output', default='results/full_stack.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]
@@ -236,6 +238,7 @@ def main():
     X_admet = np.nan_to_num(X_admet, nan=0.0)
 
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Eligible targets: {len(eligible)}, k={args.k}, seeds={seeds}')
 
     conditions = {}

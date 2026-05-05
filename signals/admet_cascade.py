@@ -17,6 +17,7 @@ from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
 from src.evaluation import loto_evaluate
 from src.stats import paired_wilcoxon, format_result
+from src.debug import reduce_for_debug
 
 ADMET_NAMES = [
     "Caco2_Wang", "PAMPA_NCATS", "HIA_Hou", "Solubility_AqSolDB",
@@ -54,6 +55,7 @@ def main():
     parser.add_argument('--seeds', default='42,43,44,53,71')
     parser.add_argument('--output', default='results/admet_cascade.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]
@@ -76,6 +78,7 @@ def main():
     X_admet = np.nan_to_num(X_admet, nan=0.0)
 
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Eligible targets: {len(eligible)}')
 
     correlation_analysis(X_admet, y)

@@ -215,6 +215,7 @@ def main():
     parser.add_argument('--db-path', default='results/hpo_study.db')
     parser.add_argument('--n-startup', type=int, default=50,
                         help='random trials before TPE kicks in')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     os.makedirs('results', exist_ok=True)
@@ -231,6 +232,7 @@ def main():
     smiles = df['smiles'].tolist()
 
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Dataset: {len(df)} samples, {len(np.unique(targets))} targets, '
           f'{len(eligible)} eligible')
 

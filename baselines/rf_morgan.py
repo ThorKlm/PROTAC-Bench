@@ -14,6 +14,7 @@ from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
 from src.evaluation import loto_evaluate
 from src.stats import format_result
+from src.debug import reduce_for_debug
 
 
 def rf_model_fn(X_train, y_train, X_test):
@@ -34,6 +35,7 @@ def main():
                         help='comma-separated random seeds')
     parser.add_argument('--output', default='results/baseline_rf_morgan.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]
@@ -49,6 +51,7 @@ def main():
     print(f'  X shape: {X.shape}')
 
     eligible = get_eligible_targets(df)
+    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
     print(f'Eligible targets: {len(eligible)}')
 
     print(f'Running LOTO evaluation with seeds={seeds}...')
