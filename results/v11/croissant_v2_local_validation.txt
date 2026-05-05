@@ -1,2 +1,0 @@
-W0502 10:42:48.852840 123273171247424 rdf.py:89] WARNING: The JSON-LD `@context` is not standard. Refer to the official @context (e.g., from the example datasets in https://github.com/mlcommons/croissant/tree/main/datasets/1.0). The different keys are: {'equivalentProperty'}
-I0502 10:42:49.019883 123273171247424 validate.py:53] Done.
