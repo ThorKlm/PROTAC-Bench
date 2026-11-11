@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate updated NeurIPS publication figures for PROTAC-Bench v12.
+"""Generate updated publication figures for PROTAC-Bench v12.
 
 Changes from v10:
 - Fig 1A: Added DM LOTO AUROC (0.702) annotation alongside reported random (0.878)
@@ -17,7 +17,7 @@ Data sources:
   exp35_selective_prediction/         → Selective prediction curve
   exp33_interaction_fp/summary.json   → IFP (-0.023)
 
-Run: python scripts/generate_figures_neurips_v12.py
+Run: python figures/generate_figures_legacy_v12.py
 """
 import json, warnings, sys, shutil
 from pathlib import Path
@@ -32,9 +32,9 @@ from matplotlib.lines import Line2D
 from scipy import stats
 
 # ── Output dir ────────────────────────────────────────────────────────────────
-RDIR = Path('/workspace/results/neurips_figures_v12')
+RDIR = Path('results/figures_legacy_v12')
 RDIR.mkdir(parents=True, exist_ok=True)
-V10_DIR = Path('/workspace/results/neurips_figures_v10')
+V10_DIR = Path('results/figures_legacy_v10')
 
 # ── Style ─────────────────────────────────────────────────────────────────────
 plt.rcParams.update({
@@ -508,7 +508,7 @@ def figS14_selective_prediction():
 # ════��══════════════════════════════════════════════════════════════════════════
 def main():
     print('=' * 60)
-    print('  NeurIPS Figures v12')
+    print('  Figures v12')
     print('=' * 60)
 
     # Copy unchanged figures from v10
@@ -535,7 +535,7 @@ def main():
 
     # Print manifest
     print('\n' + '=' * 60)
-    print('  MANIFEST: neurips_figures_v12/')
+    print('  MANIFEST: figures_legacy_v12/')
     print('=' * 60)
     all_files = sorted(RDIR.glob('*.png'))
     new_names = {'fig1a_dm_loto_collapse', 'fig1a_collapse_v12',

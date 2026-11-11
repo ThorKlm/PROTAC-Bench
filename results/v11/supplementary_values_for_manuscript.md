@@ -54,7 +54,7 @@ Source: `/workspace/PROTAC-Bench/results/v11/croissant_rai_audit.md` §4. All 20
 - `rai:dataBiases`: "(a) chemotype bias toward CRBN/VHL warheads; (b) oncology-target over-representation (BCR-ABL, BTK, AR, EGFR, BRD4); (c) lab-of-origin confounding — 3 labs >40% of records (`task14_within_target_cross_lab.json`)."
 - `rai:dataSocialImpact`: "Positive: lowers barrier to ML-driven PROTAC design. Dual-use: only published research-stage compounds; no novel uplift beyond primary literature; no human-subject data."
 - `rai:personalSensitiveInformation`: "None. SMILES, UniProt accessions, biochemical activity labels only; no PII, no patient-derived material."
-- `rai:dataReleaseMaintenancePlan`: "CC-BY-4.0 via HuggingFace Datasets; versioned releases tagged in HF and `RELEASE_MANIFEST.md`; GitHub-issue-tracked corrections; long-term maintenance through NeurIPS 2025 reproducibility window (2025–2027)."
+- `rai:dataReleaseMaintenancePlan`: "CC-BY-4.0 via HuggingFace Datasets; versioned releases tagged in HF and `RELEASE_MANIFEST.md`; GitHub-issue-tracked corrections; long-term maintenance through at least 2028."
 
 (Audit supplies no substantive content for `rai:dataAnnotationAnalysis`, `rai:dataAnnotationPerItemTime`, `rai:dataAnnotationTools` — record as not-applicable.)
 

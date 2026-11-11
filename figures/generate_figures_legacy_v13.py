@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate NeurIPS publication figures v13 — incorporates all final results.
+"""Generate publication figures v13 — incorporates all final results.
 
 Changes from v12:
 - Fig 4: Add STAN attention (0.714) + warhead transfer (0.713); waterfall to 0.743
@@ -20,7 +20,7 @@ Data sources:
   exp38_e3_warhead/summary.json        → Warhead transfer (0.713)
   exp39_stan_combined/summary.json     → STAN combined progression
 
-Run: python scripts/generate_figures_neurips_v13.py
+Run: python figures/generate_figures_legacy_v13.py
 """
 import json, warnings, sys, shutil
 from pathlib import Path
@@ -35,9 +35,9 @@ from matplotlib.lines import Line2D
 from scipy import stats
 
 # ── Output dir ────────────────────────────────────────────────────────────────
-RDIR = Path('/workspace/results/neurips_figures_v13')
+RDIR = Path('results/figures_legacy_v13')
 RDIR.mkdir(parents=True, exist_ok=True)
-V12_DIR = Path('/workspace/results/neurips_figures_v12')
+V12_DIR = Path('results/figures_legacy_v12')
 
 # ── Style ─────────────────────────────────────────────────────────────────────
 plt.rcParams.update({
@@ -548,7 +548,7 @@ def figS18_stan_combined():
 # ═══════════════════════════════════════════════════════════════════════════════
 def main():
     print('=' * 60)
-    print('  NeurIPS Figures v13')
+    print('  Figures v13')
     print('=' * 60)
 
     copy_unchanged_figures()
@@ -575,7 +575,7 @@ def main():
 
     # Print manifest
     print('\n' + '=' * 60)
-    print('  MANIFEST: neurips_figures_v13/')
+    print('  MANIFEST: figures_legacy_v13/')
     print('=' * 60)
     all_files = sorted(RDIR.glob('*.png'))
     new_names = {

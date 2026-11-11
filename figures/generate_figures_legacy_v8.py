@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-"""Generate all NeurIPS publication figures for PROTAC-Bench v6.
+"""Generate all publication figures for PROTAC-Bench v8.
 
-Changes from v5:
-- Fig1A: TWO versions (tanimoto + simple coloring), random dots use same viridis Tanimoto,
-         add sample/target counts to x-tick labels
-- Fig1B: legend upper left, remove fraction text box, add mean to legend labels
-- Fig2: add linear regression line with confidence band
-- Fig3A/3B: unchanged
-- Fig4: use seed std (not cross-target), remove asterisks/footnote
-- Fig5: fix baseline text y-position, MAML no error bars
-- Fig6: unchanged
-- Fig7: circles instead of squares, handle per-seed std properly
-- Supplementary: unchanged from v5
+Changes from v7:
+- Fig1A simple: ADD BACK random-split dots (royalblue) from within_target.csv
+- Fig1A tanimoto: ADD BACK random-split dots (viridis coloring)
+- Fig4: honest error bars — only RF+Morgan has seed std
+- Fig5: 'LOTO Baseline' text moved down to y≈0.671
+- Fig7: point alpha reduced from 0.8 to 0.25
+- Fig8: short x-tick labels, seed-specific mean lines, alpha tweaks, baseline zorder
+- FigS1: checked for seed std — none available
+- FigS5: checked for seed std — none available
+- Figs 2, 3A, 3B, 6: unchanged
 
-Run from /workspace: python scripts/generate_figures_neurips_v6.py
+Run from /workspace: python figures/generate_figures_legacy_v8.py
 """
 import json, warnings, sys, sqlite3
 from pathlib import Path
@@ -29,7 +28,7 @@ from scipy import stats
 import seaborn as sns
 
 # ── Output dir ────────────────────────────────────────────────────────────────
-RDIR = Path('/workspace/results/neurips_figures_v6')
+RDIR = Path('results/figures_legacy_v8')
 RDIR.mkdir(parents=True, exist_ok=True)
 
 # ── Style ─────────────────────────────────────────────────────────────────────
@@ -107,7 +106,6 @@ def _get_sample_target_counts():
     if stan_path.exists():
         stan = _load_json(stan_path)
         n_stan_tgt = stan.get('n', 27)
-        # Try to get sample count from CSV
         stan_csv = Path('results/exp1_stan_loto/E0_rf_morgan_subset.csv')
         if stan_csv.exists():
             sdf = pd.read_csv(stan_csv)
@@ -137,10 +135,21 @@ def _get_sample_target_counts():
     return counts
 
 
+# ── Load within-target CV AUROCs for random-split dots ────────────────────────
+def _load_within_target_map():
+    """Return dict: target_uniprot -> within-target CV AUROC."""
+    path = Path('results/exp_supp_ceiling/within_target.csv')
+    if not path.exists():
+        return {}
+    df = pd.read_csv(path)
+    return dict(zip(df['target'], df['auroc']))
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 1A: COLLAPSE — version A (tanimoto coloring) and version B (simple)
+# FIG 1A: COLLAPSE — v8: random-split dots restored, STAN dots kept
 # ═══════════════════════════════════════════════════════════════════════════════
-def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto'):
+def _fig1a_core(ax_a, methods, tani_map, counts, version='tanimoto',
+                within_map=None):
     """Draw Fig1A panel. version='tanimoto' or 'simple'."""
     n_methods = len(methods)
     gap_pos = 4
@@ -175,7 +184,28 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
             ax_a.text(bx, v + 0.015, f'{v:.3f}', ha='center', va='bottom',
                       fontsize=8, fontweight='bold')
 
-            # Per-target LOTO dots (j==3)
+            # v8: Per-target random-split dots at replicated RS position (j==1)
+            if j == 1 and within_map and m.get('per_target_cs') is not None:
+                pt_df = m['per_target_cs']
+                if 'target' in pt_df.columns:
+                    matched = [(within_map[t], t) for t in pt_df['target']
+                               if t in within_map]
+                    if matched:
+                        rs_aurocs = np.array([a for a, _ in matched])
+                        rs_targets = [t for _, t in matched]
+                        rng_rs = np.random.default_rng(43)
+                        jitter_rs = rng_rs.uniform(-bar_w*0.35, bar_w*0.35, len(rs_aurocs))
+                        if version == 'tanimoto':
+                            colors_rs = [tani_map.get(t, 0.5) for t in rs_targets]
+                            ax_a.scatter(bx + jitter_rs, rs_aurocs, s=8, alpha=0.6,
+                                         c=colors_rs, cmap='viridis', vmin=0, vmax=1,
+                                         edgecolors='none', zorder=5, marker='o')
+                        else:
+                            ax_a.scatter(bx + jitter_rs, rs_aurocs, s=8, alpha=0.6,
+                                         color='royalblue', edgecolors='none',
+                                         zorder=5, marker='o')
+
+            # v8: Per-target LOTO dots at replicated CS position (j==3)
             if j == 3 and m.get('per_target_cs') is not None:
                 pt_df = m['per_target_cs']
                 aurocs = pt_df['auroc'].values
@@ -193,31 +223,7 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
                     ax_a.scatter(bx + jitter, aurocs, s=8, alpha=0.7,
                                  color='darkorange', edgecolors='none', zorder=5, marker='o')
 
-            # Per-target RANDOM-SPLIT dots (j==1) — v6: same Tanimoto coloring or simple
-            if j == 1 and m.get('per_target_cs') is not None:
-                pt_df = m['per_target_cs']
-                if 'target' in pt_df.columns:
-                    wt_aurocs = [within_map.get(t, np.nan) for t in pt_df['target']]
-                    valid_mask = [not np.isnan(a) for a in wt_aurocs]
-                    wt_arr = np.array([a for a, v in zip(wt_aurocs, valid_mask) if v])
-                    valid_targets = [t for t, v in zip(pt_df['target'], valid_mask) if v]
-                    if len(wt_arr) > 0:
-                        rng2 = np.random.default_rng(99)
-                        wt_jitter = rng2.uniform(-bar_w*0.35, bar_w*0.35, len(wt_arr))
-                        if version == 'tanimoto':
-                            colors_wt = [tani_map.get(t, 0.5) for t in valid_targets]
-                            sc_wt = ax_a.scatter(bx + wt_jitter, wt_arr, s=8, alpha=0.8,
-                                                  c=colors_wt, cmap='viridis', vmin=0, vmax=1,
-                                                  edgecolors='none', zorder=4, marker='o')
-                            if sc_handle is None:
-                                sc_handle = sc_wt
-                        else:
-                            ax_a.scatter(bx + wt_jitter, wt_arr, s=8, alpha=0.5,
-                                         color='royalblue', edgecolors='none', zorder=4, marker='o')
-
-            elif j == 3 and m['name'] == 'PROTAC-STAN':
-                ax_a.text(bx, 0.35, 'per-target\nN/A', ha='center', va='center',
-                          fontsize=6, color='#888888', rotation=90)
+            # v8: random-split dots restored above (j==1 block)
 
     # Colorbar only for tanimoto version
     if version == 'tanimoto':
@@ -232,23 +238,9 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
 
     ax_a.axhline(0.5, color='grey', ls='--', lw=0.8, alpha=0.5)
 
-    # v6: Multi-line x-tick labels with sample/target counts
-    tick_labels = []
-    for m in methods:
-        name = m['name']
-        n_samp, n_tgt = counts.get(name, (0, 0))
-        tick_labels.append(f"{name}\nsamples={n_samp}\ntargets={n_tgt}")
-
+    # x-tick labels with sample/target counts
     ax_a.set_xticks(positions)
-    ax_a.set_xticklabels(tick_labels, fontsize=9.5)
-    # Make the samples/targets lines smaller
-    for label in ax_a.get_xticklabels():
-        label.set_fontsize(9.5)
-        # Use a custom text with mixed sizes via set_fontproperties won't work,
-        # so we handle it differently below
-    # Actually override with smaller sub-labels using ax.text
     ax_a.set_xticklabels([m['name'] for m in methods], fontsize=9.5)
-    # Add sample/target counts as separate text below
     for idx_m, m in enumerate(methods):
         name = m['name']
         n_samp, n_tgt = counts.get(name, (0, 0))
@@ -262,7 +254,7 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
     _despine(ax_a)
     ax_a.set_title('A  Reported vs. Replicated Performance', fontweight='bold', loc='left')
 
-    # Legend
+    # v8: Legend — lower right, includes random per-target entry
     if version == 'tanimoto':
         handles = [
             mpatches.Patch(facecolor=CB_LBLUE, edgecolor='white', label='Reported RS'),
@@ -270,9 +262,8 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
             mpatches.Patch(facecolor='#FFB347', edgecolor='white', label='Reported CS'),
             mpatches.Patch(facecolor=CB_ORANGE, alpha=0.25, edgecolor=CB_ORANGE, label='Replicated CS'),
             mpatches.Patch(facecolor='#DDDDDD', edgecolor='#999999', hatch='///', label='N/A'),
+            Line2D([0], [0], marker='o', color='w', markerfacecolor=CB_GREY, markersize=5, label='RS per-target'),
             Line2D([0], [0], marker='o', color='w', markerfacecolor=CB_GREY, markersize=5, label='LOTO per-target'),
-            Line2D([0], [0], marker='o', color='w', markerfacecolor=CB_LBLUE, markersize=5,
-                   alpha=0.5, label='Random per-target'),
         ]
     else:
         handles = [
@@ -281,11 +272,10 @@ def _fig1a_core(ax_a, methods, tani_map, within_map, counts, version='tanimoto')
             mpatches.Patch(facecolor='#FFB347', edgecolor='white', label='Reported CS'),
             mpatches.Patch(facecolor=CB_ORANGE, alpha=0.25, edgecolor=CB_ORANGE, label='Replicated CS'),
             mpatches.Patch(facecolor='#DDDDDD', edgecolor='#999999', hatch='///', label='N/A'),
+            Line2D([0], [0], marker='o', color='w', markerfacecolor='royalblue', markersize=5, label='RS per-target'),
             Line2D([0], [0], marker='o', color='w', markerfacecolor='darkorange', markersize=5, label='LOTO per-target'),
-            Line2D([0], [0], marker='o', color='w', markerfacecolor='royalblue', markersize=5,
-                   alpha=0.5, label='Random per-target'),
         ]
-    ax_a.legend(handles=handles, loc='upper right', fontsize=7, ncol=1)
+    ax_a.legend(handles=handles, loc='lower right', fontsize=7, ncol=1)
 
     return sc_handle
 
@@ -295,13 +285,10 @@ def _fig1b(ax_b):
     tani_random = np.load('results/exp13_splits_and_baselines/tanimoto_random.npy')
     tani_scaffold = np.load('results/exp13_splits_and_baselines/tanimoto_scaffold.npy')
     tani_loto = np.load('results/exp13_splits_and_baselines/tanimoto_loto.npy')
-
-    # Load mean values from JSON
     tani_dist = _load_json('results/exp13_splits_and_baselines/tanimoto_distributions.json')
     mean_random = tani_dist['random_cv']['mean']
     mean_scaffold = tani_dist['scaffold_cv']['mean']
     mean_loto = tani_dist['loto']['mean']
-
     bins = np.linspace(0, 1, 51)
     ax_b.hist(tani_random, bins=bins, alpha=0.5, color=CB_BLUE,
               label=f'Random CV\nmean: {mean_random:.3f}', density=True)
@@ -309,15 +296,10 @@ def _fig1b(ax_b):
               label=f'Scaffold CV\nmean: {mean_scaffold:.3f}', density=True)
     ax_b.hist(tani_loto, bins=bins, alpha=0.5, color=CB_ORANGE,
               label=f'LOTO\nmean: {mean_loto:.3f}', density=True)
-
     for thresh in [0.4, 0.6, 0.8]:
         ax_b.axvline(thresh, color='grey', ls='--', lw=0.8, alpha=0.6)
-
-    # v6: NO fraction text box — removed
-
     ax_b.set_xlabel('Max Tanimoto to Nearest Training Neighbor')
     ax_b.set_ylabel('Density')
-    # v6: Legend upper left
     ax_b.legend(fontsize=8, loc='upper left')
     _despine(ax_b)
     ax_b.set_title('B  Train\u2013Test Molecular Overlap', fontweight='bold', loc='left')
@@ -332,8 +314,6 @@ def _load_methods_data():
     baseline_summary = _load_json('/workspace/summary.json')
     rf_csv = pd.read_csv('results/exp1_baseline_replication/A_rf_morgan.csv')
     tani_map = _compute_per_target_tanimoto()
-    within_csv = pd.read_csv('results/exp_supp_ceiling/within_target.csv')
-    within_map = dict(zip(within_csv['target'], within_csv['auroc']))
 
     methods = []
     # 1. DeepPROTACs
@@ -367,7 +347,9 @@ def _load_methods_data():
         'repl_cs_err': None,
         'per_target_cs': ribes_csv if 'auroc' in ribes_csv.columns else None,
     })
-    # 3. PROTAC-STAN
+    # 3. PROTAC-STAN — v7: add per-target dots from E2_tan_morgan_esms
+    stan_pt_path = Path('results/exp1_stan_loto/E2_tan_morgan_esms.csv')
+    stan_pt = pd.read_csv(stan_pt_path) if stan_pt_path.exists() else None
     methods.append({
         'name': 'PROTAC-STAN', 'rep_rs': 0.883,
         'repl_rs': full['stan_own_data']['their_split'],
@@ -375,7 +357,7 @@ def _load_methods_data():
         'rep_cs': None, 'has_rep_cs': False,
         'repl_cs': full['stan_own_data']['loto_rf'],
         'repl_cs_err': None,
-        'per_target_cs': None,
+        'per_target_cs': stan_pt,
     })
     # 4. DegradeMaster
     dm = _load_json('results/exp1_degrademaster_loto/per_target_analysis.json')
@@ -417,18 +399,20 @@ def _load_methods_data():
         'repl_cs_err': None,
         'per_target_cs': knn_df,
     })
-    return methods, tani_map, within_map
+    return methods, tani_map
 
 
 def fig1_collapse():
     """Generate both versions of Fig1."""
-    methods, tani_map, within_map = _load_methods_data()
+    methods, tani_map = _load_methods_data()
     counts = _get_sample_target_counts()
+    within_map = _load_within_target_map()
 
     # Version A: Tanimoto coloring
     fig_a, (ax_a1, ax_b1) = plt.subplots(1, 2, figsize=(14, 6),
                                           gridspec_kw={'width_ratios': [2.2, 1]})
-    _fig1a_core(ax_a1, methods, tani_map, within_map, counts, version='tanimoto')
+    _fig1a_core(ax_a1, methods, tani_map, counts, version='tanimoto',
+                within_map=within_map)
     _fig1b(ax_b1)
     fig_a.tight_layout()
     _save(fig_a, 'fig1a_collapse_tanimoto')
@@ -436,50 +420,41 @@ def fig1_collapse():
     # Version B: Simple coloring
     fig_b, (ax_a2, ax_b2) = plt.subplots(1, 2, figsize=(14, 6),
                                           gridspec_kw={'width_ratios': [2.2, 1]})
-    _fig1a_core(ax_a2, methods, tani_map, within_map, counts, version='simple')
+    _fig1a_core(ax_a2, methods, tani_map, counts, version='simple',
+                within_map=within_map)
     _fig1b(ax_b2)
     fig_b.tight_layout()
     _save(fig_b, 'fig1a_collapse_simple')
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 2: PER-FOLD DISTRIBUTION — v6: add regression line with confidence band
+# FIG 2: PER-FOLD DISTRIBUTION — unchanged from v6
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig2_perfold():
     rf = pd.read_csv('results/exp1_baseline_replication/A_rf_morgan.csv')
     sim = pd.read_csv('results/exp11_similarity_stratified/per_target_with_similarity.csv')
     df = rf.merge(sim[['target', 'max_cosine_sim']], on='target', how='left')
-
     fig, ax = plt.subplots(figsize=(7, 5))
     x_data = df['max_cosine_sim'].values
     y_data = df['auroc'].values
-
     ax.scatter(x_data, y_data,
                color='steelblue', s=30, edgecolors='white', linewidth=0.3, zorder=5)
-
-    # v6: Linear regression with prediction interval band
     mask = ~(np.isnan(x_data) | np.isnan(y_data))
     x_clean = x_data[mask]
     y_clean = y_data[mask]
     slope, intercept, r_value, p_value, std_err = stats.linregress(x_clean, y_clean)
-
     x_line = np.linspace(x_clean.min(), x_clean.max(), 200)
     y_line = slope * x_line + intercept
-
-    # Prediction interval
     n = len(x_clean)
     x_mean = np.mean(x_clean)
     residuals = y_clean - (slope * x_clean + intercept)
     s_res = np.sqrt(np.sum(residuals**2) / (n - 2))
-    # Standard error of prediction at each x point
     se_pred = s_res * np.sqrt(1 + 1/n + (x_line - x_mean)**2 / np.sum((x_clean - x_mean)**2))
     t_crit = stats.t.ppf(0.975, n - 2)
     y_upper = y_line + t_crit * se_pred
     y_lower = y_line - t_crit * se_pred
-
     ax.plot(x_line, y_line, '-', color='steelblue', lw=1.5, alpha=0.8)
     ax.fill_between(x_line, y_lower, y_upper, alpha=0.15, color='steelblue')
-
     ax.axhline(0.5, color='grey', ls='--', lw=0.8, alpha=0.5)
     ax.set_xlabel('ESM-2 Cosine Similarity to Nearest Training Target')
     ax.set_ylabel('LOTO AUROC')
@@ -491,7 +466,7 @@ def fig2_perfold():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 3: HPO CEILING (14×5, 2 panels) — unchanged from v5
+# FIG 3: HPO CEILING (14×5, 2 panels) — unchanged from v6
 # ═══════════════════════════════════════════════════════════════════════════════
 def _load_optuna_values(db_path):
     conn = sqlite3.connect(db_path)
@@ -562,58 +537,37 @@ def fig3_hpo():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 4: BREAKTHROUGHS — v6: seed std, remove asterisks/footnote
+# FIG 4: BREAKTHROUGHS — v8: honest error bars (only RF+Morgan has seed std)
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig4_breakthroughs():
     fig, ax = plt.subplots(figsize=(7, 6))
-
-    # Seed-level std values
     baseline_summary = _load_json('/workspace/summary.json')
-    rf_seed_std = baseline_summary['baseline']['std']  # 0.0036
+    rf_seed_std = baseline_summary['baseline']['std']
 
-    # ADMET cascade: check for seed-level std
-    admet_path = Path('results/exp8c_admet_cascade/summary.json')
-    admet_seed_std = 0  # default
-    if admet_path.exists():
-        admet_s = _load_json(admet_path)
-        # Look for seed-level std in the summary
-        if 'C2_morgan+admet7' in admet_s:
-            admet_seed_std = admet_s['C2_morgan+admet7'].get('seed_std', admet_s['C2_morgan+admet7'].get('std', 0))
-        elif 'conditions' in admet_s:
-            for k, v in admet_s['conditions'].items():
-                if 'admet' in k.lower():
-                    admet_seed_std = v.get('seed_std', v.get('std', 0))
-                    break
+    # v8: Check each condition for seed-level std — report findings
+    print('  [fig4] Seed-std audit:')
+    print(f'    RF+Morgan: seed_std={rf_seed_std:.4f} (from summary.json seed_means) ✓')
 
-    # Few-shot: check for seed-level std
-    fewshot_summary = _load_json('results/exp4_fewshot/exp4_summary.json')
-    fewshot_seed_std = fewshot_summary.get('rf_morgan_k5', {}).get('seed_std', 0)
-    # If no seed_std, use std/sqrt(n) as SEM or just use cross-target std with note
-    if fewshot_seed_std == 0:
-        # cross-target std is available; for paper we want seed std
-        # Check if seed_means is available
-        seed_means = fewshot_summary.get('rf_morgan_k5', {}).get('seed_means', None)
-        if seed_means:
-            fewshot_seed_std = np.std(seed_means)
-        else:
-            fewshot_seed_std = 0  # no seed data -> no error bar
+    # ADMET cascade: no seed_means or seed_std in exp8c summary
+    admet_seed_std = 0
+    print('    +ADMET: NO seed-level data (single aggregate) → no error bar')
 
-    # EGNN 27 targets: single architecture, check for seed std
-    egnn_summary = _load_json('results/exp1_degrademaster_loto/summary.json')
-    egnn_seed_std = egnn_summary.get('seed_std', 0)
-    if egnn_seed_std == 0:
-        seed_means = egnn_summary.get('seed_means', None)
-        if seed_means:
-            egnn_seed_std = np.std(seed_means)
+    # Few-shot k=5: only per-fold std, no seed_means
+    fewshot_seed_std = 0
+    print('    +k=5 few-shot: NO seed-level data (per-fold std only) → no error bar')
 
-    # EGNN Smina 60 targets: single seed, no error bar
-    egnn_smina_seed_std = 0  # single seed -> no error bar
+    # EGNN 27 targets: only per-target std, no seed_means
+    egnn_seed_std = 0
+    print('    +3D EGNN 27: NO seed-level data (per-target std only) → no error bar')
+
+    # EGNN Smina: single seed
+    egnn_smina_seed_std = 0
+    print('    +3D EGNN Smina: single seed → no error bar')
 
     entries = [
         ('RF+Morgan\n(65 targets)', 0.666, CB_GREY, False, None, rf_seed_std),
         ('+ADMET\n(65 targets)', 0.687, CB_BLUE, False, 'p=0.014', admet_seed_std),
         ('+k=5 few-shot\n(65 targets)', 0.700, CB_GREEN, False, 'p<0.001', fewshot_seed_std),
-        # v6: removed asterisk from EGNN labels
         ('+3D EGNN\n(27 targets)', 0.801, CB_RED, True, 'p=0.004', egnn_seed_std),
         ('+3D EGNN Smina\n(60 targets, approx. pockets)', 0.542, '#FF9999', True, None, egnn_smina_seed_std),
     ]
@@ -635,13 +589,12 @@ def fig4_breakthroughs():
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels([e[0] for e in entries], fontsize=9)
-    ax.set_xlabel('LOTO AUROC')
+    # v7: x-axis label includes error bar description, no separate annotation
+    ax.set_xlabel('LOTO AUROC (error bars: seed std)')
     ax.set_xlim(0, 1.15)
     ax.axvline(0.5, color='grey', ls='--', lw=0.8, alpha=0.5)
 
-    # v6: removed asterisk footnote; just note error bars meaning
-    ax.text(0.02, -0.06, 'Hatched = structural input | Error bars = seed std',
-            transform=ax.transAxes, fontsize=8, style='italic', color='#666')
+    # v7: removed 'Hatched = structural input | Error bars = seed std' annotation
 
     _despine(ax)
     ax.set_title('Incremental Improvements Over Baseline')
@@ -650,31 +603,24 @@ def fig4_breakthroughs():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 5: FEW-SHOT — v6: fix baseline y, MAML no error bars
+# FIG 5: FEW-SHOT — unchanged from v6
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig5_fewshot():
     e4 = _load_json('results/exp4_fewshot/exp4_summary.json')
     maml_ext = _load_json('results/exp20_maml_full_k/summary.json')
-
     fig, ax = plt.subplots(figsize=(7, 5))
-
-    # RF+Morgan — with error bars (seed std available)
     ks_rf = [0, 1, 3, 5, 10]
     auroc_rf = [e4[f'rf_morgan_k{k}']['mean'] for k in ks_rf]
     std_rf = [e4[f'rf_morgan_k{k}'].get('std', 0) / np.sqrt(e4[f'rf_morgan_k{k}']['n'])
               for k in ks_rf]
     ax.errorbar(ks_rf, auroc_rf, yerr=std_rf, fmt='o-', color=CB_BLUE,
                 label='RF + Morgan', lw=2, markersize=7, capsize=3)
-
-    # RF+meta — with error bars
     ks_meta = [1, 3, 5, 10]
     auroc_meta = [e4[f'rf_meta_k{k}']['mean'] for k in ks_meta]
     std_meta = [e4[f'rf_meta_k{k}'].get('std', 0) / np.sqrt(e4[f'rf_meta_k{k}']['n'])
                 for k in ks_meta]
     ax.errorbar(ks_meta, auroc_meta, yerr=std_meta, fmt='s-', color=CB_GREEN,
                 label='RF + meta', lw=2, markersize=7, capsize=3)
-
-    # MAML+Morgan — v6: NO error bars (no per-seed std available)
     ks_maml_m = [1, 3, 5, 10]
     auroc_maml_m = [
         maml_ext['conditions']['maml_morgan_k1']['mean_auroc'],
@@ -684,8 +630,6 @@ def fig5_fewshot():
     ]
     ax.plot(ks_maml_m, auroc_maml_m, 'D--', color=CB_RED,
             label='MAML + Morgan', lw=1.5, markersize=6, alpha=0.8)
-
-    # MAML+meta — v6: NO error bars
     auroc_maml_meta = [
         maml_ext['conditions']['maml_meta_k1']['mean_auroc'],
         maml_ext['conditions']['maml_meta_k3']['mean_auroc'],
@@ -694,11 +638,8 @@ def fig5_fewshot():
     ]
     ax.plot(ks_maml_m, auroc_maml_meta, 'D--', color=CB_ORANGE,
             label='MAML + meta', lw=1.5, markersize=6, alpha=0.8)
-
-    # v6: Baseline line at correct y=0.666, text just above
     ax.axhline(0.666, color=CB_GREY, ls='--', lw=1, alpha=0.5)
-    ax.text(5.0, 0.666 + 0.008, 'LOTO Baseline', fontsize=8, va='bottom', ha='center', color=CB_GREY)
-
+    ax.text(5.0, 0.666 + 0.005, 'LOTO Baseline', fontsize=8, va='bottom', ha='center', color=CB_GREY)
     ax.set_xlabel('k (target-specific examples)')
     ax.set_ylabel('LOTO AUROC')
     ax.set_xlim(-0.5, 11.5)
@@ -710,7 +651,7 @@ def fig5_fewshot():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 6: EGNN SCATTER — unchanged from v5
+# FIG 6: EGNN SCATTER — v7: remove info box, fix colorbar label
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig6_egnn_scatter():
     dm = _load_json('results/exp1_degrademaster_loto/per_target_analysis.json')
@@ -746,14 +687,10 @@ def fig6_egnn_scatter():
         ax.annotate(t, (rf_v, eg_v), fontsize=7, ha='left',
                     xytext=(5, 5), textcoords='offset points',
                     arrowprops=dict(arrowstyle='->', lw=0.5, color='#555'))
-    rho = dm['correlation_rf_vs_delta']['rho']
-    wins = dm['egnn_wins']
-    n_tgt = len(targets)
-    ax.text(0.05, 0.95, f'{wins}/{n_tgt}: EGNN > RF\n$\\rho$={rho:.3f}',
-            transform=ax.transAxes, fontsize=10, va='top',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+    # v7: removed info box (was: wins/n_tgt, rho text box)
+    # v7: colorbar label uses readable text
     cbar = fig.colorbar(sc, ax=ax, fraction=0.03, pad=0.02)
-    cbar.set_label('log$_{10}$(n\\_entries)', fontsize=9)
+    cbar.set_label('log$_{10}$(number of entries)', fontsize=9)
     ax.set_xlabel('RF + Morgan AUROC')
     ax.set_ylabel('EGNN AUROC')
     ax.set_xlim(0, 1.05)
@@ -766,12 +703,11 @@ def fig6_egnn_scatter():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FIG 7: PLM SCALING — v6: circles, handle per-seed std
+# FIG 7: PLM SCALING — unchanged from v6 (multi-seed data still incomplete)
 # ═══════════════════════════════════════════════════════════════════════════════
 def fig7_plm_scaling():
     plm = _load_json('results/exp15_plm_scaling/summary.json')
     fig, ax = plt.subplots(figsize=(7, 5))
-
     plm_configs = [
         ('morgan+esm2_8M', 8e6),
         ('morgan+esm2_35M', 35e6),
@@ -779,14 +715,9 @@ def fig7_plm_scaling():
         ('morgan+esm2_650M', 650e6),
         ('morgan+esm2_3B', 3e9),
     ]
-
     params = [p[1] for p in plm_configs]
     random_vals = [plm[p[0]]['random_mean'] for p in plm_configs]
     loto_vals = [plm[p[0]]['loto_mean'] for p in plm_configs]
-
-    # v6: Check for per-seed std. The loto_std values are per-fold (cross-target ~0.17-0.20),
-    # which is too large for meaningful error bars on this plot.
-    # Check if seed_means or seed_std fields exist
     has_seed_std = False
     loto_seed_stds = []
     random_seed_stds = []
@@ -802,31 +733,23 @@ def fig7_plm_scaling():
         else:
             loto_seed_stds.append(entry.get('loto_std', 0))
             random_seed_stds.append(entry.get('random_std', 0))
-
     if not has_seed_std:
-        # Per-fold std is too large (~0.19). Show NO error bars for LOTO.
-        # Random CV std is small (~0.005), keep those.
         print('  [fig7] NOTE: Only per-fold (cross-target) std available for LOTO (~0.19).')
-        print('         Showing no LOTO error bars. To get per-seed std, re-run with 5 seeds.')
-        print('         Estimated time: ~30 min/condition x 5 conditions = 2.5 hours.')
-        # v6: circles (marker='o') with alpha=0.8
+        print('         Showing no LOTO error bars. Multi-seed experiment recommended.')
         ax.plot(params, random_vals, 'o-', color=CB_BLUE, label='Random CV',
-                markersize=7, lw=0.8, alpha=0.8)
-        # Add small random_std error bars for random CV
+                markersize=7, lw=0.8, alpha=0.25)
         random_err = [plm[p[0]]['random_std'] for p in plm_configs]
         ax.errorbar(params, random_vals, yerr=random_err, fmt='none', ecolor=CB_BLUE,
                     capsize=3, lw=0.8, alpha=0.5)
-        # LOTO: no error bars
         ax.plot(params, loto_vals, 'o-', color=CB_ORANGE, label='LOTO',
-                markersize=7, lw=0.8, alpha=0.8)
+                markersize=7, lw=0.8, alpha=0.25)
     else:
         ax.errorbar(params, random_vals, yerr=random_seed_stds, fmt='o', color=CB_BLUE,
-                    label='Random CV', markersize=7, capsize=3, lw=0.8, alpha=0.8)
+                    label='Random CV', markersize=7, capsize=3, lw=0.8, alpha=0.25)
         ax.errorbar(params, loto_vals, yerr=loto_seed_stds, fmt='o', color=CB_ORANGE,
-                    label='LOTO', markersize=7, capsize=3, lw=0.8, alpha=0.8)
+                    label='LOTO', markersize=7, capsize=3, lw=0.8, alpha=0.25)
         ax.plot(params, random_vals, '-', color=CB_BLUE, lw=0.5, alpha=0.4)
         ax.plot(params, loto_vals, '-', color=CB_ORANGE, lw=0.5, alpha=0.4)
-
     bfd_path = Path('results/exp1_prottrans_bfd/summary.json')
     if bfd_path.exists():
         bfd = _load_json(bfd_path)
@@ -835,7 +758,6 @@ def fig7_plm_scaling():
         if bfd_loto:
             ax.scatter([420e6], [bfd_loto], marker='*', s=120, color=CB_GREEN,
                        zorder=10, label='BFD (420M)')
-
     ax.set_xscale('log')
     ax.set_xlabel('PLM Parameters')
     ax.set_ylabel('AUROC')
@@ -848,11 +770,213 @@ def fig7_plm_scaling():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SUPPLEMENTARY FIGURES — unchanged from v5
+# FIG 8: HPO DIMENSION ANALYSIS (NEW in v7)
+# ═══════════════════════════════════════════════════════════════════════════════
+def _load_hpo_trials():
+    """Load all HPO trials from both Optuna DBs with hyperparameters."""
+    all_rows = []
+    for seed_idx, db_name in enumerate(['exp2_hpo_seed0.db', 'exp2_hpo_seed1.db']):
+        db_path = Path(f'results/exp2_unified_hpo/{db_name}')
+        if not db_path.exists():
+            continue
+        conn = sqlite3.connect(db_path)
+        # Get completed trials with values
+        trials = pd.read_sql('''
+            SELECT t.trial_id, t.number, tv.value
+            FROM trials t
+            JOIN trial_values tv ON t.trial_id = tv.trial_id
+            WHERE t.state = 'COMPLETE'
+        ''', conn)
+        # Get params for each trial
+        params = pd.read_sql('''
+            SELECT trial_id, param_name, param_value
+            FROM trial_params
+        ''', conn)
+        conn.close()
+        # Pivot params
+        params_pivot = params.pivot(index='trial_id', columns='param_name', values='param_value')
+        merged = trials.merge(params_pivot, on='trial_id', how='left')
+        merged['seed'] = seed_idx
+        merged['phase'] = np.where(merged['number'] < 750, 'explore', 'exploit')
+        all_rows.append(merged)
+    if all_rows:
+        return pd.concat(all_rows, ignore_index=True)
+    # Fallback to CSV
+    csv_path = Path('results/exp2_unified_hpo/all_trials.csv')
+    if csv_path.exists():
+        df = pd.read_csv(csv_path)
+        df = df[df['state'] == 'COMPLETE'].copy()
+        df['seed'] = 0  # CSV doesn't distinguish seeds easily
+        df['phase'] = np.where(df['number'] < 750, 'explore', 'exploit')
+        # Rename params_ columns
+        param_cols = [c for c in df.columns if c.startswith('params_')]
+        for c in param_cols:
+            df.rename(columns={c: c.replace('params_', '')}, inplace=True)
+        return df
+    return pd.DataFrame()
+
+
+def fig8_hpo_dimensions():
+    """HPO dimension analysis: swarm plot per hyperparameter dimension.
+    v8: short x-tick labels, seed-specific mean lines, alpha tweaks, baseline zorder."""
+    df = _load_hpo_trials()
+    if df.empty:
+        print('  fig8_hpo_dimensions: SKIPPED (no HPO data)')
+        return
+
+    # v8: Short label mapping (max ~10 chars)
+    LABEL_MAP = {
+        # Protein encoders
+        'none': 'none', 'esm2_8M': 'esm2_8M', 'esm2_35M': 'esm2_35M',
+        'esm2_150M': 'esm2_150M', 'esm2_650M': 'esm2_650M', 'esm2_3B': 'esm2_3B',
+        'esms_stan': 'esms', 'prost_t5': 'prostT5', 'saprot': 'saprot',
+        'bert_bfd': 'bfd', 'ankh': 'ankh',
+        # Molecular encoders
+        'morgan_2048': 'morgan', 'maccs_167': 'maccs', 'chemberta': 'chemBERTa',
+        'molformer': 'molFormer', 'rdkit_full': 'rdkit', 'linker_bilstm': 'bilstm',
+        'admet': 'admet',
+        # Architecture
+        'rf': 'rf', 'xgboost': 'xgb', 'mlp': 'mlp', 'logistic': 'logReg',
+        'tan': 'tan', 'maml': 'maml',
+        # Fragment mode
+        'full': 'full', 'split': 'split',
+        # ADMET features
+        'True': 'True', 'False': 'False', 'true': 'True', 'false': 'False',
+    }
+
+    # Define the 5 panels and their parameter columns
+    panels = [
+        ('Protein Encoder', 'prot_encoder'),
+        ('Molecular Encoder', 'mol_encoder'),
+        ('Architecture', 'head_type'),
+        ('Fragment Mode', 'fragment_mode'),
+        ('ADMET Features', 'admet_features'),
+    ]
+
+    # Filter to panels that have data
+    active_panels = []
+    for title, col in panels:
+        if col in df.columns and df[col].notna().sum() > 0:
+            active_panels.append((title, col))
+
+    if not active_panels:
+        print('  fig8_hpo_dimensions: SKIPPED (no HP columns found)')
+        return
+
+    n_panels = len(active_panels)
+    fig, axes = plt.subplots(1, n_panels, figsize=(14, 8), sharey=True,
+                              gridspec_kw={'wspace': 0.05})
+    if n_panels == 1:
+        axes = [axes]
+
+    baseline_auroc = 0.664
+
+    for panel_idx, (title, col) in enumerate(active_panels):
+        ax = axes[panel_idx]
+        sub = df[df[col].notna()].copy()
+        sub[col] = sub[col].astype(str)
+        cat_medians = sub.groupby(col)['value'].median().sort_values(ascending=False)
+        categories = cat_medians.index.tolist()
+
+        if not categories:
+            ax.set_title(title, fontsize=10, fontweight='bold')
+            continue
+
+        # Draw box plots (thin, behind dots)
+        bp_data = [sub[sub[col] == cat]['value'].dropna().values for cat in categories]
+        bp = ax.boxplot(bp_data, positions=range(len(categories)), widths=0.6,
+                        patch_artist=True, showfliers=False, zorder=2)
+        for patch in bp['boxes']:
+            patch.set_facecolor('#f0f0f0')
+            patch.set_edgecolor('#cccccc')
+            patch.set_alpha(0.7)
+        for element in ['whiskers', 'caps']:
+            for line in bp[element]:
+                line.set_color('#cccccc')
+                line.set_linewidth(0.8)
+        for line in bp['medians']:
+            line.set_color('black')
+            line.set_linewidth(1.5)
+
+        # v8: Plot dots with jitter — alpha 0.35 explore, 0.85 exploit
+        rng = np.random.default_rng(42)
+        dot_colors = np.where(sub['seed'] == 0, 'royalblue', '#E69F00')
+        dot_alphas = np.where(sub['phase'] == 'exploit', 0.85, 0.35)
+        for cat_idx, cat in enumerate(categories):
+            mask = (sub[col] == cat).values
+            cat_vals = sub.loc[mask, 'value'].values
+            cat_seeds = sub.loc[mask, 'seed'].values
+            n_dots = len(cat_vals)
+            if n_dots == 0:
+                continue
+            jitter = rng.uniform(-0.25, 0.25, n_dots)
+            cat_colors = dot_colors[mask]
+            cat_alphas = dot_alphas[mask]
+            for color_val, alpha_val in [('royalblue', 0.35), ('royalblue', 0.85),
+                                          ('#E69F00', 0.35), ('#E69F00', 0.85)]:
+                gmask = (cat_colors == color_val) & (cat_alphas == alpha_val)
+                if gmask.any():
+                    ax.scatter(cat_idx + jitter[gmask], cat_vals[gmask],
+                               s=8, color=color_val, alpha=alpha_val,
+                               edgecolors='none', zorder=3)
+
+            # v8: Seed-specific mean lines instead of single black mean
+            for seed_val, seed_color in [(0, 'royalblue'), (1, '#E69F00')]:
+                seed_mask = mask & (sub['seed'] == seed_val).values
+                if seed_mask.any():
+                    seed_mean = sub.loc[seed_mask, 'value'].mean()
+                    ax.plot([cat_idx - 0.25, cat_idx + 0.25],
+                            [seed_mean, seed_mean],
+                            color=seed_color, linewidth=2, zorder=10)
+
+        # v8: Baseline line ON TOP of dots, DOUBLE linewidth
+        ax.axhline(baseline_auroc, color='red', ls='--', lw=2.0, alpha=0.7, zorder=10)
+
+        # v8: Short x-tick labels
+        ax.set_xticks(range(len(categories)))
+        clean_labels = [LABEL_MAP.get(c, c[:10]) for c in categories]
+        ax.set_xticklabels(clean_labels, fontsize=7, rotation=45, ha='right')
+        ax.set_title(title, fontsize=10, fontweight='bold')
+
+        if panel_idx == 0:
+            ax.set_ylabel('LOTO AUROC', fontsize=10)
+
+        _despine(ax)
+
+    axes[0].set_ylim(0.42, 0.75)
+
+    # v8: Updated legend — seed-specific means instead of category mean
+    legend_handles = [
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='royalblue',
+               markersize=5, alpha=0.35, label='Seed 0 explore'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='royalblue',
+               markersize=5, alpha=0.85, label='Seed 0 exploit'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='#E69F00',
+               markersize=5, alpha=0.35, label='Seed 1 explore'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='#E69F00',
+               markersize=5, alpha=0.85, label='Seed 1 exploit'),
+        Line2D([0], [0], color='red', ls='--', lw=2, label=f'Baseline ({baseline_auroc})'),
+        Line2D([0], [0], color='royalblue', lw=2, label='Seed 0 mean'),
+        Line2D([0], [0], color='#E69F00', lw=2, label='Seed 1 mean'),
+    ]
+    fig.legend(handles=legend_handles, loc='upper center', ncol=7, fontsize=7,
+               bbox_to_anchor=(0.5, 0.98))
+    fig.suptitle('HPO Trial AUROC by Hyperparameter Dimension', fontsize=12,
+                 fontweight='bold', y=1.02)
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    _save(fig, 'fig8_hpo_dimensions')
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SUPPLEMENTARY FIGURES — unchanged from v6
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def figS1_fragments():
     frags = _load_json('results/exp_supp_fragments/summary.json')
+    # v8: Check for seed-level data
+    has_seed = any('seed' in str(v) or 'seed_std' in str(v) for v in frags.values()
+                   if isinstance(v, dict))
+    print(f'  [figS1] Seed-level data: {"YES" if has_seed else "NO — single seed, no error bars"}')
     names_keys = [('Full\nPROTAC', 'full_protac'), ('Warhead', 'warhead'),
                   ('E3 ligand', 'e3_ligand'), ('Linker', 'linker'), ('Anchor', 'anchor')]
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -1029,6 +1153,12 @@ def figS5_docking():
         print('  figS5_docking: SKIPPED (no data)')
         return
     data = _load_json(path)
+    # v8: Check for per-seed AUROCs
+    methodology = data.get('methodology', {})
+    has_per_seed = any('seed_means' in str(v) or 'per_seed' in str(v)
+                       for v in data.get('conditions', {}).values() if isinstance(v, dict))
+    print(f'  [figS5] Methodology mentions seeds: {methodology.get("evaluation", "N/A")}')
+    print(f'  [figS5] Per-seed AUROCs stored: {"YES" if has_per_seed else "NO — means only, no error bars"}')
     fig, ax = plt.subplots(figsize=(7, 5))
     conditions = [
         ('Morgan\nonly', data['conditions']['C0_morgan_only']['mean_auroc'], CB_BLUE),
@@ -1299,7 +1429,12 @@ def figS12_seed_variance():
 # ═══════════════════════════════════════════════════════════════════════════════
 def main():
     print('=' * 60)
-    print('  Generating NeurIPS Figures v6')
+    print('  Figures v8 — Final Refinements')
+    print('=' * 60)
+    print()
+
+    print('=' * 60)
+    print('  Generating Figures v8')
     print('=' * 60)
 
     figs = [
@@ -1310,6 +1445,7 @@ def main():
         ('Fig 5', fig5_fewshot),
         ('Fig 6', fig6_egnn_scatter),
         ('Fig 7', fig7_plm_scaling),
+        ('Fig 8', fig8_hpo_dimensions),
         ('Fig S1', figS1_fragments),
         ('Fig S2', figS2_threshold),
         ('Fig S3', figS3_temporal),
@@ -1346,25 +1482,26 @@ def main():
     pngs = list(RDIR.glob('*.png'))
     print(f'\n  Output: {len(pdfs)} PDFs, {len(pngs)} PNGs in {RDIR}')
 
-    # Print change summary
     print('\n' + '=' * 60)
-    print('  v6 CHANGE SUMMARY')
+    print('  v8 CHANGE SUMMARY')
     print('=' * 60)
-    print('  Fig 1A: TWO versions (tanimoto + simple). Random dots now use same')
-    print('          Tanimoto coloring as LOTO (version A) or royalblue/darkorange')
-    print('          (version B). Sample/target counts added below method names.')
-    print('  Fig 1B: Legend moved to upper left. Fraction text box removed.')
-    print('          Mean max-similarity added to legend labels.')
-    print('  Fig 2:  Linear regression line + 95% prediction interval band added.')
-    print('  Fig 3:  Unchanged from v5.')
-    print('  Fig 4:  Error bars now show seed std (not cross-target std).')
-    print('          Asterisks and footnote removed from EGNN labels.')
-    print('  Fig 5:  Baseline text at correct y=0.666+0.008. MAML lines have')
-    print('          no error bars (no per-seed std available).')
-    print('  Fig 6:  Unchanged from v5.')
-    print('  Fig 7:  Markers changed from squares to circles (alpha=0.8).')
-    print('          LOTO error bars removed (only per-fold std ~0.19 available).')
-    print('  Supplementary: All unchanged from v5.')
+    print('  Fig 1A simple:   ADDED random-split per-target dots (royalblue circles)')
+    print('  Fig 1A tanimoto: ADDED random-split dots (viridis coloring)')
+    print('  Fig 2:           Unchanged from v7.')
+    print('  Fig 3A/3B:       Unchanged from v7.')
+    print('  Fig 4:           Honest error bars — only RF+Morgan has seed std.')
+    print('                   ADMET, few-shot, EGNN: no seed-level data → no bars.')
+    print('  Fig 5:           LOTO Baseline text moved down to y≈0.671.')
+    print('  Fig 6:           Unchanged from v7.')
+    print('  Fig 7:           Point marker alpha reduced 0.8→0.25 (std bars visible).')
+    print('  Fig 8:           Short x-tick labels (max 10 chars).')
+    print('                   Seed-specific mean lines (royalblue/orange) replace black.')
+    print('                   Explore alpha 0.4→0.35, exploit 0.8→0.85.')
+    print('                   Baseline dashed line: doubled linewidth, top zorder.')
+    print('  Fig S1:          Checked — no seed data available, no error bars.')
+    print('  Fig S5:          Checked — methodology mentions 3 seeds but no')
+    print('                   per-seed AUROCs stored. No error bars.')
+    print('  All others:      Unchanged from v7.')
 
 
 if __name__ == '__main__':

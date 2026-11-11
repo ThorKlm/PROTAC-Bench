@@ -7,10 +7,19 @@
     "conformsTo": "dct:conformsTo",
     "cr": "http://mlcommons.org/croissant/",
     "rai": "http://mlcommons.org/croissant/RAI/",
-    "data": {"@id": "cr:data", "@type": "@json"},
-    "dataType": {"@id": "cr:dataType", "@type": "@vocab"},
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
     "dct": "http://purl.org/dc/terms/",
-    "examples": {"@id": "cr:examples", "@type": "@json"},
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
     "extract": "cr:extract",
     "field": "cr:field",
     "fileProperty": "cr:fileProperty",
@@ -41,14 +50,30 @@
   "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
   "conformsTo": "http://mlcommons.org/croissant/1.0",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "url": "https://huggingface.co/datasets/anonymous-neurips2026/protac-bench",
+  "url": "https://huggingface.co/datasets/ThorKl/protac-bench",
   "version": "1.0.0",
-  "citeAs": "@inproceedings{protacbench2026, title={PROTAC-Bench: A Cold-Target Benchmark for PROTAC Degradation Prediction}, booktitle={NeurIPS Datasets and Benchmarks Track}, year={2026}}",
+  "citeAs": "@misc{klamt2026protacbench, title={Decomposing the Generalization Gap in PROTAC Activity Prediction: Variance Attribution and the Inter-Laboratory Ceiling}, author={Klamt, Thor and Nejdl, Wolfgang and Tang, Ming}, year={2026}, eprint={2605.11764}, archivePrefix={arXiv}, primaryClass={cs.LG}, note={Preprint; under revision}}",
   "datePublished": "2026-05-02",
-  "creator": {
-    "@type": "sc:Organization",
-    "name": "PROTAC-Bench Authors (anonymized for double-blind review)"
-  },
+  "creator": [
+    {
+      "@type": "sc:Person",
+      "name": "Thor Klamt",
+      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+      "url": "https://orcid.org/0009-0005-6168-3655"
+    },
+    {
+      "@type": "sc:Person",
+      "name": "Wolfgang Nejdl",
+      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+      "url": "https://orcid.org/0000-0003-3374-2193"
+    },
+    {
+      "@type": "sc:Person",
+      "name": "Ming Tang",
+      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+      "url": "https://orcid.org/0000-0002-5993-5906"
+    }
+  ],
   "keywords": [
     "PROTAC",
     "protein degradation",
@@ -76,7 +101,7 @@
   "rai:dataBiases": "Documented biases: (a) chemotype bias toward CRBN/VHL warhead families documented in the cheminformatics literature; (b) target bias toward oncology targets (BCR-ABL, BTK, AR, EGFR, BRD4 are over-represented); (c) lab-of-origin confounding - three labs contribute >40% of records, introducing potential lab-specific assay-condition signatures that models can latch onto (see task14_within_target_cross_lab.json and the 'lab-confound' analysis in the paper).",
   "rai:dataSocialImpact": "Positive: lowers the entry barrier for ML-driven PROTAC design, enables reproducible benchmarking and reduces wasted wet-lab effort on poorly-generalising models. Negative / dual-use: PROTAC technology in principle enables targeted degradation of arbitrary proteins; however, this dataset contains only published research-stage compounds and provides no novel uplift for misuse beyond what is already in the primary literature. No human-subject data; no privacy concerns.",
   "rai:personalSensitiveInformation": "None. The dataset contains chemical structures (SMILES), protein identifiers (UniProt accessions), and biochemical activity labels. No human-subject data, no PII, no patient-derived material.",
-  "rai:dataReleaseMaintenancePlan": "Distributed under CC-BY-4.0 via HuggingFace Datasets. Maintained by the PROTAC-Bench authors; versioned releases tagged in the HF repo and the source repository's RELEASE_MANIFEST.md. Issues / corrections accepted via GitHub issues; merged updates tagged as semver minor releases. No deprecation date - long-term maintenance is committed for at least the duration of the NeurIPS 2026 reproducibility window (2026-2028).",
+  "rai:dataReleaseMaintenancePlan": "Distributed under CC-BY-4.0 via HuggingFace Datasets. Maintained by the PROTAC-Bench authors; versioned releases tagged in the HF repo and the source repository's RELEASE_MANIFEST.md. Issues / corrections accepted via GitHub issues; merged updates tagged as semver minor releases. No deprecation date - long-term maintenance is committed through at least 2028.",
   "distribution": [
     {
       "@type": "cr:FileObject",
@@ -147,8 +172,12 @@
           "description": "Canonical SMILES representation of the PROTAC molecule.",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "smiles"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "smiles"
+            }
           }
         },
         {
@@ -158,8 +187,12 @@
           "description": "UniProt accession ID of the target protein.",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "target_uniprot"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "target_uniprot"
+            }
           }
         },
         {
@@ -169,8 +202,12 @@
           "description": "E3 ubiquitin ligase type (VHL, CRBN, or Other).",
           "dataType": "sc:Text",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "e3_type"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "e3_type"
+            }
           }
         },
         {
@@ -180,8 +217,12 @@
           "description": "Binary activity label (1 = active: DC50 < 1 uM OR Dmax > 50%, 0 = inactive).",
           "dataType": "sc:Integer",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "label"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "label"
+            }
           }
         },
         {
@@ -191,8 +232,12 @@
           "description": "Half-maximal degradation concentration in nanomolar (when available).",
           "dataType": "sc:Float",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "dc50_nm"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "dc50_nm"
+            }
           }
         },
         {
@@ -202,8 +247,12 @@
           "description": "Maximum degradation percentage (when available).",
           "dataType": "sc:Float",
           "source": {
-            "fileObject": {"@id": "protac_bench.csv"},
-            "extract": {"column": "dmax_pct"}
+            "fileObject": {
+              "@id": "protac_bench.csv"
+            },
+            "extract": {
+              "column": "dmax_pct"
+            }
           }
         }
       ]

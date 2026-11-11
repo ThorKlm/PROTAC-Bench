@@ -34,12 +34,25 @@ The `--debug` flag is available on all replication entry points.
 
 ## Dataset
 
-Hosted on HuggingFace at https://huggingface.co/datasets/anonymous-neurips2026/protac-bench under CC-BY-4.0. The official non-anonymized URL will be published with the camera-ready version.
+Hosted on HuggingFace at https://huggingface.co/datasets/ThorKl/protac-bench under CC-BY-4.0.
 
 ## Citation
 
-If you use PROTAC-Bench in your research, please cite the accompanying NeurIPS 2026 Evaluations and Datasets Track paper. A BibTeX entry will be added upon acceptance.
+If you use PROTAC-Bench, please cite the preprint:
+
+```bibtex
+@misc{klamt2026protacbench,
+  title  = {Decomposing the Generalization Gap in PROTAC Activity Prediction:
+            Variance Attribution and the Inter-Laboratory Ceiling},
+  author = {Klamt, Thor and Nejdl, Wolfgang and Tang, Ming},
+  year   = {2026},
+  eprint = {2605.11764},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note   = {Preprint; under revision}
+}
+```
 
 ## License
 
-Code released under MIT License. Dataset released under CC-BY-4.0. The official non-anonymized URL will be published with the camera-ready version.
+Code released under MIT License. Dataset released under CC-BY-4.0.

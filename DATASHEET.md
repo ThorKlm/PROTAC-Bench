@@ -26,7 +26,7 @@ this evaluation by providing 65 pre-defined Leave-One-Target-Out (LOTO) folds an
 unified label schema across previously incompatible source datasets.
 
 **Who created the dataset and on behalf of which entity?**
-The PROTAC-Bench authors (see `data/croissant.json`, anonymized for review). The
+The PROTAC-Bench authors (see `data/croissant.json`). The
 benchmark was assembled from three publicly released upstream sources (PROTAC-DB
 3.0, Ribes et al., DegradeMaster) and is released with the companion paper.
 
@@ -256,7 +256,7 @@ Yes. PROTAC-Bench is publicly released.
 **How will it be distributed?**
 - Repository: this Git repository (containing `data/`, code, and figures).
 - Mirrored release: Hugging Face Hub
-  (`https://huggingface.co/datasets/anonymous-neurips2026/protac-bench` per
+  (`https://huggingface.co/datasets/ThorKl/protac-bench` per
   `data/croissant.json`).
 - Croissant metadata: `data/croissant.json` (Croissant 1.0; SHA-256 hashes for
   each file).

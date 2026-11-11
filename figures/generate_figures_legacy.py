@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all publication-ready figures for NeurIPS 2026 submission.
+"""Generate all publication-ready figures for the PROTAC-Bench manuscript.
 All data loaded from result JSONs/CSVs — no hardcoded numbers.
 """
 import json, warnings, sys
@@ -27,7 +27,7 @@ C_RED = '#d62728'
 C_GREY = '#7f7f7f'
 C_PURPLE = '#9467bd'
 
-OUTDIR = Path('/workspace/results/neurips_figures')
+OUTDIR = Path('results/figures_legacy')
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
 def _load(path):
@@ -685,7 +685,7 @@ def figS8_egnn_smina():
 if __name__ == '__main__':
     import os
     os.chdir('/workspace')
-    print('Generating NeurIPS 2026 figures...')
+    print('Generating figures...')
     for fn_name, fn in [
         ('Fig 1', fig1_collapse),
         ('Fig 2', fig2_perfold),

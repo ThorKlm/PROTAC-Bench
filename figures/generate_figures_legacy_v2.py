@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Generate updated NeurIPS figures (v2) for PROTAC-Bench.
-Figures 1-4 and 7, saved as PDF+PNG to /workspace/results/neurips_figures/.
+"""Generate updated figures (v2) for PROTAC-Bench.
+Figures 1-4 and 7, saved as PDF+PNG to results/figures_legacy/.
 """
 import json, warnings, sys
 from pathlib import Path
@@ -14,7 +14,7 @@ import matplotlib.patches as mpatches
 from matplotlib.colors import Normalize
 from matplotlib import cm
 
-RDIR = Path('/workspace/results/neurips_figures')
+RDIR = Path('results/figures_legacy')
 RDIR.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({
     'font.size': 11, 'font.family': 'sans-serif',
@@ -611,7 +611,7 @@ def fig7_plm_scaling():
 # ============================================================================
 def main():
     print('=' * 50)
-    print('  Generating Updated NeurIPS Figures (v2)')
+    print('  Generating Updated Figures (v2)')
     print('=' * 50)
     fig1_collapse()
     fig2_perfold()
