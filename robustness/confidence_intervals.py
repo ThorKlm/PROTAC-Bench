@@ -8,7 +8,7 @@ Conditions:
   C2: Morgan + warhead + ADMET7
   C3: Morgan + warhead + ADMET7 + k=5 stratified
 
-Expected: C3 = 0.743 +/- 0.012.
+Transfer rates are computed per LOTO fold from training rows only.
 """
 
 import sys, os, json, argparse, time
@@ -31,37 +31,63 @@ def auroc_safe(y, p):
     return roc_auc_score(y, p) if len(np.unique(y)) >= 2 else 0.5
 
 
-def _tanimoto_transfer_rate(FP, y, train_mask, k=10):
-    """Compute scalar warhead_transfer_rate for all samples using train-only labels."""
-    fp_sum = FP.sum(axis=1)
-    FP_train = FP[train_mask]
-    y_train = y[train_mask]
-    fp_sum_train = fp_sum[train_mask]
-    train_indices = np.where(train_mask)[0]
-    N = len(FP)
-    rates = np.zeros(N, dtype=np.float32)
-
-    chunk = 500
-    for start in range(0, N, chunk):
-        end = min(start + chunk, N)
-        AB = FP[start:end] @ FP_train.T
-        denom = fp_sum[start:end, None] + fp_sum_train[None, :] - AB
-        np.maximum(denom, 1e-10, out=denom)
-        sim = AB / denom
-        for i in range(end - start):
-            gidx = start + i
-            if train_mask[gidx]:
-                pos = np.where(train_indices == gidx)[0]
-                if len(pos) > 0:
-                    sim[i, pos[0]] = 0.0
-        kk = min(k, sim.shape[1])
-        top_k = np.argpartition(sim, -kk, axis=1)[:, -kk:]
-        for i in range(end - start):
-            rates[start + i] = y_train[top_k[i]].mean()
-    return rates
+def _tanimoto_chunk(A, B, chunk_size=512):
+    """Pairwise Tanimoto between A (n, d) and B (m, d). Chunked to bound memory."""
+    sum_B = B.sum(axis=1)
+    sims = np.zeros((A.shape[0], B.shape[0]), dtype=np.float32)
+    for st in range(0, A.shape[0], chunk_size):
+        en = min(st + chunk_size, A.shape[0])
+        Ac = A[st:en]
+        AB = Ac @ B.T
+        denom = np.maximum(Ac.sum(axis=1)[:, None] + sum_B[None, :] - AB, 1e-8)
+        sims[st:en] = AB / denom
+    return sims
 
 
-def eval_loto_single_seed(X, y, targets, eligible, seed):
+def compute_transfer_rate(X_query, X_pool, y_pool, k=10):
+    """Mean label of the k most Tanimoto-similar pool members, per query row."""
+    sims = _tanimoto_chunk(X_query, X_pool)
+    if k < sims.shape[1]:
+        topk = np.argpartition(sims, -k, axis=1)[:, -k:]
+    else:
+        topk = np.tile(np.arange(sims.shape[1]), (sims.shape[0], 1))
+    return np.array([y_pool[topk[i]].mean() for i in range(sims.shape[0])], dtype=np.float32)
+
+
+def precompute_fold_rates(FP, y, targets, eligible, k=10):
+    """Per-fold transfer rates for every row, pooled over that fold's training rows only.
+
+    Seed-independent, so one computation per target serves all seeds and conditions.
+    """
+    cache = {}
+    for i, uid in enumerate(eligible):
+        tr = targets != uid
+        cache[uid] = compute_transfer_rate(FP, FP[tr], y[tr], k=k).reshape(-1, 1)
+        if (i + 1) % 10 == 0:
+            print(f'    fold rates {i+1}/{len(eligible)}')
+    return cache
+
+
+N_TREES = 200   # canonical; main() overrides from --trees
+
+
+def _rf(seed):
+    return RandomForestClassifier(n_estimators=N_TREES, min_samples_leaf=3,
+                                  class_weight='balanced', max_features='sqrt',
+                                  random_state=seed, n_jobs=-1)
+
+
+def _features(FP, admet, rates, rows, use_transfer, use_admet):
+    blocks = [FP[rows]]
+    if use_transfer:
+        blocks.append(rates[rows])
+    if use_admet:
+        blocks.append(admet[rows])
+    return np.hstack(blocks)
+
+
+def eval_loto_single_seed(FP, admet, rate_cache, y, targets, eligible, seed,
+                          use_transfer=False, use_admet=False):
     results = {}
     for uid in eligible:
         te = targets == uid
@@ -70,16 +96,20 @@ def eval_loto_single_seed(X, y, targets, eligible, seed):
         if len(np.unique(y_te)) < 2:
             results[uid] = 0.5
             continue
-        rf = RandomForestClassifier(n_estimators=100, min_samples_leaf=3,
-                                    max_features='sqrt', random_state=seed, n_jobs=-1)
-        rf.fit(X[tr], y[tr])
-        p = rf.predict_proba(X[te])
+        tr_idx, te_idx = np.where(tr)[0], np.where(te)[0]
+        rates = rate_cache[uid] if use_transfer else None
+        X_tr = _features(FP, admet, rates, tr_idx, use_transfer, use_admet)
+        X_te = _features(FP, admet, rates, te_idx, use_transfer, use_admet)
+        rf = _rf(seed)
+        rf.fit(X_tr, y[tr_idx])
+        p = rf.predict_proba(X_te)
         p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
         results[uid] = auroc_safe(y_te, p)
     return results
 
 
-def eval_loto_fewshot_single_seed(X, y, targets, eligible, seed, k=K_SHOT):
+def eval_loto_fewshot_single_seed(FP, admet, rate_cache, y, targets, eligible, seed,
+                                  k=K_SHOT, use_transfer=False, use_admet=False):
     results = {}
     for uid in eligible:
         te_mask = targets == uid
@@ -106,10 +136,12 @@ def eval_loto_fewshot_single_seed(X, y, targets, eligible, seed, k=K_SHOT):
             results[uid] = 0.5
             continue
         tr_aug = np.concatenate([np.where(~te_mask)[0], shot_idx])
-        rf = RandomForestClassifier(n_estimators=100, min_samples_leaf=3,
-                                    max_features='sqrt', random_state=seed, n_jobs=-1)
-        rf.fit(X[tr_aug], y[tr_aug])
-        p = rf.predict_proba(X[remaining])
+        rates = rate_cache[uid] if use_transfer else None
+        X_tr = _features(FP, admet, rates, tr_aug, use_transfer, use_admet)
+        X_te = _features(FP, admet, rates, remaining, use_transfer, use_admet)
+        rf = _rf(seed)
+        rf.fit(X_tr, y[tr_aug])
+        p = rf.predict_proba(X_te)
         p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
         results[uid] = auroc_safe(y[remaining], p)
     return results
@@ -120,9 +152,15 @@ def main():
     parser.add_argument('--seeds', default=','.join(str(s) for s in SEEDS_10))
     parser.add_argument('--output', default='results/confidence_intervals.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
+    parser.add_argument('--morgan-bits', type=int, default=2048)
+    parser.add_argument('--trees', type=int, default=100)
+    parser.add_argument('--max-targets', type=int, default=0,
+                        help='smoke test: evaluate only the first N eligible targets')
     args = parser.parse_args()
 
     seeds = [int(s) for s in args.seeds.split(',')]
+    global N_TREES
+    N_TREES = args.trees
     t_start = time.time()
 
     print('Loading data...')
@@ -135,26 +173,26 @@ def main():
 
     # features — use 2048-bit Morgan (consistent with other scripts)
     print('Computing Morgan FP...')
-    FP = compute_morgan(smiles)
+    FP = compute_morgan(smiles, nbits=args.morgan_bits)
 
-    # warhead transfer rate (precomputed, leak-safe per LOTO fold would be ideal
-    # but for CI we use the cached approach: compute once from all-but-target)
-    print('Computing warhead transfer rates...')
-    all_mask = np.ones(N, dtype=bool)
-    wh_rate = _tanimoto_transfer_rate(FP, y, all_mask, k=10).reshape(-1, 1)
 
     print('Loading ADMET...')
     admet = load_admet()
     admet = np.nan_to_num(admet, nan=0.0)
 
     eligible = get_eligible_targets(df)
+    if args.max_targets:
+        eligible = sorted(eligible)[:args.max_targets]
     print(f'{len(eligible)} eligible targets, {len(seeds)} seeds\n')
 
+    print('Computing per-fold warhead transfer rates (train-only pool)...')
+    rate_cache = precompute_fold_rates(FP, y, targets, eligible, k=10)
+
     conditions = {
-        'C0_morgan_only':           {'X': FP,                                         'fewshot': False},
-        'C1_morgan+warhead':        {'X': np.hstack([FP, wh_rate]),                   'fewshot': False},
-        'C2_morgan+warhead+admet7': {'X': np.hstack([FP, wh_rate, admet]),            'fewshot': False},
-        'C3_morgan+warhead+admet7+k5': {'X': np.hstack([FP, wh_rate, admet]),         'fewshot': True},
+        'C0_morgan_only':              {'transfer': False, 'admet': False, 'fewshot': False},
+        'C1_morgan+warhead':           {'transfer': True,  'admet': False, 'fewshot': False},
+        'C2_morgan+warhead+admet7':    {'transfer': True,  'admet': True,  'fewshot': False},
+        'C3_morgan+warhead+admet7+k5': {'transfer': True,  'admet': True,  'fewshot': True},
     }
 
     all_results = {c: {} for c in conditions}
@@ -164,9 +202,13 @@ def main():
         for cname, cfg in conditions.items():
             tc = time.time()
             if cfg['fewshot']:
-                target_aurocs = eval_loto_fewshot_single_seed(cfg['X'], y, targets, eligible, seed)
+                target_aurocs = eval_loto_fewshot_single_seed(
+                    FP, admet, rate_cache, y, targets, eligible, seed,
+                    use_transfer=cfg['transfer'], use_admet=cfg['admet'])
             else:
-                target_aurocs = eval_loto_single_seed(cfg['X'], y, targets, eligible, seed)
+                target_aurocs = eval_loto_single_seed(
+                    FP, admet, rate_cache, y, targets, eligible, seed,
+                    use_transfer=cfg['transfer'], use_admet=cfg['admet'])
             mean_auc = np.mean(list(target_aurocs.values()))
             all_results[cname][seed] = mean_auc
             print(f'  {cname}: {mean_auc:.4f} [{time.time()-tc:.0f}s]')
@@ -215,6 +257,10 @@ def main():
         'n_seeds': len(seeds),
         'n_targets': len(eligible),
         'k_shot': K_SHOT,
+        'morgan_bits': int(FP.shape[1]),
+        'rf_n_estimators': args.trees,
+        'class_weight': 'balanced',
+        'transfer_rate_scope': 'per-LOTO-fold, training rows only, k=10',
         'elapsed_min': round(elapsed, 1),
     }
 

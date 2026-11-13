@@ -8,7 +8,7 @@ Progressive conditions:
   C3: Morgan + warhead + k=5
   C4: Morgan + warhead + ADMET + k=5 (FULL STACK)
 
-Expected best: 0.743 +/- 0.012 (C4 with 10 seeds).
+Conditions are evaluated per LOTO fold; see results/confidence_intervals.json.
 """
 
 import sys, os, json, argparse
