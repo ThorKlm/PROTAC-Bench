@@ -48,7 +48,10 @@
   "@type": "sc:Dataset",
   "name": "PROTAC-Bench",
   "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": [
+    "http://mlcommons.org/croissant/1.0",
+    "http://mlcommons.org/croissant/RAI/1.0"
+  ],
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://huggingface.co/datasets/ThorKl/protac-bench",
   "version": "1.0.0",
@@ -97,7 +100,6 @@
   "rai:dataPreprocessingImputation": "None. Missing potency values are kept as null; the binary label is computed from whatever potency value is available. Entries with neither DC50 nor Dmax are excluded from the benchmark.",
   "rai:dataPreprocessingManipulation": "De-duplication on (canonical SMILES, UniProt) tuples; cross-source conflict resolution by majority vote (3 sources) or, if 2 sources conflict (12 cases), retained as separate entries flagged with source_conflict=true.",
   "rai:dataUseCases": "(1) Benchmarking PROTAC degradation prediction models under cold-target evaluation (held-out UniProt accessions). (2) Studying generalisation decay as molecular similarity to training set decreases. (3) Measuring E3-ligase scaffold transferability (VHL <-> CRBN). (4) Few-shot transfer experiments for low-data targets. NOT INTENDED for direct clinical candidate selection - predictions are research-stage and have not been validated against held-out wet-lab assays beyond the source databases.",
-  "rai:dataLimitation": "(1) E3-ligase imbalance: VHL and CRBN account for 87% of records; performance on rare E3 ligases (RNF114, IAP, MDM2, ...) is data-limited. (2) Target-class imbalance: kinases dominate (47% of entries) due to PROTAC literature focus. (3) Activity-label binarisation discards potency gradient - models cannot learn DC50 ranking. (4) Assay heterogeneity is not encoded - the same compound assayed by different labs at different time-points may receive divergent labels. (5) Publication-positivity bias: inactive PROTACs are systematically under-reported in the literature.",
   "rai:dataBiases": "Documented biases: (a) chemotype bias toward CRBN/VHL warhead families documented in the cheminformatics literature; (b) target bias toward oncology targets (BCR-ABL, BTK, AR, EGFR, BRD4 are over-represented); (c) lab-of-origin confounding - three labs contribute >40% of records, introducing potential lab-specific assay-condition signatures that models can latch onto (see task14_within_target_cross_lab.json and the 'lab-confound' analysis in the paper).",
   "rai:dataSocialImpact": "Positive: lowers the entry barrier for ML-driven PROTAC design, enables reproducible benchmarking and reduces wasted wet-lab effort on poorly-generalising models. Negative / dual-use: PROTAC technology in principle enables targeted degradation of arbitrary proteins; however, this dataset contains only published research-stage compounds and provides no novel uplift for misuse beyond what is already in the primary literature. No human-subject data; no privacy concerns.",
   "rai:personalSensitiveInformation": "None. The dataset contains chemical structures (SMILES), protein identifiers (UniProt accessions), and biochemical activity labels. No human-subject data, no PII, no patient-derived material.",
@@ -257,5 +259,7 @@
         }
       ]
     }
-  ]
+  ],
+  "rai:dataLimitations": "(1) E3-ligase imbalance: VHL and CRBN account for 87% of records; performance on rare E3 ligases (RNF114, IAP, MDM2, ...) is data-limited. (2) Target-class imbalance: kinases dominate (47% of entries) due to PROTAC literature focus. (3) Activity-label binarisation discards potency gradient - models cannot learn DC50 ranking. (4) Assay heterogeneity is not encoded - the same compound assayed by different labs at different time-points may receive divergent labels. (5) Publication-positivity bias: inactive PROTACs are systematically under-reported in the literature.",
+  "rai:hasSyntheticData": "None. All 10,748 records are literature-derived measurements inherited from PROTAC-DB 3.0, Ribes et al. (2024) and the DegradeMaster corpus. No synthetic or generated structures or labels are included."
 }

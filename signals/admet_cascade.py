@@ -25,7 +25,7 @@ ADMET_NAMES = [
 ]
 
 
-def make_rf_fn(seed=42):
+def make_rf_fn(seed=None):
     def model_fn(X_tr, y_tr, X_te):
         clf = RandomForestClassifier(
             n_estimators=200, min_samples_leaf=3,
