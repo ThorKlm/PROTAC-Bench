@@ -10,8 +10,13 @@ from rdkit.Chem.Scaffolds import MurckoScaffold
 from sklearn.model_selection import StratifiedKFold, GroupKFold
 from sklearn.metrics import roc_auc_score
 from xgboost import XGBClassifier
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
+if __name__ != '__main__':
+    raise ImportError('scripts/v12 modules execute on import; run as a script')
+from src.seeds import CANONICAL
 RDLogger.DisableLog('rdApp.*')
-SEEDS = [7, 13, 29, 42, 43, 44, 53, 71, 89, 97]
+SEEDS = CANONICAL
 NJOBS = 24
 PARAMS = dict(n_estimators=300, max_depth=6, n_jobs=1, tree_method='hist',
               eval_metric='logloss')

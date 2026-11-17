@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from scipy import stats as sp_stats
 from sklearn.ensemble import RandomForestClassifier
@@ -23,7 +24,7 @@ from sklearn.metrics import roc_auc_score
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
 from src.stats import confidence_interval
 
-SEEDS_10 = [7, 13, 29, 42, 43, 44, 53, 71, 89, 97]
+SEEDS_10 = CANONICAL
 K_SHOT = 5
 
 

@@ -1,56 +1,44 @@
 {
   "morgan_only": {
-    "loto_mean": 0.684361431666228,
-    "loto_std": 0.20203323409791749,
-    "random_mean": 0.9015958619923203,
-    "random_std": 0.006298568187383153,
-    "delta": 0.2172,
-    "n_targets": 60,
-    "feature_dim": 1024
+    "mean_auroc": 0.6649371659431704,
+    "std_auroc": 0.006206399984603023
   },
-  "morgan+esm2_8M": {
-    "loto_mean": 0.6741747762419374,
-    "loto_std": 0.19407213618843802,
-    "random_mean": 0.9142014714126526,
-    "random_std": 0.0052828147597131,
-    "delta": 0.24,
-    "n_targets": 60,
-    "feature_dim": 1344
+  "8M": {
+    "mean_auroc": 0.6612558573282455,
+    "std_auroc": 0.006722229743462451,
+    "emb_dim": 320
   },
-  "morgan+esm2_35M": {
-    "loto_mean": 0.6647413955436304,
-    "loto_std": 0.18575766454614132,
-    "random_mean": 0.9139726215498012,
-    "random_std": 0.004820461340193116,
-    "delta": 0.2492,
-    "n_targets": 60,
-    "feature_dim": 1504
+  "35M": {
+    "mean_auroc": 0.6602657451228287,
+    "std_auroc": 0.012462355186414484,
+    "emb_dim": 480
   },
-  "morgan+esm2_150M": {
-    "loto_mean": 0.6909661986283934,
-    "loto_std": 0.18016255374614787,
-    "random_mean": 0.9136720209759182,
-    "random_std": 0.005034658954445965,
-    "delta": 0.2227,
-    "n_targets": 60,
-    "feature_dim": 1664
+  "150M": {
+    "mean_auroc": 0.6583657679798449,
+    "std_auroc": 0.013552928798959123,
+    "emb_dim": 640
   },
-  "morgan+esm2_650M": {
-    "loto_mean": 0.6671669791811333,
-    "loto_std": 0.16967986290056167,
-    "random_mean": 0.913578960605418,
-    "random_std": 0.005203595487127764,
-    "delta": 0.2464,
-    "n_targets": 60,
-    "feature_dim": 2304
+  "650M": {
+    "mean_auroc": 0.6523408454647567,
+    "std_auroc": 0.010613826171907835,
+    "emb_dim": 1280
   },
-  "morgan+esm2_3B": {
-    "loto_mean": 0.6562325986398739,
-    "loto_std": 0.17692883211837954,
-    "random_mean": 0.9140578899400917,
-    "random_std": 0.005057875841924615,
-    "delta": 0.2578,
-    "n_targets": 60,
-    "feature_dim": 3584
-  }
+  "3B": {
+    "mean_auroc": 0.6572074392696517,
+    "std_auroc": 0.008967104046956208,
+    "emb_dim": 2560
+  },
+  "seeds": [
+    42,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "method": "PLM scaling (ESM-2 + Morgan + RF)"
 }

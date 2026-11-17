@@ -106,7 +106,7 @@
     "dm_loto_by_uniprot": 0.7021,
     "our_egnn_loto_merged_data": 0.547
   },
-  "conclusion": "DM under LOTO gives 0.732, a substantial drop from 0.878. Most of the gap is random-split leakage, though DM may provide modest genuine advantage.",
+  "conclusion": "DegradeMaster under LOTO drops substantially from its reported random-split value. Per-protocol deltas against RF plus Morgan do not survive Holm correction across the eight-architecture sweep; the architectural contribution is not detectable under either protocol.",
   "elapsed_seconds": 32755.6,
   "raw_results_by_target_path": [
     {

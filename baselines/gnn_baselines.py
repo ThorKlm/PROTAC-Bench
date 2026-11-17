@@ -12,6 +12,7 @@ import numpy as np
 from collections import defaultdict
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 try:
     import torch
@@ -301,7 +302,7 @@ def main():
         sys.exit(1)
 
     parser = argparse.ArgumentParser(description='GNN baselines (GIN + D-MPNN)')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/gnn_baselines.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--device', default='auto')

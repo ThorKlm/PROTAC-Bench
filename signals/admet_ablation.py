@@ -4,10 +4,6 @@
 Two experiments:
   1. Leave-one-out: remove each ADMET feature from the full set, measure drop.
   2. Individual: add each single ADMET feature to Morgan, measure gain.
-
-Expected: HIA_Hou most important (drop 0.021 when removed).
-
-NOTE: uses single seed by default for speed. The full ADMET cascade
 (admet_cascade.py) already established significance with multi-seed.
 """
 
@@ -15,6 +11,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
@@ -40,12 +37,12 @@ def make_rf_fn(seed=42):
 
 def main():
     parser = argparse.ArgumentParser(description='ADMET ablation (leave-one-out + individual)')
-    parser.add_argument('--seed', type=int, default=42, help='single seed for speed')
+    parser.add_argument('--seeds', default=','.join(str(x) for x in CANONICAL))
     parser.add_argument('--output', default='results/admet_ablation.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()
 
-    seeds = [args.seed]
+    seeds = [int(x) for x in args.seeds.split(',')]
 
     print('Loading data...')
     df = load_dataset(args.data)

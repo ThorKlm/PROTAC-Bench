@@ -5,6 +5,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 import xgboost as xgb
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
@@ -31,7 +32,7 @@ def make_xgb_model_fn(scale_pos_weight):
 
 def main():
     parser = argparse.ArgumentParser(description='XGBoost + Morgan baseline')
-    parser.add_argument('--seeds', default='42,43,44,53,71')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/baseline_xgb_morgan.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()

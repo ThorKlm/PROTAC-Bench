@@ -7,8 +7,6 @@ cross-source batch effects (artifact).
   S0: protac8k only → RF+Morgan LOTO
   S1: tpddb only    → RF+Morgan LOTO
   S2: protac8k only → RF+Morgan+warhead_transfer (leak-free)
-
-Expected: S0 ~0.666, S1 ~0.668 → ceiling is real.
 """
 
 import sys, os, json, argparse, time
@@ -16,6 +14,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -44,8 +43,8 @@ def eval_loto(FP, y, targets, eligible, seeds, label=""):
             continue
         all_probs = []
         for s in seeds:
-            rf = RandomForestClassifier(n_estimators=100, min_samples_leaf=3,
-                                        max_features='sqrt', random_state=s, n_jobs=-1)
+            rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
+                                        max_features='sqrt', random_state=s,class_weight='balanced',  n_jobs=-1)
             rf.fit(FP[tr], y[tr])
             p = rf.predict_proba(FP[te])
             p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -104,8 +103,8 @@ def eval_loto_with_transfer(FP, y, targets, eligible, seeds, label=""):
 
         all_probs = []
         for s in seeds:
-            rf = RandomForestClassifier(n_estimators=100, min_samples_leaf=3,
-                                        max_features='sqrt', random_state=s, n_jobs=-1)
+            rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
+                                        max_features='sqrt', random_state=s,class_weight='balanced',  n_jobs=-1)
             rf.fit(X_tr, y[tr_idx])
             p = rf.predict_proba(X_te)
             p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -119,7 +118,7 @@ def eval_loto_with_transfer(FP, y, targets, eligible, seeds, label=""):
 
 def main():
     parser = argparse.ArgumentParser(description='Per-source LOTO robustness check')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/single_source.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
@@ -207,13 +206,9 @@ def main():
                        if k.endswith('_morgan')]
     mean_ss = np.mean(all_source_aucs)
     print(f'\n  Mean single-source LOTO: {mean_ss:.4f}')
-    if all(0.55 <= a <= 0.75 for a in all_source_aucs):
-        print('  >> Ceiling is REAL — persists within each source')
-
     summary['_meta'] = {
         'seeds': seeds,
         'mean_single_source_auroc': round(float(mean_ss), 4),
-        'ceiling_is_real': all(0.55 <= a <= 0.75 for a in all_source_aucs),
     }
 
     os.makedirs(os.path.dirname(args.output), exist_ok=True)

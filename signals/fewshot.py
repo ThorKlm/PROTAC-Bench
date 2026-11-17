@@ -3,8 +3,6 @@
 
 For each LOTO target, sample k examples (stratified when possible),
 add to training set, evaluate on the rest.
-
-Expected: RF k=5 = 0.700, MAML k=5 = 0.683.
 RF wins everywhere -- meta-learning doesn't help.
 """
 
@@ -12,6 +10,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -240,7 +239,7 @@ def fewshot_maml_evaluate(X, y, targets, eligible, k=5, seeds=[42],
 def main():
     parser = argparse.ArgumentParser(description='Few-shot: RF vs MAML')
     parser.add_argument('--k-values', default='1,3,5,10', help='comma-sep k values')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--skip-maml', action='store_true', help='skip MAML (slow)')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--output', default='results/fewshot.json')

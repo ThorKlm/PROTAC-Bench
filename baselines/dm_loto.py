@@ -21,6 +21,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -131,7 +132,7 @@ def rf_baseline_on_dm(df, seeds):
     eligible = get_eligible_targets(df)
 
     def rf_fn(X_tr, y_tr, X_te):
-        clf = RandomForestClassifier(n_estimators=500, min_samples_leaf=3,
+        clf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
                                       class_weight='balanced', n_jobs=-1)
         clf.fit(X_tr, y_tr)
         return clf.predict_proba(X_te)[:, 1]
@@ -168,7 +169,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='DegradeMaster LOTO evaluation')
     parser.add_argument('--dm-data-dir', default='baselines/dm_data')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/dm_loto.json')
     parser.add_argument('--device', default='auto')
     args = parser.parse_args()

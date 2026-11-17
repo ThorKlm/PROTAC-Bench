@@ -14,6 +14,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -158,7 +159,7 @@ def run_condition(X_fp_base, X_extra, y, targets, eligible, seeds, label=""):
                 X_te = X_fp_base[test_mask]
 
             clf = RandomForestClassifier(
-                n_estimators=100, min_samples_leaf=3,
+                n_estimators=200, min_samples_leaf=3,
                 max_features='sqrt', class_weight='balanced',
                 random_state=seed, n_jobs=-1,
             )
@@ -198,7 +199,7 @@ def collect_paired(res_a, res_b, seeds):
 
 def main():
     parser = argparse.ArgumentParser(description='Warhead ablation study')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/warhead_ablation.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()

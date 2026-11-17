@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -26,15 +27,15 @@ def auroc_safe(y_true, y_score):
 
 
 def train_predict_rf(X_train, y_train, X_test, seed):
-    clf = RandomForestClassifier(n_estimators=256, max_depth=None,
-                                  min_samples_leaf=3, n_jobs=-1, random_state=seed)
+    clf = RandomForestClassifier(n_estimators=200, max_depth=None,
+                                  min_samples_leaf=3,class_weight='balanced',  n_jobs=-1, random_state=seed)
     clf.fit(X_train, y_train)
     return clf.predict_proba(X_test)[:, 1]
 
 
 def main():
     parser = argparse.ArgumentParser(description='Cross-E3 evaluation')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/cross_e3.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()
@@ -45,7 +46,7 @@ def main():
     print(f'Total: {len(df)}')
 
     # split by E3 type
-    df['e3_group'] = df['e3_name'].apply(
+    df['e3_group'] = df['e3_type'].apply(
         lambda x: 'VHL' if x == 'VHL' else ('CRBN' if x == 'CRBN' else 'other'))
     for g, cnt in df['e3_group'].value_counts().items():
         print(f'  {g}: {cnt}')

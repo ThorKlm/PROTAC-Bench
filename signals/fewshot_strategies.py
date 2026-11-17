@@ -17,6 +17,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -206,7 +207,7 @@ def evaluate_strategy(X, y, targets, eligible, strategy_fn, k=5,
 def main():
     parser = argparse.ArgumentParser(description='Few-shot selection strategies (k=5)')
     parser.add_argument('--k', type=int, default=5)
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/fewshot_strategies.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()

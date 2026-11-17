@@ -6,7 +6,6 @@
   2. Refine top-5 configs on 15 targets
   3. Validate best config with 3-seed full LOTO
 
-Expected result: best tuned ~0.600 (tuning actually hurts vs default).
 This is an OPTIONAL/SLOW script -- full run takes ~12h on a single GPU.
 
 TODO: could parallelize stage 1 across GPUs
@@ -16,6 +15,7 @@ import sys, os, json, argparse, itertools, time
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from src.data_utils import load_dataset, get_eligible_targets
 
@@ -178,7 +178,7 @@ def main():
         model_cls = make_dmpnn_cls(atom_dim, bond_dim,
                                     best['hidden'], best['depth'], best['dropout'])
         res = gnn_loto(model_cls, graphs, y, targets, set(eligible), device,
-                       model_kwargs={}, seeds=[42, 43, 44])
+                       model_kwargs={}, seeds=CANONICAL)
         print(f'Best tuned D-MPNN LOTO: {res["mean_auroc"]:.3f} +/- {res["std_auroc"]:.3f}')
         # NOTE: tuning typically hurts -- overfits to screening targets
         output['final_loto'] = {

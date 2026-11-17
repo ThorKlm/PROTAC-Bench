@@ -2,13 +2,14 @@
 """RF + Morgan fingerprint baseline for PROTAC-Bench.
 
 This is the anchor baseline: Random Forest on 2048-bit Morgan FPs
-evaluated under LOTO protocol. Expected: 0.668 +/- 0.005.
+evaluated under LOTO protocol.
 """
 
 import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
@@ -20,7 +21,7 @@ from src.debug import reduce_for_debug
 def rf_model_fn(X_train, y_train, X_test):
     """Train RF and return predicted probabilities."""
     clf = RandomForestClassifier(
-        n_estimators=500,
+        n_estimators=200,
         min_samples_leaf=3,
         class_weight='balanced',
         n_jobs=-1,
@@ -31,7 +32,7 @@ def rf_model_fn(X_train, y_train, X_test):
 
 def main():
     parser = argparse.ArgumentParser(description='RF + Morgan baseline')
-    parser.add_argument('--seeds', default='42,43,44,53,71',
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL),
                         help='comma-separated random seeds')
     parser.add_argument('--output', default='results/baseline_rf_morgan.json')
     parser.add_argument('--data', default='data/protac_bench.csv')

@@ -15,6 +15,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -143,7 +144,7 @@ def evaluate_condition(X_morgan, y, targets, eligible, seeds,
             if not use_fewshot:
                 # standard LOTO
                 clf = RandomForestClassifier(
-                    n_estimators=100, min_samples_leaf=3, max_features='sqrt',
+                    n_estimators=200, min_samples_leaf=3, max_features='sqrt',
                     class_weight='balanced', random_state=seed, n_jobs=-1,
                 )
                 clf.fit(X_tr_full, y_train)
@@ -155,7 +156,7 @@ def evaluate_condition(X_morgan, y, targets, eligible, seeds,
             else:
                 # few-shot: get stage-1 preds for selection
                 clf_s1 = RandomForestClassifier(
-                    n_estimators=100, min_samples_leaf=3, max_features='sqrt',
+                    n_estimators=200, min_samples_leaf=3, max_features='sqrt',
                     class_weight='balanced', random_state=seed, n_jobs=-1,
                 )
                 clf_s1.fit(X_tr_full, y_train)
@@ -176,7 +177,7 @@ def evaluate_condition(X_morgan, y, targets, eligible, seeds,
                     y_tr_aug = np.concatenate([y_train, y_test_full[shot_local]])
 
                     clf = RandomForestClassifier(
-                        n_estimators=100, min_samples_leaf=3, max_features='sqrt',
+                        n_estimators=200, min_samples_leaf=3, max_features='sqrt',
                         class_weight='balanced', random_state=seed + rep, n_jobs=-1,
                     )
                     clf.fit(X_tr_aug, y_tr_aug)
@@ -214,7 +215,7 @@ def evaluate_condition(X_morgan, y, targets, eligible, seeds,
 
 def main():
     parser = argparse.ArgumentParser(description='Full stack: reproduce best result')
-    parser.add_argument('--seeds', default='42,43,44',
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL),
                         help='comma-separated seeds (use 10 for CI)')
     parser.add_argument('--k', type=int, default=5, help='few-shot k')
     parser.add_argument('--output', default='results/full_stack.json')

@@ -1,45 +1,206 @@
 {
-  "C0_morgan": {
-    "mean_auroc": 0.6268,
-    "delta_vs_C0": 0.0,
-    "wilcoxon_p": 1.0,
-    "n_targets": 65
+  "method": "warhead_transfer_LOFO",
+  "seeds": [
+    42,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "k_neighbors": 10,
+  "C0_baseline": {
+    "mean_auroc": 0.5606735467715308,
+    "std_auroc": 0.011012397190981665,
+    "per_seed": {
+      "42": {
+        "Bromodomain": 0.5378536735795236,
+        "HDAC": 0.49096812278630464,
+        "Kinase": 0.7359043778801844,
+        "NuclearReceptor": 0.4653093124668485,
+        "RAS": 0.7441794613642084,
+        "STAT": 0.30952380952380953
+      },
+      "0": {
+        "Bromodomain": 0.5335363503199445,
+        "HDAC": 0.500767414403778,
+        "Kinase": 0.7362564004096263,
+        "NuclearReceptor": 0.46274778559592933,
+        "RAS": 0.760749643426462,
+        "STAT": 0.29365079365079366
+      },
+      "1": {
+        "Bromodomain": 0.5631408526713437,
+        "HDAC": 0.5547225501770956,
+        "Kinase": 0.7299980798771121,
+        "NuclearReceptor": 0.4543900824739365,
+        "RAS": 0.735432922225019,
+        "STAT": 0.3412698412698413
+      },
+      "2": {
+        "Bromodomain": 0.5411687610824146,
+        "HDAC": 0.5347697756788665,
+        "Kinase": 0.7325620839733742,
+        "NuclearReceptor": 0.46233565061468196,
+        "RAS": 0.7336290796207736,
+        "STAT": 0.31746031746031744
+      },
+      "3": {
+        "Bromodomain": 0.5383933389869708,
+        "HDAC": 0.5087957497048406,
+        "Kinase": 0.7252310547875064,
+        "NuclearReceptor": 0.46135460037458276,
+        "RAS": 0.7508285091031126,
+        "STAT": 0.3888888888888889
+      },
+      "4": {
+        "Bromodomain": 0.5545833012103925,
+        "HDAC": 0.5398465171192444,
+        "Kinase": 0.7236962365591397,
+        "NuclearReceptor": 0.44681886245112346,
+        "RAS": 0.7540901082305563,
+        "STAT": 0.3888888888888889
+      },
+      "5": {
+        "Bromodomain": 0.5400123352093131,
+        "HDAC": 0.4954545454545455,
+        "Kinase": 0.7227848182283667,
+        "NuclearReceptor": 0.4623173439355605,
+        "RAS": 0.7606342813994463,
+        "STAT": 0.40476190476190477
+      },
+      "6": {
+        "Bromodomain": 0.5451777041091667,
+        "HDAC": 0.555785123966942,
+        "Kinase": 0.7326043266769073,
+        "NuclearReceptor": 0.459692213089745,
+        "RAS": 0.7683320748384932,
+        "STAT": 0.33333333333333337
+      },
+      "7": {
+        "Bromodomain": 0.538007863695937,
+        "HDAC": 0.5720779220779222,
+        "Kinase": 0.7330856374807988,
+        "NuclearReceptor": 0.45654745419809706,
+        "RAS": 0.773712140280225,
+        "STAT": 0.4365079365079365
+      },
+      "8": {
+        "Bromodomain": 0.5373911032302829,
+        "HDAC": 0.5162337662337662,
+        "Kinase": 0.730103046594982,
+        "NuclearReceptor": 0.4535432812140614,
+        "RAS": 0.7490456414128702,
+        "STAT": 0.30952380952380953
+      }
+    },
+    "eligible_families": [
+      "Bromodomain",
+      "HDAC",
+      "Kinase",
+      "NuclearReceptor",
+      "RAS",
+      "STAT"
+    ]
   },
-  "C1_morgan+warhead": {
-    "mean_auroc": 0.6175,
-    "delta_vs_C0": -0.0093,
-    "wilcoxon_p": 0.2756,
-    "n_targets": 65
+  "C1_transfer": {
+    "mean_auroc": 0.5509443224054019,
+    "std_auroc": 0.009637999016371534,
+    "per_seed": {
+      "42": {
+        "Bromodomain": 0.5435587078868245,
+        "HDAC": 0.5518890200708383,
+        "Kinase": 0.7054115463389656,
+        "NuclearReceptor": 0.4393194609387102,
+        "RAS": 0.7065085158150852,
+        "STAT": 0.47619047619047616
+      },
+      "0": {
+        "Bromodomain": 0.5368514378228355,
+        "HDAC": 0.5272136953955135,
+        "Kinase": 0.7087154377880185,
+        "NuclearReceptor": 0.42398785187549576,
+        "RAS": 0.6753083312358419,
+        "STAT": 0.3650793650793651
+      },
+      "1": {
+        "Bromodomain": 0.514031300593632,
+        "HDAC": 0.5608618654073199,
+        "Kinase": 0.711097670250896,
+        "NuclearReceptor": 0.46065096673347816,
+        "RAS": 0.6804576726235422,
+        "STAT": 0.4444444444444444
+      },
+      "2": {
+        "Bromodomain": 0.5151106314085268,
+        "HDAC": 0.556611570247934,
+        "Kinase": 0.6994962877624167,
+        "NuclearReceptor": 0.454187300797514,
+        "RAS": 0.6856070140112426,
+        "STAT": 0.31746031746031744
+      },
+      "3": {
+        "Bromodomain": 0.5326112096214632,
+        "HDAC": 0.5484651711924439,
+        "Kinase": 0.7009811827956989,
+        "NuclearReceptor": 0.45497800851495274,
+        "RAS": 0.6869808708784293,
+        "STAT": 0.4126984126984127
+      },
+      "4": {
+        "Bromodomain": 0.5058592244237144,
+        "HDAC": 0.5579102715466351,
+        "Kinase": 0.709360599078341,
+        "NuclearReceptor": 0.44955477217572537,
+        "RAS": 0.6882079033475963,
+        "STAT": 0.36507936507936506
+      },
+      "5": {
+        "Bromodomain": 0.5254413692082337,
+        "HDAC": 0.5370129870129869,
+        "Kinase": 0.711260240655402,
+        "NuclearReceptor": 0.4585133098945254,
+        "RAS": 0.6649572111754342,
+        "STAT": 0.4047619047619047
+      },
+      "6": {
+        "Bromodomain": 0.5306067381080873,
+        "HDAC": 0.5178866587957497,
+        "Kinase": 0.7053987455197133,
+        "NuclearReceptor": 0.44661068265137044,
+        "RAS": 0.6888581256816846,
+        "STAT": 0.4126984126984127
+      },
+      "7": {
+        "Bromodomain": 0.5224346619381698,
+        "HDAC": 0.524616292798111,
+        "Kinase": 0.7060221454173067,
+        "NuclearReceptor": 0.4527828499274774,
+        "RAS": 0.6847889923651314,
+        "STAT": 0.36507936507936506
+      },
+      "8": {
+        "Bromodomain": 0.5244391334515458,
+        "HDAC": 0.5385478158205431,
+        "Kinase": 0.7086821556579621,
+        "NuclearReceptor": 0.4407947915150889,
+        "RAS": 0.6910919540229884,
+        "STAT": 0.4206349206349206
+      }
+    },
+    "eligible_families": [
+      "Bromodomain",
+      "HDAC",
+      "Kinase",
+      "NuclearReceptor",
+      "RAS",
+      "STAT"
+    ]
   },
-  "C2_morgan+warhead+admet": {
-    "mean_auroc": 0.6187,
-    "delta_vs_C0": -0.0081,
-    "wilcoxon_p": 0.5834,
-    "n_targets": 65
-  },
-  "C3_morgan+warhead+admet_k5": {
-    "mean_auroc": 0.6082,
-    "delta_vs_C0": -0.0186,
-    "wilcoxon_p": 0.1232,
-    "n_targets": 65
-  },
-  "_meta": {
-    "experiment": "EXP37_warhead_LOFO",
-    "description": "Warhead transfer features under Leave-One-Family-Out evaluation",
-    "n_protacs": 10748,
-    "n_eligible_targets": 65,
-    "n_families": 26,
-    "morgan_bits_rf": 512,
-    "morgan_bits_sim": 2048,
-    "k_neighbors_default": 10,
-    "k_neighbors_c3": 5,
-    "seeds": [
-      42,
-      43,
-      44
-    ],
-    "rf_n_estimators": 100,
-    "elapsed_min": 4.8,
-    "note": "warhead_transfer_rate recomputed per LOFO fold from training families only"
-  }
+  "delta": -0.009729224366128886,
+  "p_value": 0.012083002239065435
 }

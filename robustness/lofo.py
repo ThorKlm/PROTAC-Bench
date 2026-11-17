@@ -3,8 +3,6 @@
 
 Groups targets by protein family, holds out entire families at once.
 Compares LOFO vs LOTO to measure family-level generalization gap.
-
-Expected: LOFO 0.612, LOTO 0.666. Family size correlates with AUROC (rho=0.520).
 """
 
 import sys, os, json, argparse
@@ -12,13 +10,14 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 from scipy.stats import wilcoxon, spearmanr
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
 
-SEEDS = [42, 43, 44]
+SEEDS = CANONICAL
 
 # Family assignments for eligible targets based on UniProt annotations
 # yapf: disable
@@ -93,7 +92,8 @@ def run_loto(df, eligible, fps, seeds):
         X_test, y_test = fps[test_idx], df.loc[test_idx, 'label'].values
         aurocs = []
         for seed in seeds:
-            rf = RandomForestClassifier(n_estimators=200, random_state=seed, n_jobs=-1)
+            rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
+                                   class_weight='balanced', random_state=seed, n_jobs=-1)
             rf.fit(X_train, y_train)
             y_prob = rf.predict_proba(X_test)[:, 1]
             aurocs.append(auroc_safe(y_test, y_prob))
@@ -120,7 +120,8 @@ def run_lofo(df, eligible, fps, family_map, seeds):
         y_train = df.loc[train_idx, 'label'].values
 
         for seed in seeds:
-            rf = RandomForestClassifier(n_estimators=200, random_state=seed, n_jobs=-1)
+            rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
+                                   class_weight='balanced', random_state=seed, n_jobs=-1)
             rf.fit(X_train, y_train)
             y_prob_all = rf.predict_proba(fps[test_idx])[:, 1]
 
@@ -137,7 +138,7 @@ def run_lofo(df, eligible, fps, family_map, seeds):
 
 def main():
     parser = argparse.ArgumentParser(description='LOFO evaluation')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/lofo.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()

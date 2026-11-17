@@ -11,6 +11,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from src.seeds import CANONICAL
 
 import torch
 import torch.nn.functional as F
@@ -20,13 +21,13 @@ from sklearn.model_selection import StratifiedKFold
 
 from gnn_baselines import GIN, DMPNN, mol_to_graph
 
-SEEDS = [42, 43, 44]
+SEEDS = CANONICAL
 N_FOLDS = 5
 EPOCHS = 30
 BATCH = 128
 LR = 1e-3
-DATA = '/workspace/PROTAC-Bench/data/protac_bench.csv'
-OUTDIR = '/workspace/PROTAC-Bench/results/per_target'
+DATA = 'data/protac_bench.csv'
+OUTDIR = 'results/per_target'
 
 
 def train_one(model, train_loader, device, epochs=EPOCHS, lr=LR):

@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 """ADMET cascade signal: concatenate precomputed ADMET scores with Morgan FP.
-
-Expected: 0.687 (+0.021 over baseline, p=0.014).
-
-Conditions:
-  C0: Morgan baseline
-  C1: Morgan + ADMET7 (all 7 ADMET descriptors)
 """
 
 import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets, load_admet
@@ -52,7 +47,7 @@ def correlation_analysis(admet, y):
 
 def main():
     parser = argparse.ArgumentParser(description='ADMET cascade signal')
-    parser.add_argument('--seeds', default='42,43,44,53,71')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/admet_cascade.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
@@ -94,13 +89,13 @@ def main():
     c1 = loto_evaluate(X_combined, y, targets, make_rf_fn(), eligible=eligible, seeds=seeds)
     print(f'  {format_result(c1["mean_auroc"], c1["std_auroc"], c1["n_seeds"])}')
 
-    # stats
-    a_list, b_list = [], []
-    for s in [str(s) for s in seeds]:
-        shared = set(c0['per_seed'].get(s, {}).keys()) & set(c1['per_seed'].get(s, {}).keys())
-        for tgt in sorted(shared):
-            b_list.append(c0['per_seed'][s][tgt])
-            a_list.append(c1['per_seed'][s][tgt])
+    # stats: one pair per target, averaged over seeds, so the paired test runs
+    # over independent units rather than over seed-target cells
+    ss = [str(s) for s in seeds]
+    sets = [set(c0['per_seed'].get(s, {})) & set(c1['per_seed'].get(s, {})) for s in ss]
+    shared = sorted(set.intersection(*sets)) if sets else []
+    b_list = [sum(c0['per_seed'][s][t] for s in ss) / len(ss) for t in shared]
+    a_list = [sum(c1['per_seed'][s][t] for s in ss) / len(ss) for t in shared]
     p_val = paired_wilcoxon(a_list, b_list)
     delta = c1['mean_auroc'] - c0['mean_auroc']
 
@@ -115,6 +110,8 @@ def main():
         'seeds': seeds,
         'baseline': c0, 'admet_cascade': c1,
         'delta': float(delta), 'p_value': float(p_val),
+        'n_paired_targets': len(shared),
+        'paired_test': 'Wilcoxon over per-target means across seeds',
         'admet_features': ADMET_NAMES,
     }
     with open(args.output, 'w') as f:

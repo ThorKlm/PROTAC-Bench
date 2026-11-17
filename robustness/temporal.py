@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -65,7 +66,7 @@ def compute_warhead_transfer(FP, labels, train_mask, test_mask):
 
 def main():
     parser = argparse.ArgumentParser(description='Temporal prospective validation')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/temporal.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--k', type=int, default=K_SHOT, help='few-shot k')
@@ -115,7 +116,7 @@ def main():
     c0_aurocs = []
     for seed in seeds:
         rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
-                                    max_features='sqrt', random_state=seed, n_jobs=-1)
+                                    max_features='sqrt', random_state=seed,class_weight='balanced',  n_jobs=-1)
         rf.fit(X_train_morgan, y_train)
         p = rf.predict_proba(X_test_morgan)
         p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -134,7 +135,7 @@ def main():
     c1_aurocs = []
     for seed in seeds:
         rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
-                                    max_features='sqrt', random_state=seed, n_jobs=-1)
+                                    max_features='sqrt', random_state=seed,class_weight='balanced',  n_jobs=-1)
         rf.fit(X_train_c1, y_train)
         p = rf.predict_proba(X_test_c1)
         p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -193,7 +194,7 @@ def main():
         X_te = np.hstack([FP[remaining_test], wh_aug[remaining_test], admet_all[remaining_test]])
 
         rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
-                                    max_features='sqrt', random_state=seed, n_jobs=-1)
+                                    max_features='sqrt', random_state=seed,class_weight='balanced',  n_jobs=-1)
         rf.fit(X_tr, y[train_idx])
         p = rf.predict_proba(X_te)
         p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]

@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 import optuna
 from sklearn.ensemble import RandomForestClassifier
@@ -28,7 +29,7 @@ from src.stats import paired_wilcoxon, confidence_interval, format_result
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 # fresh seeds, disjoint from HPO seed (42)
-VALIDATION_SEEDS = [7, 13, 29, 53, 97]
+VALIDATION_SEEDS = CANONICAL
 
 
 def _get_mol_features(smiles_list, encoder_name, cache={}):
@@ -164,7 +165,7 @@ def main():
 
     def baseline_fn(X_train, y_train, X_test):
         clf = RandomForestClassifier(
-            n_estimators=500, min_samples_leaf=3,
+            n_estimators=200, min_samples_leaf=3,
             class_weight='balanced', n_jobs=-1)
         clf.fit(X_train, y_train)
         return clf.predict_proba(X_test)[:, 1]

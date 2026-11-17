@@ -8,8 +8,13 @@ from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
+if __name__ != '__main__':
+    raise ImportError('scripts/v12 modules execute on import; run as a script')
+from src.seeds import CANONICAL
 RDLogger.DisableLog('rdApp.*')
-SEEDS = [7, 13, 29, 42, 43, 44, 53, 71, 89, 97]
+SEEDS = CANONICAL
 NJOBS = 24
 df = pd.read_csv('data/protac_bench.csv')
 folds = json.load(open('data/loto_folds.json'))

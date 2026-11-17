@@ -5,14 +5,13 @@ Core idea: for each test PROTAC in a LOTO fold, find the top-k most similar
 training PROTACs (Tanimoto on Morgan FP) and take their mean activity as
 a "warhead transfer rate". This is LOTO-safe because neighbors always come
 from other targets.
-
-Expected result: 0.713 (+0.042 over baseline, p=0.0005).
 """
 
 import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -112,7 +111,7 @@ def run_warhead_transfer_loto(X_fp, y, targets, eligible, k=10, seeds=[42]):
             X_test = np.column_stack([X_test_fp, test_rate])
 
             clf = RandomForestClassifier(
-                n_estimators=500,
+                n_estimators=200,
                 min_samples_leaf=3,
                 class_weight='balanced',
                 random_state=seed,
@@ -160,7 +159,7 @@ def run_baseline_loto(X_fp, y, targets, eligible, seeds=[42]):
 
     def model_fn(X_tr, y_tr, X_te):
         clf = RandomForestClassifier(
-            n_estimators=500, min_samples_leaf=3,
+            n_estimators=200, min_samples_leaf=3,
             class_weight='balanced', n_jobs=-1,
         )
         clf.fit(X_tr, y_tr)
@@ -171,7 +170,7 @@ def run_baseline_loto(X_fp, y, targets, eligible, seeds=[42]):
 
 def main():
     parser = argparse.ArgumentParser(description='Warhead transfer signal (LOTO)')
-    parser.add_argument('--seeds', default='42,43,44,53,71',
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL),
                         help='comma-separated random seeds')
     parser.add_argument('--k-neighbors', type=int, default=10,
                         help='number of nearest neighbors for transfer rate')

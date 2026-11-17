@@ -17,16 +17,19 @@ import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from src.seeds import CANONICAL
 
-DATA = '/workspace/PROTAC-Bench/data/protac_bench.csv'
+DATA = 'data/protac_bench.csv'
 MERGED = '/workspace/results/ext30_data_expansion/exp1_merged_dataset.csv'
 SMILES_LIST = '/workspace/cache/smiles_list.npy'
 MORGAN_FP = '/workspace/cache/mol_morgan_2048_protacs.npy'
 TARGET_IDS = '/workspace/cache/target_ids.npy'
 ESM_FP = '/workspace/cache/prot_esm2_650M_targets.npy'
-OUT = '/workspace/PROTAC-Bench/results/per_target/STAN_random_per_target.csv'
+OUT = 'results/per_target/STAN_random_per_target.csv'
 
-SEEDS = [42, 43, 44]
+SEEDS = CANONICAL
 N_FOLDS = 5
 EPOCHS = 30
 BATCH = 128

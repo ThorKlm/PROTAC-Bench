@@ -9,15 +9,22 @@ from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
+if __name__ != '__main__':
+    raise ImportError('scripts/v12 modules execute on import; run as a script')
+from src.seeds import CANONICAL
 RDLogger.DisableLog('rdApp.*')
-SEEDS = [7, 13, 29]
-NJOBS = 24
+SEEDS = CANONICAL
+NJOBS = 12
 CENTRE = dict(bits=2048, radius=2, trees=200, msl=3, cw='balanced')
 VARIANTS = [('centre', {}),
             ('bits512', dict(bits=512)), ('bits1024', dict(bits=1024)),
             ('radius3', dict(radius=3)),
             ('msl1_sklearn_default', dict(msl=1)),
-            ('cw_none_sklearn_default', dict(cw=None))]
+            ('cw_none_sklearn_default', dict(cw=None)),
+            ('trees100_sklearn_default', dict(trees=100)),
+            ('all_sklearn_defaults', dict(trees=100, msl=1, cw=None))]
 df = pd.read_csv('data/protac_bench.csv')
 folds = json.load(open('data/loto_folds.json'))
 elig = sorted(folds if isinstance(folds, list) else folds.keys())

@@ -4,8 +4,6 @@
 Runs fANOVA on random-phase trials (pre-TPE, unbiased) and on all trials
 for comparison. Prints importance table, ASCII bar chart, best/worst
 config comparison, and marginal plots for top-3 parameters.
-
-Expected: head_type 95.9%, mol_encoder 1.9%, prot_encoder 0.7%.
 """
 
 import sys, os, argparse

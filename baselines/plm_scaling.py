@@ -11,6 +11,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from src.data_utils import load_dataset, compute_morgan, get_eligible_targets
@@ -58,7 +59,7 @@ def main():
     parser = argparse.ArgumentParser(description='PLM scaling experiment')
     parser.add_argument('--embeddings-dir', default='../cache',
                         help='directory with precomputed .npy embeddings')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/plm_scaling.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     args = parser.parse_args()

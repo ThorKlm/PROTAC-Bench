@@ -10,13 +10,16 @@ from rdkit.Chem import AllChem
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from src.seeds import CANONICAL
 
-SEEDS = [42, 43, 44]
+SEEDS = CANONICAL
 N_FOLDS = 5
 K = 5
 NBITS = 512
-DATA = '/workspace/PROTAC-Bench/data/protac_bench.csv'
-OUT = '/workspace/PROTAC-Bench/results/per_target/kNN_random_per_target.csv'
+DATA = 'data/protac_bench.csv'
+OUT = 'results/per_target/kNN_random_per_target.csv'
 
 
 def compute_morgan_512(smiles_list):

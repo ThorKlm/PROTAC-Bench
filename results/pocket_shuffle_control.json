@@ -248,7 +248,8 @@
   "elapsed_seconds": 12577.570617437363,
   "timestamp_end": "2026-04-17 19:03:23",
   "interpretation": [
-    "shuffled \u2248 original \u2192 pocket acts as target identity (LEAKAGE)",
-    "pocket contribution (original - zero) = 0.013"
+    "shuffled approximately equals original, so the pocket embedding carries no usable signal",
+    "pocket contribution (original minus zero) = 0.013",
+    "not leakage: under LOTO a target-identity feature cannot inform the held-out target"
   ]
 }

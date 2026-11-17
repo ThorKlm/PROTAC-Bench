@@ -557,7 +557,6 @@
   },
   "conclusion": {
     "mean_single_source_auroc": 0.6665,
-    "ceiling_is_real": true,
     "warhead_transfer_helps_protac8k": false
   },
   "_meta": {

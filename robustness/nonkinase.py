@@ -9,7 +9,6 @@ Subsets:
   C4: no-kinase-no-bromo (35)
 
 Two models per subset: RF+Morgan vs RF+Morgan+warhead_transfer+ADMET.
-Expected: non-kinase 0.647, no-kinase-no-bromo 0.622.
 """
 
 import sys, os, json, argparse, time
@@ -17,6 +16,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -55,7 +55,7 @@ def eval_loto_morgan(FP, y, targets, eligible, seeds):
         aucs = []
         for s in seeds:
             rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
-                                        max_features='sqrt', random_state=s, n_jobs=-1)
+                                        max_features='sqrt', random_state=s,class_weight='balanced',  n_jobs=-1)
             rf.fit(FP[tr], y[tr])
             p = rf.predict_proba(FP[te])
             p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -115,7 +115,7 @@ def eval_loto_full(FP, admet, y, targets, eligible, seeds):
         aucs = []
         for s in seeds:
             rf = RandomForestClassifier(n_estimators=200, min_samples_leaf=3,
-                                        max_features='sqrt', random_state=s, n_jobs=-1)
+                                        max_features='sqrt', random_state=s,class_weight='balanced',  n_jobs=-1)
             rf.fit(X_tr, y[tr_idx])
             p = rf.predict_proba(X_te)
             p = p[:, 1] if rf.classes_[1] == 1 else 1 - p[:, 0]
@@ -126,7 +126,7 @@ def eval_loto_full(FP, admet, y, targets, eligible, seeds):
 
 def main():
     parser = argparse.ArgumentParser(description='Non-kinase LOTO robustness')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/nonkinase.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--debug', action='store_true', help='Reduced seeds, cohort, and trials for smoke test')
@@ -147,7 +147,7 @@ def main():
     admet = np.nan_to_num(admet, nan=0.0)
 
     all_eligible = get_eligible_targets(df)
-    seeds, eligible, _ = reduce_for_debug(seeds=seeds, eligible=eligible, debug=args.debug)
+    seeds, all_eligible, _ = reduce_for_debug(seeds=seeds, eligible=all_eligible, debug=args.debug)
     kinase_elig = [t for t in all_eligible if t in KINASE_TARGETS]
     bromo_elig = [t for t in all_eligible if t in BROMO_TARGETS]
     nonkinase_elig = [t for t in all_eligible if t not in KINASE_TARGETS]

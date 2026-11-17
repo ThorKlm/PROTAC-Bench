@@ -14,6 +14,7 @@ import sys, os, json, argparse
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from src.seeds import CANONICAL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
@@ -221,7 +222,7 @@ def run_lofo(X_fp, y, targets, families, use_transfer=False, k=10, seeds=[42]):
                 X_te = X_fp[test_mask]
 
             clf = RandomForestClassifier(
-                n_estimators=100, min_samples_leaf=3,
+                n_estimators=200, min_samples_leaf=3,
                 class_weight='balanced', random_state=seed, n_jobs=-1,
             )
             clf.fit(X_tr, y_train)
@@ -255,7 +256,7 @@ def run_lofo(X_fp, y, targets, families, use_transfer=False, k=10, seeds=[42]):
 
 def main():
     parser = argparse.ArgumentParser(description='Warhead transfer under LOFO')
-    parser.add_argument('--seeds', default='42,43,44')
+    parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--k-neighbors', type=int, default=10)
     parser.add_argument('--output', default='results/warhead_lofo.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
