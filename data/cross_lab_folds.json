@@ -7,7 +7,7 @@
       "min_entries_per_paper": 5,
       "both_classes_required_in_holdout_paper": true
     },
-    "metadata_source": "doi column from /workspace/results/exp42_metadata_features/master_df.csv (built by scripts/exp42_step0_build_master.py)",
+    "metadata_source": "per-publication DOI assignment; test_indices index data/protac_bench.csv directly",
     "n_targets": 36,
     "fold_index_basis": "row index into data/protac_bench.csv (0-based)",
     "holdout_strategy": "For each (target, paper) where the paper has >=5 entries and both classes present, test_indices = rows with that target AND that doi; train = all remaining rows."

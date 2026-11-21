@@ -3,7 +3,7 @@
     "split_type": "temporal_prospective",
     "train_filter": "pub_year < 2023",
     "test_filter": "pub_year == 2024",
-    "metadata_source": "pub_year column from /workspace/results/exp42_metadata_features/master_df.csv (built by scripts/exp42_step0_build_master.py from data/preprocessed/doi_years.json)",
+    "metadata_source": "per-entry publication year from DOI lookups; the index lists index data/protac_bench.csv directly",
     "fold_index_basis": "row index into data/protac_bench.csv (0-based)",
     "n_rows_total": 10748,
     "n_rows_with_pub_year": 3150,

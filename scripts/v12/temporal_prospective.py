@@ -38,6 +38,6 @@ out = dict(macro=round(float(np.mean(mac)), 4), seed_sd=round(float(np.std(mac, 
            _meta=dict(seeds=CANONICAL, rf=RF, morgan_bits=2048, radius=2,
                       fold_file='data/temporal_prospective_folds.json',
                       elapsed_min=round((time.time() - t0) / 60, 1)))
-json.dump(out, open('/root/pb/out/temporal_prospective.json', 'w'), indent=2)
+json.dump(out, open('results/temporal_prospective.json', 'w'), indent=2)
 print(f"macro {out['macro']} sd {out['seed_sd']} evaluable {out['n_test_targets_evaluable']}"
       f" of {out['n_test_targets_total']} targets, {out['n_test_rows']} test rows")

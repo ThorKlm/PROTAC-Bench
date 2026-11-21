@@ -96,7 +96,7 @@ def select_stratified(test_idx, y_test, k, rng, pred_probs):
 
 def evaluate_condition(X_morgan, y, targets, eligible, seeds,
                        use_transfer=False, use_admet=False, use_fewshot=False,
-                       X_admet=None, k=5, n_reps=5, label=""):
+                       X_admet=None, k=5, n_reps=5, label="", use_morgan=True):
     """Run LOTO (with optional few-shot) for a given feature configuration.
 
     For C0/C1: standard LOTO.
@@ -125,8 +125,8 @@ def evaluate_condition(X_morgan, y, targets, eligible, seeds,
                 continue
 
             # build training features
-            feats_train = [X_morgan[train_mask]]
-            feats_test_base = [X_morgan[test_mask]]
+            feats_train = [X_morgan[train_mask]] if use_morgan else []
+            feats_test_base = [X_morgan[test_mask]] if use_morgan else []
 
             if use_transfer:
                 tr_rate = compute_transfer_rate(X_morgan[train_mask], X_morgan[train_mask], y_train, k=10)

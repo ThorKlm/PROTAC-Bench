@@ -1,0 +1,43 @@
+{
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  42
+ ],
+ "n_targets": 35,
+ "n_seeds": 10,
+ "n_bootstrap": 5000,
+ "bootstrap_seed": 42,
+ "arms": {
+  "random": 0.7974,
+  "cross_publication": 0.6823,
+  "loto": 0.6677
+ },
+ "bound": {
+  "point": 0.11514252728681462,
+  "ci95": [
+   0.04519523195692931,
+   0.18199188896209925
+  ],
+  "loo_range": [
+   0.10328397416779911,
+   0.13091089993810734
+  ]
+ },
+ "crosspub_minus_loto": {
+  "point": 0.014561789651107326,
+  "ci95": [
+   -0.008165835768318355,
+   0.04114189851698034
+  ]
+ },
+ "clustering": "targets resampled with replacement; seeds averaged within replicate",
+ "source": "results/pending/cascade_depth12/cascade_seed_*.json"
+}

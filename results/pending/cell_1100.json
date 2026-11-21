@@ -1,0 +1,48 @@
+{
+ "id": "1100",
+ "F1": 1,
+ "F2": 1,
+ "F3": 0,
+ "F4": 0,
+ "mean_auroc": 0.6704435079939278,
+ "std_auroc": 0.0036419719917011534,
+ "ci95": null,
+ "seed_means": [
+  0.672173733102171,
+  0.6726664247295316,
+  0.6667959846008907,
+  0.6740129334002978,
+  0.6772226313283403,
+  0.6663662324536236,
+  0.6719512327099223,
+  0.6705268836581841,
+  0.6658902485865781,
+  0.6668287753697392
+ ],
+ "n_seeds_valid": null,
+ "meta": {
+  "seeds": [
+   42,
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "k_fewshot": 5,
+  "n_reps_fewshot": 5,
+  "n_targets": 65,
+  "fold_construction": "data/loto_folds.json (LOTO; same folds reused across cells)",
+  "factors": {
+   "F1": "morgan_2048",
+   "F2": "warhead_transfer_rate (k_neighbors=10)",
+   "F3": "admet7",
+   "F4": "few_shot_k5_stratified (n_reps=5)"
+  },
+  "generator": "signals/factorial_8cell.py"
+ }
+}

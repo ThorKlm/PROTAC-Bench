@@ -254,10 +254,13 @@ def gnn_loto(model_cls, graphs, y, targets, eligible, device,
             if len(np.unique(y_test_actual)) < 2:
                 continue
 
-            # use 10% of train as validation for early stopping
+            # use 10% of train as validation for early stopping; the
+            # permutation consumes the seed set at the top of the seed loop,
+            # so the partition varies across seeds rather than being fixed
             n_val = max(1, len(train_graphs) // 10)
-            val_graphs = train_graphs[:n_val]
-            train_graphs = train_graphs[n_val:]
+            perm = np.random.permutation(len(train_graphs))
+            val_graphs = [train_graphs[i] for i in perm[:n_val]]
+            train_graphs = [train_graphs[i] for i in perm[n_val:]]
 
             train_loader = DataLoader(train_graphs, batch_size=64, shuffle=True)
             val_loader = DataLoader(val_graphs, batch_size=64)
@@ -363,6 +366,14 @@ def main():
     print(f'D-MPNN: {dmpnn_res["mean_auroc"]:.3f}')
     print('='*40)
 
+    results['meta'] = {
+        'seeds': seeds, 'n_eligible': len(eligible), 'n_rows': int(len(df)),
+        'n_valid_graphs': int(valid_count), 'device': str(device),
+        'torch': torch.__version__,
+        'git_commit': subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
+                                     capture_output=True, text=True).stdout.strip(),
+        'timestamp': datetime.now().isoformat(timespec='seconds'),
+    }
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     with open(args.output, 'w') as f:
         json.dump(results, f, indent=2, default=str)
