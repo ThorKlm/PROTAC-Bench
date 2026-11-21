@@ -88,6 +88,6 @@ print(f'loto         macro={out["loto"]["macro_mean"]:.4f} '
       f'sd={out["loto"]["macro_sd"]:.4f} [{(time.time()-t0)/60:.1f} min]')
 out['_meta'] = dict(seeds=SEEDS, params=PARAMS, morgan_bits=2048, radius=2,
                     elapsed_min=round((time.time() - t0) / 60, 1))
-json.dump(out, open('/root/pb/out/xgb_protocols.json', 'w'), indent=2)
+json.dump(out, open('results/v12/xgb_protocols.json', 'w'), indent=2)
 print(f'\ntriple: random {out["random_cv"]["pooled_mean"]:.4f}  '
       f'scaffold {out["scaffold_cv"]["pooled_mean"]:.4f}  loto {out["loto"]["macro_mean"]:.4f}')

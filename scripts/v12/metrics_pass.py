@@ -65,8 +65,8 @@ out = dict(macro_auroc=round(float(np.mean(mac_auroc)), 4),
            per_target_ap={t: round(v, 4) for t, v in per_t_ap.items()},
            per_target_prior={t: round(prior[t], 4) for t in tg_set},
            elapsed_min=round((time.time() - t0) / 60, 1))
-json.dump(out, open('/root/pb/out/metrics_pass.json', 'w'), indent=2)
-json.dump(preds, open('/root/pb/out/loto_predictions.json', 'w'))
+json.dump(out, open('results/v12/metrics_pass.json', 'w'), indent=2)
+json.dump(preds, open('results/v12/loto_predictions.json', 'w'))
 print(f'macro AUROC {out["macro_auroc"]:.4f} sd {out["macro_auroc_sd"]:.4f}')
 print(f'mean AP {out["mean_average_precision"]:.4f} vs macro prior '
       f'{out["macro_per_target_prior"]:.4f}  lift {out["mean_lift"]:+.4f}  '

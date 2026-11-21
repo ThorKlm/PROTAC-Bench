@@ -75,7 +75,7 @@ for k, v in out.items():
     if k != 'centre': v['delta_vs_centre'] = round(v['macro'] - c, 4)
 out['_meta'] = dict(seeds=SEEDS, centre=CENTRE, n_jobs=NJOBS,
                     elapsed_min=round((time.time() - t0) / 60, 1))
-json.dump(out, open('/root/pb/out/oat.json', 'w'), indent=2)
+json.dump(out, open('results/v12/oat.json', 'w'), indent=2)
 d = [abs(v['delta_vs_centre']) for k, v in out.items() if k not in ('centre', '_meta')]
 print(f'\ncentre {c:.4f}  per_target_sd {out["centre"]["per_target_sd"]:.4f}  '
       f'target_se {out["centre"]["target_se"]:.4f}')

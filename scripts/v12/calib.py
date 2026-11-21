@@ -5,7 +5,7 @@ import json, numpy as np
 from scipy.optimize import minimize_scalar
 from sklearn.linear_model import LogisticRegression
 EPS = 1e-6
-d = json.load(open('/root/pb/out/loto_predictions.json'))
+d = json.load(open('results/v12/loto_predictions.json'))
 def logit(p): p = np.clip(p, EPS, 1 - EPS); return np.log(p / (1 - p))
 def sig(z): return 1.0 / (1.0 + np.exp(-z))
 def ece(p, y, bins=10):

@@ -18,7 +18,7 @@ from src.seeds import CANONICAL
 RDLogger.DisableLog('rdApp.*')
 SEEDS = CANONICAL
 NJOBS = 24
-OUT = '/root/pb/out/cohort_cells.json'
+OUT = 'results/v12/cohort_cells.json'
 df = pd.read_csv('data/protac_bench.csv')
 folds = json.load(open('data/loto_folds.json'))
 elig = sorted(folds if isinstance(folds, list) else folds.keys())
