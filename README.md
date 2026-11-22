@@ -8,7 +8,7 @@ A leave-one-target-out (LOTO) benchmark for PROTAC activity prediction. PROTAC-B
 - `data/loto_folds.json`, `data/lofo_folds.json`, `data/cross_lab_folds.json`, `data/temporal_prospective_folds.json`: fold assignment files for the four primary evaluation splits.
 - `data/metadata.csv`: metadata-enriched 9,384-row subset with cell-line, readout-method, timepoint, and concentration annotations from the dual-LLM enrichment pipeline.
 - `data/croissant.json`: MLCommons Croissant 1.0 metadata with all 20 RAI extension fields populated.
-- `baselines/`: canonical baselines including `rf_morgan.py` (the documented 0.668 anchor), `dm_loto.py`, `gnn_baselines.py`, `chemprop_hpo.py`.
+- `baselines/`: canonical baselines including `rf_morgan.py`, `dm_loto.py`, `gnn_baselines.py`, `chemprop_hpo.py`.
 - `signals/`: full-stack pipeline including `warhead_transfer.py`, `admet_cascade.py`, `fewshot.py`, and `full_stack.py`.
 - `robustness/`: cross-source, non-kinase, cross-E3, and temporal robustness checks.
 - `hpo/`: 21-dimensional HPO V2 search space and validation.
@@ -17,8 +17,13 @@ A leave-one-target-out (LOTO) benchmark for PROTAC activity prediction. PROTAC-B
 
 ## Quick start
 
+Python 3.10 or newer.
+
 ```bash
-pip install -r requirements.txt
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 bash reproduce.sh
 ```
 

@@ -6,5 +6,6 @@ matplotlib>=3.7
 rdkit>=2023.9
 optuna>=3.0
 torch>=2.0
+torch-geometric>=2.4
 huggingface-hub>=0.20
 tqdm>=4.65

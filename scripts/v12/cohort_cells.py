@@ -54,7 +54,8 @@ def one(t, s, dedup, excl):
             int(tr.sum()))
 CELLS = [('dedup_65', dict(cohort=elig, dedup=True, excl=False)),
          ('dedup_excl_61', dict(cohort=single, dedup=True, excl=True)),
-         ('retained_excl_61', dict(cohort=single, dedup=False, excl=True))]
+         ('retained_excl_61', dict(cohort=single, dedup=False, excl=True)),
+         ('retained_65', dict(cohort=elig, dedup=False, excl=False))]
 out, t0 = {}, time.time()
 for name, spec in CELLS:
     res = [r for r in Parallel(n_jobs=NJOBS)(

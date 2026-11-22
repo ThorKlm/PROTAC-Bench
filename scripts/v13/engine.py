@@ -8,6 +8,7 @@ score the remainder, averaged over repetitions.
 """
 import json, time, zlib
 import numpy as np
+from joblib import Parallel, delayed
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
 from src.cohort import masks, meta, usable
@@ -22,7 +23,23 @@ def transfer_self_excluded(Xtr, ytr, k=10):
            else np.tile(np.arange(s.shape[1]), (s.shape[0], 1)))
     return ytr[idx].mean(axis=1).astype(np.float32)
 
-RF = dict(n_estimators=200, min_samples_leaf=3, class_weight='balanced', n_jobs=8)
+# folds are independent and fold() is order-independent, so parallelism goes
+# over folds and each forest stays single-threaded
+NJOBS = 24
+RF = dict(n_estimators=200, min_samples_leaf=3, class_weight='balanced', n_jobs=1)
+
+def provenance():
+    # recorded per artefact: seeds alone do not pin a result across environments
+    import subprocess, sys, numpy, sklearn
+    try:
+        h = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
+                           capture_output=True, text=True).stdout.strip()
+    except Exception:
+        h = ''
+    return dict(rf={k: x for k, x in RF.items() if k != 'n_jobs'},
+                morgan_bits=2048, radius=2, git_commit=h,
+                python=sys.version.split()[0], numpy=numpy.__version__,
+                sklearn=sklearn.__version__)
 
 def features(c, X, Xa, tr, te, use_morgan, use_warhead, use_admet, self_excl=False):
     ftr, fte = [], []
@@ -76,10 +93,10 @@ def run(name, spec, c, X, Xa, seeds, cohort=None, out=None, store=True):
     tgts = cohort or c['cohort']
     t0, per_seed, preds = time.time(), {}, {}
     for s in seeds:
+        use = [t for t in tgts if usable(t, c)]
+        rs = Parallel(n_jobs=NJOBS)(delayed(fold)(c, X, Xa, t, s, spec) for t in use)
         d = {}
-        for t in tgts:
-            if not usable(t, c): continue
-            r = fold(c, X, Xa, t, s, spec)
+        for t, r in zip(use, rs):
             if r is None: continue
             auroc, ap, n, p = r
             d[t] = dict(auroc=auroc, ap=ap, n=n)
@@ -102,7 +119,7 @@ def run(name, spec, c, X, Xa, seeds, cohort=None, out=None, store=True):
                n_targets_paired=len(tg),
                per_seed_macro={str(s): round(m, 4) for s, m in zip(seeds, mac)},
                per_target={t: round(float(v), 4) for t, v in zip(tg, pt)},
-               elapsed_min=round((time.time() - t0) / 60, 1), _meta=meta(c, seeds))
+               elapsed_min=round((time.time() - t0) / 60, 1), _meta={**meta(c, seeds), **provenance()})
     if out:
         json.dump(res, open(out, 'w'), indent=1)
         if store and preds:
