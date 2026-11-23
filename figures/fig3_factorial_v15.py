@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fig 3: Factorial marginal contributions (delta_K, delta_A, delta_W).
 Half-width 6.3 x 3.8, style matched to fig5_gap_decomposition_v14.py and figS_new_v14.py.
-Reads results/factorial_16cell.json. No interpretive
+Reads results/v13/cell_*.json. No interpretive
 annotations; per-pair dots and error bars carry the signal. Caption explains.
 """
 import json, warnings
@@ -18,7 +18,7 @@ plt.rcParams.update({
     'figure.dpi': 300, 'savefig.bbox': 'tight', 'savefig.pad_inches': 0.1,
 })
 OUTDIR = Path(__file__).parent
-FACTORIAL_JSON = Path('results/factorial_16cell.json')
+CELL_DIR = Path('results/v13')
 
 C_DBLUE = '#2166AC'
 C_LBLUE = '#92C5DE'
@@ -38,20 +38,17 @@ PAIRS = {
 
 
 def load_cells():
-    """Map cell_id -> mean AUROC. Tries common field names defensively."""
-    d = json.load(open(FACTORIAL_JSON))
-    out = {}
-    for c in d['cells']:
-        cid = c.get('cell_id') or c.get('id') or c.get('cell')
-        if cid is None:
-            continue
-        mean = c.get('mean_auroc') or c.get('auroc_mean') or c.get('mean')
-        if mean is None and 'auroc' in c:
-            v = c['auroc']
-            mean = np.mean(v) if isinstance(v, list) else v
-        if mean is not None:
-            out[str(cid).zfill(4)] = float(mean)
-    return out
+    """Map cell id to macro-mean AUROC and to the target-clustered standard
+    error, one artefact per cell. The second quantity is carried because the
+    per-pair interval below averages per-target variance away inside each cell,
+    so the marginals need reporting against the component that dominates."""
+    macro, tse = {}, {}
+    for f in sorted(CELL_DIR.glob('cell_*.json')):
+        d = json.load(open(f))
+        cid = str(d['arm']).split('_')[-1].zfill(4)
+        macro[cid] = float(d['macro_auroc'])
+        tse[cid] = float(d['target_se'])
+    return macro, tse
 
 
 def compute_marginals(cells):
@@ -67,7 +64,7 @@ def compute_marginals(cells):
 
 
 def generate_fig3():
-    cells = load_cells()
+    cells, target_se = load_cells()
     deltas = compute_marginals(cells)
     factors = ['K', 'A', 'W']
     labels = ['Few-shot k=5\n(K)', 'ADMET 7-feat\n(A)', 'Warhead transfer\n(W)']
@@ -109,13 +106,23 @@ def generate_fig3():
     ax.set_ylim(ymin, ymax)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    ax.text(0.015, 0.975,
+            'bars: mean of 4 paired contrasts\n'
+            'whiskers: t-based 95 percent interval over those 4 contrasts\n'
+            'dots: individual contrasts',
+            transform=ax.transAxes, ha='left', va='top', fontsize=7.2,
+            color=C_GREY)
     plt.tight_layout()
     outpath = OUTDIR / 'fig3_factorial_v15.pdf'
     fig.savefig(outpath, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f'  Saved {outpath}')
     print(f'  Means: K={means[0]:+.4f} A={means[1]:+.4f} W={means[2]:+.4f}')
-    print(f'  95%CI half-widths: K={cis[0]:.4f} A={cis[1]:.4f} W={cis[2]:.4f}')
+    print(f'  contrast-spread half-widths (t, 95 percent, n=4): '
+          f'K={cis[0]:.4f} A={cis[1]:.4f} W={cis[2]:.4f}')
+    tv = np.array(sorted(target_se.values()))
+    print(f'  target-clustered SE across cells: median={np.median(tv):.4f} '
+          f'min={tv.min():.4f} max={tv.max():.4f}')
 
 
 if __name__ == '__main__':

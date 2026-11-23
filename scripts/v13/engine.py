@@ -28,7 +28,7 @@ def transfer_self_excluded(Xtr, ytr, k=10):
 NJOBS = 24
 RF = dict(n_estimators=200, min_samples_leaf=3, class_weight='balanced', n_jobs=1)
 
-def provenance():
+def provenance(bits=2048, radius=2):
     # recorded per artefact: seeds alone do not pin a result across environments
     import subprocess, sys, numpy, sklearn
     try:
@@ -37,7 +37,7 @@ def provenance():
     except Exception:
         h = ''
     return dict(rf={k: x for k, x in RF.items() if k != 'n_jobs'},
-                morgan_bits=2048, radius=2, git_commit=h,
+                morgan_bits=bits, radius=radius, git_commit=h,
                 python=sys.version.split()[0], numpy=numpy.__version__,
                 sklearn=sklearn.__version__)
 
@@ -119,7 +119,7 @@ def run(name, spec, c, X, Xa, seeds, cohort=None, out=None, store=True):
                n_targets_paired=len(tg),
                per_seed_macro={str(s): round(m, 4) for s, m in zip(seeds, mac)},
                per_target={t: round(float(v), 4) for t, v in zip(tg, pt)},
-               elapsed_min=round((time.time() - t0) / 60, 1), _meta={**meta(c, seeds), **provenance()})
+               elapsed_min=round((time.time() - t0) / 60, 1), _meta={**meta(c, seeds), **provenance(spec.get('nbits', 2048), spec.get('radius', 2))})
     if out:
         json.dump(res, open(out, 'w'), indent=1)
         if store and preds:

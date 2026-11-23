@@ -89,7 +89,7 @@
   "Q9Y2I7": 0.5525,
   "Q9Y616": 0.94
  },
- "elapsed_min": 90.2,
+ "elapsed_min": 73.6,
  "_meta": {
   "seeds": [
    42,
@@ -109,6 +109,17 @@
   "min_rate": 0.1,
   "max_rate": 0.9,
   "constituent_excluded": true,
-  "smiles_dedup": true
+  "smiles_dedup": true,
+  "rf": {
+   "n_estimators": 200,
+   "min_samples_leaf": 3,
+   "class_weight": "balanced"
+  },
+  "morgan_bits": 2048,
+  "radius": 2,
+  "git_commit": "ce5a2ad",
+  "python": "3.12.13",
+  "numpy": "2.5.5",
+  "sklearn": "1.9.1"
  }
 }

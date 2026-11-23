@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 warnings.filterwarnings("ignore")
 plt.rcParams.update({
     'font.size': 11, 'font.family': 'sans-serif',
@@ -26,7 +28,7 @@ plt.rcParams.update({
 OUTDIR = Path(__file__).parent
 RDIR = Path(__file__).parent.parent / 'results'
 PTDIR = RDIR / 'per_target'
-SYNTHETIC_FALLBACK = True   # set False for publication-strict mode
+SYNTHETIC_FALLBACK = False  # a missing input must fail, never be substituted
 
 C_REP_RS = '#2166AC'
 C_REPL_RS = '#92C5DE'
@@ -44,16 +46,33 @@ def _load_json(name):
 
 
 def _load_csv_column(path, col='auroc'):
-    out = []
+    """AUROCs from a per-target or per-seed file.
+
+    Per-seed files carry seed, target and auroc; those are averaged by target so
+    every method contributes at one granularity. Some files name the column
+    random_auroc. Returns an empty list if the file is absent, which the caller
+    turns into a hard failure unless SYNTHETIC_FALLBACK is on.
+    """
     if not Path(path).exists():
-        return out
-    with open(path) as f:
-        for row in csv.DictReader(f):
-            v = row.get(col, '').strip()
-            if v:
-                try: out.append(float(v))
-                except ValueError: pass
-    return out
+        return []
+    rows = list(csv.DictReader(open(path)))
+    if not rows:
+        return []
+    names = [c for c in (col, 'auroc', 'random_auroc', 'loto_auroc') if c in rows[0]]
+    if not names:
+        return []
+    name = names[0]
+    def val(r):
+        v = r.get(name, '').strip()
+        return float(v) if v else None
+    if 'seed' in rows[0] and 'target' in rows[0]:
+        by = {}
+        for r in rows:
+            v = val(r)
+            if v is not None:
+                by.setdefault(r['target'], []).append(v)
+        return [sum(v) / len(v) for v in by.values()]
+    return [v for v in (val(r) for r in rows) if v is not None]
 
 
 def build_methods():
@@ -62,40 +81,40 @@ def build_methods():
          'reported_random': 0.847, 'replicated_random': 0.626,
          'reported_cold': None, 'replicated_cold': 0.531,
          'replicated_random_std': 0.015, 'replicated_cold_std': 0.020,
-         'n_samples': 852, 'n_targets': 27, 'pt_file': None},
+         'n_samples': 852, 'n_targets': 27, 'pt_file': {'loto': 'DeepPROTACs_faithful_loto_per_target.csv', 'random': 'DeepPROTACs_faithful_random_per_target.csv'}},
         {'name': 'Ribes et al.', 'published': True,
          'reported_random': 0.913, 'replicated_random': 0.865,
          'reported_cold': 0.604, 'replicated_cold': 0.646,
          'replicated_random_std': 0.005, 'replicated_cold_std': 0.008,
-         'n_samples': 9428, 'n_targets': 65, 'pt_file': 'Ribes_per_target.csv'},
+         'n_samples': 9428, 'n_targets': 65, 'pt_file': {'loto': 'Ribes_loto_per_seed.csv', 'random': 'Ribes_random_per_seed.csv'}},
         {'name': 'PROTAC-STAN', 'published': True,
          'reported_random': 0.883, 'replicated_random': 0.919,
          'reported_cold': None, 'replicated_cold': 0.682,
          'replicated_random_std': 0.006, 'replicated_cold_std': 0.012,
-         'n_samples': 8754, 'n_targets': 27, 'pt_file': 'C0_Full_STAN_per_target.csv'},
+         'n_samples': 8754, 'n_targets': 27, 'pt_file': {'loto': 'C0_Full_STAN_per_target.csv', 'random': 'STAN_random_per_seed.csv'}},
         {'name': 'DegradeMaster', 'published': True,
          'reported_random': 0.878, 'replicated_random': 0.830,
          'reported_cold': None, 'replicated_cold': 0.702,
          'replicated_random_std': 0.008, 'replicated_cold_std': 0.010,
-         'n_samples': 966, 'n_targets': 35, 'pt_file': None},
+         'n_samples': 966, 'n_targets': 35, 'pt_file': {'loto': 'DM_loto_per_seed.csv', 'random': None}},
         {'name': 'RF+Morgan', 'published': False,
          'replicated_random': 0.902, 'replicated_cold': 0.668,
          'replicated_random_std': 0.004, 'replicated_cold_std': 0.005,
-         'n_samples': 10748, 'n_targets': 65, 'pt_file': 'C0_morgan_only_per_target.csv'},
+         'n_samples': 10748, 'n_targets': 65, 'pt_file': {'loto': 'C0_morgan_only_per_target.csv', 'random': None}},
         {'name': 'kNN (k=5)', 'published': False,
          'replicated_random': 0.883, 'replicated_cold': 0.630,
          'replicated_random_std': 0.006, 'replicated_cold_std': 0.010,
-         'n_samples': 10748, 'n_targets': 65, 'pt_file': 'kNN_per_target.csv'},
+         'n_samples': 10748, 'n_targets': 65, 'pt_file': {'loto': 'kNN_loto_per_seed.csv', 'random': 'kNN_random_per_seed.csv'}},
     ]
     # Hydrate per-target distributions
     for m in methods:
         m['per_target_random'] = None
         m['per_target_loto'] = None
         if m.get('pt_file'):
-            f_loto = PTDIR / m['pt_file']
-            f_rand = PTDIR / m['pt_file'].replace('_per_target', '_random_per_target')
-            m['per_target_loto'] = _load_csv_column(f_loto) or None
-            m['per_target_random'] = _load_csv_column(f_rand) or None
+            for ch, key in (('loto', 'per_target_loto'), ('random', 'per_target_random')):
+                f = m['pt_file'].get(ch)
+                if f:
+                    m[key] = _load_csv_column(PTDIR / f) or None
     return methods
 
 
@@ -113,6 +132,10 @@ def _get_dots(m, channel, idx):
             rng = np.random.RandomState(idx + (0 if channel=='random' else 100))
             arr = rng.choice(arr, 20, replace=False)
         return arr, True
+    if m.get('pt_file', {}).get(channel) is None:
+        # declared absent: the bar stands without a scatter, which is a
+        # different case from a named source that cannot be read
+        return np.array([]), True
     if not SYNTHETIC_FALLBACK:
         raise FileNotFoundError(
             f"Per-target {channel} data missing for {m['name']}; "
@@ -200,6 +223,16 @@ def plot_panel_a(ax, methods):
 
 def plot_panel_b(ax):
     """Tanimoto-to-nearest-training-neighbor density across protocols."""
+    cache = RDIR / 'tanimoto_overlap_by_protocol.json'
+    if not cache.exists():
+        import pandas as pd
+        from src.evaluation import tanimoto_nn_by_protocol
+        root = RDIR.parent
+        df = pd.read_csv(root / 'data' / 'protac_bench.csv')
+        json.dump(tanimoto_nn_by_protocol(
+            df.smiles.tolist(), df.label.values,
+            json.load(open(root / 'data' / 'loto_folds.json'))),
+            open(cache, 'w'))
     d = _load_json('tanimoto_overlap_by_protocol.json')
     if d:
         random_tan = np.array(d['random_cv'])

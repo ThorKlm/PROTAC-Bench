@@ -30,7 +30,7 @@ except ImportError:
 from rdkit import Chem
 from sklearn.metrics import roc_auc_score
 
-from src.data_utils import load_dataset, get_eligible_targets
+from src.cohort import DEFINITION, load as load_cohort, masks, meta as cohort_meta
 
 
 # --- atom/bond featurization ---
@@ -228,11 +228,14 @@ def train_gnn(model, train_loader, val_loader, device, lr=1e-3, epochs=100, pati
     return model
 
 
-def gnn_loto(model_cls, graphs, y, targets, eligible, device,
-             model_kwargs=None, seeds=[42]):
-    """LOTO evaluation for GNN models."""
+def gnn_loto(model_cls, graphs, folds, device, model_kwargs=None, seeds=[42]):
+    """LOTO evaluation for GNN models.
+
+    folds comes from src.cohort as one (target, train_mask, test_mask) per
+    fold, so the cohort and its deduplication and constituent exclusions are
+    the ones every other arm uses rather than rebuilt here.
+    """
     model_kwargs = model_kwargs or {}
-    unique_targets = sorted(set(t for t in np.unique(targets) if t in eligible))
 
     all_seed_results = {}
     for seed in seeds:
@@ -240,10 +243,7 @@ def gnn_loto(model_cls, graphs, y, targets, eligible, device,
         np.random.seed(seed)
         per_target = {}
 
-        for tgt in unique_targets:
-            test_mask = targets == tgt
-            train_mask = ~test_mask
-
+        for tgt, train_mask, test_mask in folds:
             train_graphs = [g for g, m in zip(graphs, train_mask) if m and g is not None]
             test_graphs = [g for g, m in zip(graphs, test_mask) if m and g is not None]
 
@@ -306,7 +306,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='GNN baselines (GIN + D-MPNN)')
     parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
-    parser.add_argument('--output', default='results/gnn_baselines.json')
+    parser.add_argument('--output', default='results/v13/gnn_baselines.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--device', default='auto')
     args = parser.parse_args()
@@ -317,10 +317,11 @@ def main():
     print(f'Using device: {device}')
 
     print('Loading dataset...')
-    df = load_dataset(args.data)
+    c = load_cohort(args.data)
+    df = c['df']
     y = df['label'].values
-    targets = df['target_uniprot'].values
-    eligible = set(get_eligible_targets(df))
+    folds = [(t,) + masks(t, c) for t in c['cohort']]
+    print(f'Cohort: {len(folds)} folds, {DEFINITION}')
 
     print('Converting SMILES to graphs...')
     graphs = []
@@ -343,7 +344,7 @@ def main():
     # --- GIN ---
     print('\n=== GIN (3-layer, hidden=64) ===')
     gin_res = gnn_loto(
-        GIN, graphs, y, targets, eligible, device,
+        GIN, graphs, folds, device,
         model_kwargs={'in_dim': atom_dim, 'hidden': 64},
         seeds=seeds,
     )
@@ -353,7 +354,7 @@ def main():
     # --- D-MPNN ---
     print('\n=== D-MPNN (depth=3, hidden=64) ===')
     dmpnn_res = gnn_loto(
-        DMPNN, graphs, y, targets, eligible, device,
+        DMPNN, graphs, folds, device,
         model_kwargs={'atom_dim': atom_dim, 'bond_dim': bond_dim, 'hidden': 64, 'depth': 3},
         seeds=seeds,
     )
@@ -367,7 +368,7 @@ def main():
     print('='*40)
 
     results['meta'] = {
-        'seeds': seeds, 'n_eligible': len(eligible), 'n_rows': int(len(df)),
+        **cohort_meta(c, seeds), 'n_rows': int(len(df)),
         'n_valid_graphs': int(valid_count), 'device': str(device),
         'torch': torch.__version__,
         'git_commit': subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],

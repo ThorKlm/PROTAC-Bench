@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fig S: HPO objective vs 5-seed validated AUROC scatter.
 Top-10 HPO V2 configs from results/hpo_v2_validation.json. Diagonal y=x grey
-dashed reference, RF+Morgan baseline (0.668) horizontal dotted reference,
+dashed reference, RF+Morgan baseline read from the cohort artefact, horizontal dotted reference,
 rank-1 highlighted, ranks 2-10 in a uniform neutral colour. Style matched to
 fig2_triple_anchored_v15.py.
 """
@@ -27,7 +27,7 @@ C_ORANGE = '#E08214'
 C_LORANGE = '#FDD49E'
 C_GREY = '#999999'
 
-BASELINE_RF_MORGAN = 0.668
+BASELINE_RF_MORGAN = float(json.load(open(RDIR / 'v12' / 'cohort_cells.json'))['retained_65']['macro'])
 
 
 def load_configs():

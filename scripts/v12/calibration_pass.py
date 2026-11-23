@@ -24,18 +24,39 @@ def ece(p, y, bins=10):
         if m.sum(): e += m.sum() / n * abs(y[m].mean() - p[m].mean())
     return float(e)
 
+def reliability(p, y, nb=10):
+    """Per-bin mean prediction and observed frequency, binned exactly as ece()
+    bins, so a reliability plot and the reported ECE cannot disagree."""
+    edge, out = np.linspace(0, 1, nb + 1), []
+    for j, (lo, hi) in enumerate(zip(edge[:-1], edge[1:])):
+        m = (p >= lo) & (p <= hi) if j == 0 else (p > lo) & (p <= hi)
+        out.append({'lo': float(lo), 'hi': float(hi), 'n': int(m.sum()),
+                    'mean_p': float(p[m].mean()) if m.sum() else None,
+                    'obs': float(y[m].mean()) if m.sum() else None})
+    return out
+
 def fit_T(z, y):
     f = lambda T: -np.mean(y * np.log(sig(z / T) + EPS) + (1 - y) * np.log(1 - sig(z / T) + EPS))
     return float(minimize_scalar(f, bounds=(0.05, 20.0), method='bounded').x)
 
-def risk_coverage(p, y, covs=(1.0, 0.9, 0.8, 0.7, 0.5, 0.3, 0.1, 0.05)):
+def coverage_curve(p, y, covs=(1.0, 0.9, 0.8, 0.7, 0.5, 0.3, 0.1, 0.05)):
+    """Metrics on the most-confident fraction, confidence being distance from
+    0.5. AUROC is reported because the earlier pass did, and error rate and
+    Brier beside it because discarding uncertain cases removes the hard pairs
+    AUROC penalises, so AUROC alone rises partly by construction."""
     from sklearn.metrics import roc_auc_score
     conf = np.maximum(p, 1 - p); order = np.argsort(-conf)
     out = {}
     for c in covs:
         k = max(2, int(round(c * len(y))))
         idx = order[:k]
-        out[str(c)] = float(roc_auc_score(y[idx], p[idx])) if len(np.unique(y[idx])) > 1 else None
+        pr = float(y[idx].mean())
+        out[str(c)] = {'n': int(k), 'pos_rate': pr,
+                       'majority_error': float(1 - max(pr, 1 - pr)),
+                       'auroc': (float(roc_auc_score(y[idx], p[idx]))
+                                 if len(np.unique(y[idx])) > 1 else None),
+                       'brier': float(np.mean((p[idx] - y[idx]) ** 2)),
+                       'error_rate': float(np.mean((p[idx] > 0.5) != (y[idx] > 0.5)))}
     return out
 
 def main():
@@ -61,9 +82,11 @@ def main():
         per_seed[s] = {'n': int(len(y_all)), 'n_targets': len(tg),
                        'brier_raw': float(np.mean((p_all - y_all) ** 2)),
                        'ece10_raw': ece(p_all, y_all), 'ece10_temperature': ece(pt, y_all),
-                       'ece10_platt': ece(pp, y_all), 'risk_coverage_raw': risk_coverage(p_all, y_all)}
+                       'ece10_platt': ece(pp, y_all), 'coverage_raw': coverage_curve(p_all, y_all),
+                       'reliability_raw': reliability(p_all, y_all),
+                       'reliability_platt': reliability(pp, y_all)}
         print(s, {k: (round(v, 4) if isinstance(v, float) else v)
-                  for k, v in per_seed[s].items() if k != 'risk_coverage_raw'}, flush=True)
+                  for k, v in per_seed[s].items() if not isinstance(v, (dict, list))}, flush=True)
     import statistics as st
     agg = {}
     for k in ('brier_raw', 'ece10_raw', 'ece10_temperature', 'ece10_platt'):

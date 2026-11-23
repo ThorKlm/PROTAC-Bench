@@ -21,7 +21,7 @@
   "2": 0.6143,
   "3": 0.6356,
   "4": 0.6056,
-  "5": 0.618,
+  "5": 0.6179,
   "6": 0.6199,
   "7": 0.6222,
   "8": 0.6273
@@ -60,7 +60,7 @@
   "P40763": 0.2765,
   "P43490": 0.3975,
   "P49336": 0.5599,
-  "P49840": 0.6333,
+  "P49840": 0.6325,
   "P50750": 0.8351,
   "P51531": 0.596,
   "P51532": 0.6078,
@@ -89,7 +89,7 @@
   "Q9Y2I7": 0.6676,
   "Q9Y616": 0.9417
  },
- "elapsed_min": 14.9,
+ "elapsed_min": 12.5,
  "_meta": {
   "seeds": [
    42,
@@ -109,6 +109,17 @@
   "min_rate": 0.1,
   "max_rate": 0.9,
   "constituent_excluded": true,
-  "smiles_dedup": true
+  "smiles_dedup": true,
+  "rf": {
+   "n_estimators": 200,
+   "min_samples_leaf": 3,
+   "class_weight": "balanced"
+  },
+  "morgan_bits": 2048,
+  "radius": 2,
+  "git_commit": "ce5a2ad",
+  "python": "3.12.13",
+  "numpy": "2.5.5",
+  "sklearn": "1.9.1"
  }
 }

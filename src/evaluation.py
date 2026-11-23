@@ -3,7 +3,8 @@
 import numpy as np
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold
-from rdkit import Chem
+from rdkit import Chem, DataStructs
+from rdkit.Chem import AllChem
 from rdkit.Chem.Scaffolds import MurckoScaffold
 from collections import defaultdict
 
@@ -134,3 +135,75 @@ def scaffold_cv(X, y, smiles, model_fn, n_folds=5):
         'n_folds': n_folds,
         'per_fold': [float(a) for a in aurocs],
     }
+
+
+def tanimoto_nn_by_protocol(smiles, y, loto_folds, n_folds=5, seed=42,
+                            radius=2, nbits=2048, dedup=False):
+    """Maximum Tanimoto to the nearest training compound, per split protocol.
+
+    One value per test compound under random cross-validation, scaffold
+    cross-validation and leave-one-target-out. Folds are built exactly as
+    random_cv, scaffold_cv and the released fold file build them, so each
+    distribution belongs to the protocol it is compared against. Fingerprints
+    match the rest of the project, Morgan at the given radius and width.
+
+    With dedup, training rows whose canonical SMILES occurs in the held-out
+    fold are dropped. The LOTO arm prefers the fold file's own
+    train_excluded_indices, so its distribution reflects the exclusions the
+    deposit declares rather than a second derivation of them.
+    """
+    mols = [Chem.MolFromSmiles(x) if isinstance(x, str) else None for x in smiles]
+    fps = [AllChem.GetMorganFingerprintAsBitVect(m, radius, nBits=nbits)
+           if m is not None else None for m in mols]
+    n, y = len(fps), np.asarray(y)
+    smi = [str(x) for x in smiles]
+
+    def nn(test_idx, train_idx):
+        train = [fps[i] for i in train_idx if fps[i] is not None]
+        if not train:
+            raise ValueError('empty training set')
+        return [max(DataStructs.BulkTanimotoSimilarity(fps[i], train))
+                for i in test_idx if fps[i] is not None]
+
+    def complement(test_idx):
+        held = set(test_idx)
+        return [i for i in range(n) if i not in held]
+
+    def drop(test_idx, train_idx):
+        if not dedup:
+            return train_idx
+        held = {smi[i] for i in test_idx}
+        return [i for i in train_idx if smi[i] not in held]
+
+    out = {}
+    vals = []
+    for tr, te in StratifiedKFold(n_splits=n_folds, shuffle=True,
+                                  random_state=seed).split(np.zeros((n, 1)), y):
+        vals += nn(te, drop(te, tr))
+    out['random_cv'] = vals
+
+    groups = defaultdict(list)
+    for i, x in enumerate(smiles):
+        groups[_get_scaffold(x)].append(i)
+    sizes, folds = [0] * n_folds, [[] for _ in range(n_folds)]
+    for grp in sorted(groups.values(), key=len, reverse=True):
+        j = int(np.argmin(sizes))
+        folds[j].extend(grp)
+        sizes[j] += len(grp)
+    vals = []
+    for j in range(n_folds):
+        vals += nn(folds[j], drop(folds[j], complement(folds[j])))
+    out['scaffold_cv'] = vals
+
+    vals = []
+    for tgt, spec in loto_folds.items():
+        if tgt.startswith('_'):
+            continue
+        te = spec['test_indices']
+        tr = complement(te)
+        if dedup:
+            ex = set(spec.get('train_excluded_indices') or [])
+            tr = [i for i in tr if i not in ex] if ex else drop(te, tr)
+        vals += nn(te, tr)
+    out['loto'] = vals
+    return out

@@ -1,0 +1,227 @@
+--- 1: cohort definition ---
+seeds 42,0,1,2,3,4,5,6,7,8
+n_targets 61
+cohort loto_single_accession
+min_n 10
+min_rate 0.1
+max_rate 0.9
+constituent_excluded True
+smiles_dedup True
+rf n_estimators=200,min_samples_leaf=3,class_weight=balanced
+morgan_bits 2048
+radius 2
+git_commit ce5a2ad
+python 3.12.13
+numpy 2.5.5
+sklearn 1.9.1
+n_rows 10748
+n_unique_targets 173
+n_unique_smiles 9359
+activity_rate 0.6584
+e3_type CRBN=7727,VHL=2896,Other=125
+
+--- 2: reference, Morgan 2048 radius 2, random forest ---
+n_targets 61
+spec morgan=True,warhead=False,admet=False,k=0,reps=5
+macro_auroc 0.6121
+seed_sd 0.0099
+mean_ap 0.6066
+ap_seed_sd 0.0068
+per_target_sd 0.1881
+target_se 0.0241
+elapsed_min 13.3
+per_seed_macro 42=0.618,0=0.609,1=0.6203,2=0.5993,3=0.5933,4=0.6062,5=0.6144,6=0.6189,7=0.6231,8=0.6182
+
+--- 3: plus warhead transfer rate ---
+n_targets 61
+spec morgan=True,warhead=True,admet=False,k=0,reps=5
+macro_auroc 0.6155
+seed_sd 0.0069
+mean_ap 0.5971
+ap_seed_sd 0.0043
+per_target_sd 0.1756
+target_se 0.0225
+elapsed_min 17.4
+per_seed_macro 42=0.6181,0=0.6216,1=0.6107,2=0.6142,3=0.6121,4=0.6024,5=0.6141,6=0.6157,7=0.6286,8=0.6177
+n_paired 61
+delta_vs_C0 0.0035
+wilcoxon_p_vs_C0 0.8297
+improved 30
+moved_gt_0.05 26
+max_gain 0.2333
+max_loss -0.2171
+step_vs_previous 0.0035
+
+--- 4: plus seven ADMET scores ---
+n_targets 61
+spec morgan=True,warhead=True,admet=True,k=0,reps=5
+macro_auroc 0.6248
+seed_sd 0.0132
+mean_ap 0.5987
+ap_seed_sd 0.0071
+per_target_sd 0.1668
+target_se 0.0214
+elapsed_min 16.8
+per_seed_macro 42=0.6121,0=0.6266,1=0.6033,2=0.6347,3=0.6202,4=0.6475,5=0.6161,6=0.6335,7=0.6357,8=0.6182
+n_paired 61
+delta_vs_C0 0.0127
+wilcoxon_p_vs_C0 0.5876
+improved 31
+moved_gt_0.05 21
+max_gain 0.2727
+max_loss -0.1361
+step_vs_previous 0.0092
+
+--- 5: plus five labelled shots ---
+n_targets 61
+spec morgan=True,warhead=True,admet=True,k=5,reps=5
+macro_auroc 0.6763
+seed_sd 0.0042
+mean_ap 0.6601
+ap_seed_sd 0.0059
+per_target_sd 0.1602
+target_se 0.0205
+elapsed_min 67.4
+per_seed_macro 42=0.6789,0=0.6814,1=0.668,2=0.6761,3=0.676,4=0.6812,5=0.6784,6=0.6711,7=0.6763,8=0.6759
+n_paired 61
+delta_vs_C0 0.0642
+wilcoxon_p_vs_C0 1.77e-05
+improved 46
+moved_gt_0.05 30
+max_gain 0.5333
+max_loss -0.1149
+step_vs_previous 0.0515
+
+--- 6: warhead, query compound excluded from its own neighbours ---
+n_targets 61
+spec morgan=True,warhead=True,self_excl=True
+macro_auroc 0.6178
+seed_sd 0.01
+mean_ap 0.6064
+ap_seed_sd 0.0069
+per_target_sd 0.1825
+target_se 0.0234
+elapsed_min 15.1
+per_seed_macro 42=0.6187,0=0.6303,1=0.6335,2=0.6069,3=0.6163,4=0.6132,5=0.6289,6=0.6153,7=0.607,8=0.6078
+
+--- 7: factorial over Morgan, warhead, ADMET, few-shot ---
+cell_0010 macro 0.5492 sd 0.0044 ap 0.5516 se 0.022
+cell_0011 macro 0.5781 sd 0.0056 ap 0.5917 se 0.021
+cell_0100 macro 0.5747 sd 0.0 ap 0.5489 se 0.0254
+cell_0101 macro 0.5716 sd 0.0035 ap 0.5497 se 0.0258
+cell_0110 macro 0.5985 sd 0.0022 ap 0.5766 se 0.0218
+cell_0111 macro 0.6273 sd 0.0028 ap 0.6192 se 0.0218
+cell_1000 macro 0.6121 sd 0.0099 ap 0.6066 se 0.0241
+cell_1001 macro 0.6714 sd 0.0085 ap 0.6632 se 0.0207
+cell_1010 macro 0.621 sd 0.0078 ap 0.6068 se 0.0234
+cell_1011 macro 0.6755 sd 0.007 ap 0.6643 se 0.0206
+cell_1100 macro 0.6155 sd 0.0069 ap 0.5971 se 0.0225
+cell_1101 macro 0.6693 sd 0.0056 ap 0.6519 se 0.0205
+cell_1110 macro 0.6248 sd 0.0132 ap 0.5987 se 0.0214
+cell_1111 macro 0.6763 sd 0.0042 ap 0.6601 se 0.0205
+marginal_M 0.0638 n_contrasts 6
+marginal_W 0.0174 n_contrasts 6
+marginal_A 0.0181 n_contrasts 6
+marginal_K 0.0391 n_contrasts 7
+
+--- 8: few-shot curve across k, full feature set ---
+k 0 n_targets 61 macro 0.6248 seed_sd 0.0132 mean_ap 0.5987 per_target_sd 0.1668 target_se 0.0214 reps 5
+k 1 n_targets 61 macro 0.6366 seed_sd 0.0056 mean_ap 0.6263 per_target_sd 0.1731 target_se 0.0222 reps 5
+k 3 n_targets 61 macro 0.6591 seed_sd 0.0029 mean_ap 0.6441 per_target_sd 0.1665 target_se 0.0213 reps 5
+k 5 n_targets 61 macro 0.6763 seed_sd 0.0042 mean_ap 0.6601 per_target_sd 0.1602 target_se 0.0205 reps 5
+k 10 n_targets 56 macro 0.712 seed_sd 0.0057 mean_ap 0.7003 per_target_sd 0.1492 target_se 0.0199 reps 5
+k 1 delta_vs_k0 0.0118 wilcoxon_p_vs_k0 0.0069 improved 43 n_paired 61
+k 3 delta_vs_k0 0.0343 wilcoxon_p_vs_k0 6.03e-06 improved 48 n_paired 61
+k 5 delta_vs_k0 0.0515 wilcoxon_p_vs_k0 1.18e-06 improved 48 n_paired 61
+k 10 delta_vs_k0 0.0815 wilcoxon_p_vs_k0 2.32e-07 improved 48 n_paired 56
+
+--- 9: one-factor-at-a-time configuration sweep around the reference ---
+reference macro 0.6121 seed_sd 0.0099 mean_ap 0.6066 target_se 0.0241
+all_defaults macro 0.6054 seed_sd 0.0145 mean_ap 0.6059 target_se 0.0226 delta_vs_reference -0.0067
+all_defaults_spec morgan=True,rf.n_estimators=100,rf.min_samples_leaf=1,rf.class_weight=None
+bits1024 macro 0.6098 seed_sd 0.011 mean_ap 0.6048 target_se 0.0235 delta_vs_reference -0.0023
+bits1024_spec morgan=True,nbits=1024
+bits512 macro 0.6182 seed_sd 0.0062 mean_ap 0.6161 target_se 0.0244 delta_vs_reference 0.0061
+bits512_spec morgan=True,nbits=512
+cw_none macro 0.6094 seed_sd 0.0117 mean_ap 0.6085 target_se 0.0247 delta_vs_reference -0.0027
+cw_none_spec morgan=True,rf.class_weight=None
+msl1 macro 0.6153 seed_sd 0.0119 mean_ap 0.6101 target_se 0.0232 delta_vs_reference 0.0032
+msl1_spec morgan=True,rf.min_samples_leaf=1
+radius3 macro 0.6186 seed_sd 0.0062 mean_ap 0.6169 target_se 0.0256 delta_vs_reference 0.0065
+radius3_spec morgan=True,radius=3
+trees100 macro 0.6108 seed_sd 0.0132 mean_ap 0.6073 target_se 0.0234 delta_vs_reference -0.0013
+trees100_spec morgan=True,rf.n_estimators=100
+
+--- 10: cohort variants, reference configuration ---
+dedup_65 macro 0.6121 seed_sd 0.0092 target_se 0.0228 per_target_sd 0.1836 n_targets 65 median_train_rows 10680 dedup True constituent_excluded False
+dedup_65_per_seed_macro 42=0.6165,0=0.608,1=0.6165,2=0.602,3=0.5939,4=0.6081,5=0.6141,6=0.6216,7=0.6248,8=0.6151
+dedup_excl_61 macro 0.6121 seed_sd 0.0099 target_se 0.0241 per_target_sd 0.1881 n_targets 61 median_train_rows 10691 dedup True constituent_excluded True
+dedup_excl_61_per_seed_macro 42=0.618,0=0.609,1=0.6203,2=0.5993,3=0.5933,4=0.6062,5=0.6144,6=0.6189,7=0.6231,8=0.6182
+retained_excl_61 macro 0.6696 seed_sd 0.0111 target_se 0.0244 per_target_sd 0.1902 n_targets 61 median_train_rows 10709 dedup False constituent_excluded True
+retained_excl_61_per_seed_macro 42=0.675,0=0.6628,1=0.6724,2=0.6605,3=0.6565,4=0.6522,5=0.672,6=0.681,7=0.6775,8=0.686
+retained_65 macro 0.6654 seed_sd 0.0105 target_se 0.0245 per_target_sd 0.1976 n_targets 65 median_train_rows 10709 dedup False constituent_excluded False
+retained_65_per_seed_macro 42=0.6703,0=0.6589,1=0.6696,2=0.6566,3=0.6531,4=0.649,5=0.6679,6=0.6757,7=0.6723,8=0.681
+
+--- 11: random and scaffold cross-validation, full corpus ---
+n_rows 10748
+n_folds 5
+n_scaffolds 7427
+corpus full
+dedup_rule training rows whose canonical SMILES occurs in the held-out fold
+random_retained pooled 0.9013 across_seed_sd 0.0007 within_seed_fold_sd 0.0066 median_train_rows 8598 n_seeds 10
+random_dedup pooled 0.8951 across_seed_sd 0.0011 within_seed_fold_sd 0.0064 median_train_rows 8069 n_seeds 10
+scaffold_retained pooled 0.8961 across_seed_sd 0.0003 within_seed_fold_sd 0.007 median_train_rows 8598 n_seeds 10
+scaffold_dedup pooled 0.8961 across_seed_sd 0.0003 within_seed_fold_sd 0.007 median_train_rows 8598 n_seeds 10
+random_retained_pooled_per_seed 42=0.9009,0=0.9003,1=0.9022,2=0.9021,3=0.9001,4=0.9016,5=0.9009,6=0.9013,7=0.9015,8=0.9017
+random_dedup_pooled_per_seed 42=0.8951,0=0.8959,1=0.8954,2=0.8969,3=0.8934,4=0.8945,5=0.894,6=0.8942,7=0.8965,8=0.8953
+scaffold_retained_pooled_per_seed 42=0.8965,0=0.8958,1=0.8959,2=0.8964,3=0.8959,4=0.896,5=0.896,6=0.8963,7=0.8957,8=0.8966
+scaffold_dedup_pooled_per_seed 42=0.8965,0=0.8958,1=0.8959,2=0.8964,3=0.8959,4=0.896,5=0.896,6=0.8963,7=0.8957,8=0.8966
+
+--- 12: calibration and coverage, reference arm, from stored predictions ---
+source results/v13/C0_morgan_predictions.json
+seeds 42,0,1,2,3,4,5,6,7,8
+n_pooled 9126
+n_targets 61
+brier_raw 0.2289 sample_sd 0.0009
+ece10_raw 0.155 sample_sd 0.0016
+ece10_temperature 0.1562 sample_sd 0.0018
+ece10_platt 0.0218 sample_sd 0.003
+brier_raw_per_seed 42=0.2278,0=0.2303,1=0.2294,2=0.2282,3=0.2292,4=0.229,5=0.2297,6=0.2299,7=0.2277,8=0.228
+ece10_raw_per_seed 42=0.1538,0=0.1563,1=0.1566,2=0.1521,3=0.1547,4=0.1534,5=0.157,6=0.1567,7=0.155,8=0.1546
+ece10_temperature_per_seed 42=0.1551,0=0.1574,1=0.1575,2=0.1531,3=0.1559,4=0.1552,5=0.1582,6=0.159,7=0.1555,8=0.1549
+ece10_platt_per_seed 42=0.0194,0=0.0224,1=0.0211,2=0.0248,3=0.0257,4=0.02,5=0.0207,6=0.0268,7=0.018,8=0.0191
+coverage 1.0 n 9126 pos_rate 0.6719 error_rate 0.3605 majority_error 0.3281 auroc 0.6575 brier 0.2289
+coverage 0.9 n 8213 pos_rate 0.671 error_rate 0.3486 majority_error 0.329 auroc 0.6653 brier 0.2267
+coverage 0.8 n 7301 pos_rate 0.671 error_rate 0.3383 majority_error 0.329 auroc 0.6731 brier 0.2242
+coverage 0.7 n 6388 pos_rate 0.6706 error_rate 0.3305 majority_error 0.3294 auroc 0.6814 brier 0.2219
+coverage 0.5 n 4563 pos_rate 0.6637 error_rate 0.3131 majority_error 0.3363 auroc 0.7004 brier 0.2167
+coverage 0.3 n 2738 pos_rate 0.628 error_rate 0.2969 majority_error 0.372 auroc 0.7203 brier 0.2119
+coverage 0.1 n 913 pos_rate 0.4942 error_rate 0.2951 majority_error 0.4785 auroc 0.6976 brier 0.2174
+coverage 0.05 n 456 pos_rate 0.4616 error_rate 0.3059 majority_error 0.4616 auroc 0.654 brier 0.2303
+
+--- 13: maximum Tanimoto to the nearest training compound, by protocol ---
+cv_seed 42
+n_rows 10748
+loto_folds 61
+source_folds data/loto_primary_folds.json
+nbins 100
+random_cv_retained n 10748 median 0.9389 mean 0.9214 q05 0.7551 q25 0.8737 q75 1.0 q95 1.0 frac_ge_090 0.6478 frac_eq_1 0.3716
+scaffold_cv_retained n 10748 median 0.9091 mean 0.8966 q05 0.725 q25 0.8462 q75 0.9881 q95 1.0 frac_ge_090 0.5457 frac_eq_1 0.212
+loto_retained n 9126 median 0.4954 mean 0.5837 q05 0.3577 q25 0.4344 q75 0.6429 q95 1.0 frac_ge_090 0.1897 frac_eq_1 0.1832
+random_cv_dedup n 10748 median 0.9091 mean 0.899 q05 0.7251 q25 0.8571 q75 0.982 q95 1.0 frac_ge_090 0.5541 frac_eq_1 0.2068
+scaffold_cv_dedup n 10748 median 0.9091 mean 0.8966 q05 0.725 q25 0.8462 q75 0.9881 q95 1.0 frac_ge_090 0.5457 frac_eq_1 0.212
+loto_dedup n 9126 median 0.4639 mean 0.4792 q05 0.3401 q25 0.4113 q75 0.5262 q95 0.6724 frac_ge_090 0.0058 frac_eq_1 0.002
+
+--- 14: reference split by whether the test compound occurs verbatim in training ---
+n_targets 65
+rf n_estimators=200,min_samples_leaf=3,class_weight=balanced
+full macro 0.6614 seed_sd 0.0066 n_folds 65
+novel macro 0.6112 seed_sd 0.0102 n_folds 47
+seen macro 0.7755 seed_sd 0.0061 n_folds 35
+
+--- 15: source partition by row position ---
+ribes_rows 3181
+ribes_rate 0.3766
+protacdb_rows 7567
+protacdb_rate 0.7769
+source_only_pooled_auroc 0.6854

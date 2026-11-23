@@ -3,7 +3,7 @@
 Horizontal bar chart with 26 family rows (sorted by mean_lofo descending).
 X-axis: AUROC, 0 to 1. Bars coloured by a green->orange gradient
 (green at high AUROC, orange at low). Vertical reference line at the
-canonical LOTO baseline of 0.668. Family-level n_targets shown next to
+canonical LOTO baseline read from the same artefact. Family-level n_targets shown next to
 each family label.
 
 Style matched to fig2_triple_anchored_v15.py.
@@ -34,7 +34,7 @@ C_LORANGE = '#FDD49E'
 C_GREEN = '#4DAC4A'
 C_GREY = '#999999'
 
-LOTO_BASELINE = 0.668
+LOTO_BASELINE = float(json.load(open(RDIR / 'lofo.json'))['loto_mean_auroc'])
 
 
 def load_per_family():
