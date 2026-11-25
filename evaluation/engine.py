@@ -63,7 +63,31 @@ def provenance(bits=2048, radius=2, spec=None):
                 python=sys.version.split()[0], numpy=numpy.__version__,
                 sklearn=sklearn.__version__)
 
-def features(c, X, Xa, tr, te, use_morgan, use_warhead, use_admet, self_excl=False):
+EMB = {}
+def embedding(kind, c):
+    """Per-row embedding block. Protein vectors come from the per-target matrix
+    through the row's accession, averaging the constituents of a composite key."""
+    if kind in EMB: return EMB[kind]
+    d = 'data/embeddings'
+    if kind == 'chemberta':
+        M = np.load(f'{d}/chemberta_rows.npy')
+    elif kind == 'esm':
+        P = np.load(f'{d}/esm2_650m_targets.npy')
+        ids = [str(x) for x in np.load(f'{d}/target_ids.npy', allow_pickle=True)]
+        pos = {t: i for i, t in enumerate(ids)}
+        M = np.zeros((len(c['tg']), P.shape[1]), dtype=np.float32)
+        for i, t in enumerate(c['tg']):
+            js = [pos[u] for u in str(t).split('/') if u in pos]
+            if js: M[i] = P[js].mean(axis=0)
+    else:
+        raise ValueError(f'unknown embedding {kind!r}')
+    if len(M) != len(c['tg']):
+        raise ValueError(f'{kind} has {len(M)} rows, corpus has {len(c["tg"])}')
+    EMB[kind] = M
+    return M
+
+def features(c, X, Xa, tr, te, use_morgan, use_warhead, use_admet, self_excl=False,
+             use_chemberta=False, use_esm=False, emb_dim=0):
     ftr, fte = [], []
     if use_morgan:
         ftr.append(X[tr]); fte.append(X[te])
@@ -75,6 +99,18 @@ def features(c, X, Xa, tr, te, use_morgan, use_warhead, use_admet, self_excl=Fal
         ftr.append(np.asarray(a).reshape(-1, 1)); fte.append(np.asarray(b).reshape(-1, 1))
     if use_admet:
         ftr.append(Xa[tr]); fte.append(Xa[te])
+    for kind, use in (('chemberta', use_chemberta), ('esm', use_esm)):
+        if use:
+            M = embedding(kind, c)
+            A, B = M[tr], M[te]
+            if emb_dim:
+                # basis fitted on training rows only; held-out rows contribute
+                # nothing to it, and the fit does not depend on the seed
+                from sklearn.decomposition import PCA
+                q = PCA(n_components=emb_dim, svd_solver='randomized',
+                        random_state=0).fit(A)
+                A, B = q.transform(A), q.transform(B)
+            ftr.append(A); fte.append(B)
     return np.column_stack(ftr), np.column_stack(fte)
 
 def fold(c, X, Xa, item, seed, spec):
@@ -86,7 +122,9 @@ def fold(c, X, Xa, item, seed, spec):
     tr = train_mask(te, c, **spec.get('exclusions', {}))
     Ftr, Fte = features(c, X, Xa, tr, te, spec.get('morgan', True),
                         spec.get('warhead', False), spec.get('admet', False),
-                        spec.get('self_excl', False))
+                        spec.get('self_excl', False),
+                        spec.get('chemberta', False), spec.get('esm', False),
+                        spec.get('emb_dim', 0))
     ytr, yte = c['y'][tr], c['y'][te]
     rf = dict(RF); rf.update(spec.get('rf', {}))
     k = spec.get('k', 0)
@@ -103,13 +141,20 @@ def fold(c, X, Xa, item, seed, spec):
         p = clf.predict_proba(Fte)[:, 1]
         return (float(roc_auc_score(yte, p)), float(average_precision_score(yte, p)),
                 int(len(yte)), p)
-    s1 = model_for(spec, seed, rf).fit(Ftr, ytr)
-    probs = s1.predict_proba(Fte)[:, 1]
+    shots = spec.get('shots', 'band')
+    if shots == 'band':
+        s1 = model_for(spec, seed, rf).fit(Ftr, ytr)
+        probs = s1.predict_proba(Fte)[:, 1]
+    elif shots == 'random':
+        probs = None
+    else:
+        raise ValueError(f'unknown shot selection {shots!r}')
     rng = np.random.RandomState((seed * 1000003 + zlib.crc32(t.encode())) % (2 ** 32))
     loc = np.arange(len(yte))
     au, ap = [], []
     for rep in range(spec.get('reps', 5)):
-        shot = select_stratified(loc, yte, k, rng, probs)
+        shot = (select_stratified(loc, yte, k, rng, probs) if probs is not None
+                else rng.choice(loc, min(k, len(loc)), replace=False))
         rest = np.setdiff1d(loc, shot)
         if len(rest) < 3 or len(np.unique(yte[rest])) < 2: continue
         clf = model_for(spec, seed + rep, rf).fit(

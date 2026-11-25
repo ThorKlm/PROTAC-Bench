@@ -14,9 +14,10 @@ Python 3.12.13.
     .venv/bin/python reproduce.py
     .venv/bin/python reproduce.py --ablation
 
-The first command runs the 15 core arms, the derived passes and the figures; the
+The first command runs the 23 core arms, the derived passes and the figures; the
 second adds the 24 ablation arms. An arm whose artefact exists is skipped, so an
-interrupted run resumes. Fold files are regenerated from the corpus when absent.
+interrupted run resumes. Fold files are regenerated from the corpus when absent, and the embedding
+matrices by `scripts/embed.py`, which downloads two checkpoints on first run.
 Core runtime is about twelve hours on sixteen cores; `PB_NJOBS` sets the number
 of worker processes. The two graph baselines in `baselines/gnn_baselines.py`
 require a CUDA device and are run separately.

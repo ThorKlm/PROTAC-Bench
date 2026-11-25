@@ -229,6 +229,22 @@ def block_fewshot(n):
             t, dl, pval = paired(base['per_target'], d['per_target'])
             w(f'k {k} delta_vs_k0 {v(dl.mean())} wilcoxon_p_vs_k0 {pv(pval)} '
               f'improved {int((dl > 0).sum())} n_paired {len(t)}')
+    for k, bn in ((1, 'fewshot_k1'), (3, 'fewshot_k3'), (5, 'cell_1111'),
+                  (10, 'fewshot_k10')):
+        d, b = g(f'{R}/fewshot_k{k}_random.json'), g(f'{R}/{bn}.json')
+        if not d: continue
+        line = (f'k {k} shots random macro {v(d["macro_auroc"])} '
+                f'seed_sd {v(d["seed_sd"])} mean_ap {v(d["mean_ap"])} '
+                f'target_se {v(d["target_se"])}')
+        if b:
+            t, dl, pval = paired(b['per_target'], d['per_target'])
+            line += (f' delta_vs_band {v(dl.mean())} '
+                     f'wilcoxon_p_vs_band {pv(pval)} n_paired {len(t)}')
+        if base:
+            t0, dl0, p0 = paired(base['per_target'], d['per_target'])
+            line += (f' delta_vs_k0 {v(dl0.mean())} '
+                     f'wilcoxon_p_vs_k0 {pv(p0)}')
+        w(line)
     return n + 1
 
 def block_sweep(n):
@@ -342,8 +358,34 @@ def block_splits(n):
           + ','.join(f'{a}={v(b)}' for a, b in d['per_seed_macro'].items()))
     return n + 1
 
+def block_representation(n):
+    names = ('cell_1000', 'chemberta', 'morgan_chemberta', 'morgan_esm',
+             'morgan_chemberta_esm', 'chemberta_p64', 'morgan_chemberta_p64',
+             'morgan_esm_p64', 'morgan_chemberta_esm_p64')
+    ds = [(nm, g(f'{R}/{nm}.json')) for nm in names]
+    ds = [(nm, d) for nm, d in ds if d]
+    if len(ds) < 2: return n
+    head('learned representations against the fingerprint reference')
+    q = 'data/embeddings/provenance.json'
+    if os.path.exists(q):
+        prov = json.load(open(q))
+        for a, b in (('molecule', 'molecule'), ('protein', 'protein')):
+            w(f'{b}_model {prov[a + "_model"]} revision {prov[a + "_revision"]} '
+              f'dim {prov[a + "_dim"]}')
+    ref = None
+    for nm, d in ds:
+        parts = [nm, f'macro {v(d["macro_auroc"])}', f'seed_sd {v(d["seed_sd"])}',
+                 f'mean_ap {v(d["mean_ap"])}', f'target_se {v(d["target_se"])}']
+        if ref is None:
+            ref = (nm, d['per_target'])
+        else:
+            t, dl, pval = paired(ref[1], d['per_target'])
+            parts += [f'delta_vs_{ref[0]} {v(dl.mean())}', f'wilcoxon_p {pv(pval)}']
+        w(' '.join(parts))
+    return n + 1
+
 BLOCKS = [block_cohort, block_ladder, block_warhead_variants, block_factorial,
-          block_panel, block_fewshot, block_sweep, block_noise,
+          block_panel, block_representation, block_fewshot, block_sweep, block_noise,
           block_cohort_cells, block_protocols, block_splits,
           block_calibration, block_similarity, block_overlap, block_source]
 
@@ -445,6 +487,9 @@ def _cell(cid):
 ARMS = ([(f'cell_{c}', _cell(c), 'core', None, None) for c in CELLS]
         + [(f'fewshot_k{k}', dict(morgan=True, warhead=True, admet=True, k=k, reps=5),
             'core', None, None) for k in (1, 3, 10)]
+        + [(f'fewshot_k{k}_random',
+            dict(morgan=True, warhead=True, admet=True, k=k, reps=5, shots='random'),
+            'core', None, None) for k in (1, 3, 5, 10)]
         + [('warhead_self_excluded',
             dict(morgan=True, warhead=True, self_excl=True), 'core', None, None),
            ('oat_bits512', dict(morgan=True, nbits=512), 'core', None, None),
@@ -467,7 +512,22 @@ ARMS = ([(f'cell_{c}', _cell(c), 'core', None, None) for c in CELLS]
             'core', 'e3', 'cross_e3_recruited_ligase'),
            ('retained_65',
             dict(morgan=True, exclusions=dict(constituent=False, dedup=False)),
-            'core', 'retained', 'loto_eligible_retained')])
+            'core', 'retained', 'loto_eligible_retained'),
+           ('chemberta', dict(morgan=False, chemberta=True), 'core', None, None),
+           ('morgan_chemberta', dict(morgan=True, chemberta=True),
+            'core', None, None),
+           ('morgan_esm', dict(morgan=True, esm=True), 'core', None, None),
+           ('morgan_chemberta_esm', dict(morgan=True, chemberta=True, esm=True),
+            'core', None, None),
+           ('chemberta_p64', dict(morgan=False, chemberta=True, emb_dim=64),
+            'core', None, None),
+           ('morgan_chemberta_p64',
+            dict(morgan=True, chemberta=True, emb_dim=64), 'core', None, None),
+           ('morgan_esm_p64', dict(morgan=True, esm=True, emb_dim=64),
+            'core', None, None),
+           ('morgan_chemberta_esm_p64',
+            dict(morgan=True, chemberta=True, esm=True, emb_dim=64),
+            'core', None, None)])
 
 # the core band carries the headline measurements; the ablation band carries the
 # sweeps, the injected-noise ladder and the feature-off cells of the factorial

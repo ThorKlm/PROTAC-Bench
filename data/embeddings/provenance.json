@@ -1,0 +1,14 @@
+{
+ "protein_model": "facebook/esm2_t33_650M_UR50D",
+ "protein_revision": "08e4846e537177426273712802403f7ba8261b6c",
+ "protein_dim": 1280,
+ "protein_rows": 173,
+ "molecule_model": "seyonec/ChemBERTa-zinc-base-v1",
+ "molecule_revision": "761d6a18cf99db371e0b43baf3e2d21b3e865a20",
+ "molecule_dim": 768,
+ "molecule_rows": 10748,
+ "pooling": "attention-masked mean of final hidden states",
+ "dtype": "float32",
+ "protein_maxlen": 1022,
+ "molecule_maxlen": 512
+}

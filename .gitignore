@@ -28,3 +28,4 @@ venv/
 
 # Local-only artefacts
 *.log
+data/embeddings/*.npy

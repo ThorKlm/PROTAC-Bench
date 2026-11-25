@@ -129,7 +129,20 @@ xgb_morgan model xgb macro 0.5648 seed_sd 0.0 ap 0.5751 target_se 0.0262 folds 6
 gin model GIN macro 0.5787 seed_sd 0.021 target_se 0.0213 folds 61 delta_vs_cell_1000 -0.0334 wilcoxon_p 0.2023
 dmpnn model D-MPNN macro 0.6049 seed_sd 0.0047 target_se 0.022 folds 61 delta_vs_cell_1000 -0.0072 wilcoxon_p 0.7222
 
---- 9: few-shot curve across k, full feature set ---
+--- 9: learned representations against the fingerprint reference ---
+molecule_model seyonec/ChemBERTa-zinc-base-v1 revision 761d6a18cf99db371e0b43baf3e2d21b3e865a20 dim 768
+protein_model facebook/esm2_t33_650M_UR50D revision 08e4846e537177426273712802403f7ba8261b6c dim 1280
+cell_1000 macro 0.6121 seed_sd 0.0099 mean_ap 0.6066 target_se 0.0241
+chemberta macro 0.5569 seed_sd 0.0067 mean_ap 0.5579 target_se 0.0227 delta_vs_cell_1000 -0.0552 wilcoxon_p 0.0042
+morgan_chemberta macro 0.5681 seed_sd 0.0085 mean_ap 0.5728 target_se 0.0247 delta_vs_cell_1000 -0.0439 wilcoxon_p 0.0234
+morgan_esm macro 0.5803 seed_sd 0.0079 mean_ap 0.5831 target_se 0.0208 delta_vs_cell_1000 -0.0318 wilcoxon_p 0.1926
+morgan_chemberta_esm macro 0.5573 seed_sd 0.0176 mean_ap 0.567 target_se 0.0229 delta_vs_cell_1000 -0.0548 wilcoxon_p 0.0048
+chemberta_p64 macro 0.563 seed_sd 0.0154 mean_ap 0.5673 target_se 0.0217 delta_vs_cell_1000 -0.0491 wilcoxon_p 0.031
+morgan_chemberta_p64 macro 0.5944 seed_sd 0.0081 mean_ap 0.5965 target_se 0.0254 delta_vs_cell_1000 -0.0177 wilcoxon_p 0.156
+morgan_esm_p64 macro 0.59 seed_sd 0.0123 mean_ap 0.5917 target_se 0.0225 delta_vs_cell_1000 -0.0221 wilcoxon_p 0.0736
+morgan_chemberta_esm_p64 macro 0.5818 seed_sd 0.0162 mean_ap 0.5855 target_se 0.0206 delta_vs_cell_1000 -0.0303 wilcoxon_p 0.0272
+
+--- 10: few-shot curve across k, full feature set ---
 k 0 n_targets 61 macro 0.6248 seed_sd 0.0132 mean_ap 0.5987 per_target_sd 0.1668 target_se 0.0214 reps 5
 k 1 n_targets 61 macro 0.6366 seed_sd 0.0056 mean_ap 0.6263 per_target_sd 0.1731 target_se 0.0222 reps 5
 k 3 n_targets 61 macro 0.6591 seed_sd 0.0029 mean_ap 0.6441 per_target_sd 0.1665 target_se 0.0213 reps 5
@@ -139,8 +152,12 @@ k 1 delta_vs_k0 0.0118 wilcoxon_p_vs_k0 0.0069 improved 43 n_paired 61
 k 3 delta_vs_k0 0.0343 wilcoxon_p_vs_k0 6.03e-06 improved 48 n_paired 61
 k 5 delta_vs_k0 0.0515 wilcoxon_p_vs_k0 1.18e-06 improved 48 n_paired 61
 k 10 delta_vs_k0 0.0815 wilcoxon_p_vs_k0 2.32e-07 improved 48 n_paired 56
+k 1 shots random macro 0.6418 seed_sd 0.0046 mean_ap 0.6171 target_se 0.0213 delta_vs_band 0.0052 wilcoxon_p_vs_band 0.2663 n_paired 61 delta_vs_k0 0.017 wilcoxon_p_vs_k0 4.36e-06
+k 3 shots random macro 0.6624 seed_sd 0.0047 mean_ap 0.6392 target_se 0.0203 delta_vs_band 0.0033 wilcoxon_p_vs_band 0.2845 n_paired 61 delta_vs_k0 0.0376 wilcoxon_p_vs_k0 2.23e-07
+k 5 shots random macro 0.6773 seed_sd 0.0049 mean_ap 0.659 target_se 0.0197 delta_vs_band 0.001 wilcoxon_p_vs_band 0.2687 n_paired 61 delta_vs_k0 0.0526 wilcoxon_p_vs_k0 3.27e-07
+k 10 shots random macro 0.7129 seed_sd 0.0091 mean_ap 0.7006 target_se 0.0194 delta_vs_band 0.0008 wilcoxon_p_vs_band 0.627 n_paired 56 delta_vs_k0 0.0824 wilcoxon_p_vs_k0 7.22e-07
 
---- 10: one-factor-at-a-time configuration sweep around the reference ---
+--- 11: one-factor-at-a-time configuration sweep around the reference ---
 reference macro 0.6121 seed_sd 0.0099 mean_ap 0.6066 target_se 0.0241
 all_defaults macro 0.6054 seed_sd 0.0145 mean_ap 0.6059 target_se 0.0226 delta_vs_reference -0.0067
 all_defaults_spec morgan=True,rf.n_estimators=100,rf.min_samples_leaf=1,rf.class_weight=None
@@ -157,7 +174,7 @@ radius3_spec morgan=True,radius=3
 trees100 macro 0.6108 seed_sd 0.0132 mean_ap 0.6073 target_se 0.0234 delta_vs_reference -0.0013
 trees100_spec morgan=True,rf.n_estimators=100
 
---- 11: training-label noise injected at the reference configuration ---
+--- 12: training-label noise injected at the reference configuration ---
 flip 0.0 macro 0.6121 seed_sd 0.0099 mean_ap 0.6066 target_se 0.0241 delta_vs_flip0 0.0
 flip 0.02 macro 0.6118 seed_sd 0.0071 mean_ap 0.6075 target_se 0.0238 delta_vs_flip0 -0.0003
 flip 0.05 macro 0.6134 seed_sd 0.0096 mean_ap 0.6108 target_se 0.0241 delta_vs_flip0 0.0013
@@ -169,7 +186,7 @@ flip 0.3 macro 0.5963 seed_sd 0.0075 mean_ap 0.5972 target_se 0.0182 delta_vs_fl
 flip 0.35 macro 0.5724 seed_sd 0.0155 mean_ap 0.5816 target_se 0.0164 delta_vs_flip0 -0.0397
 flip 0.4 macro 0.5539 seed_sd 0.0179 mean_ap 0.5704 target_se 0.0122 delta_vs_flip0 -0.0582
 
---- 12: cohort variants, reference configuration ---
+--- 13: cohort variants, reference configuration ---
 dedup_65 macro 0.6121 seed_sd 0.0092 target_se 0.0228 per_target_sd 0.1836 n_targets 65 median_train_rows 10680 dedup True constituent_excluded False
 dedup_65_per_seed_macro 42=0.6165,0=0.608,1=0.6165,2=0.602,3=0.5939,4=0.6081,5=0.6141,6=0.6216,7=0.6248,8=0.6151
 dedup_excl_61 macro 0.6121 seed_sd 0.0099 target_se 0.0241 per_target_sd 0.1881 n_targets 61 median_train_rows 10691 dedup True constituent_excluded True
@@ -179,7 +196,7 @@ retained_excl_61_per_seed_macro 42=0.675,0=0.6628,1=0.6724,2=0.6605,3=0.6565,4=0
 retained_65 macro 0.6654 seed_sd 0.0105 target_se 0.0245 per_target_sd 0.1976 n_targets 65 median_train_rows 10709 dedup False constituent_excluded False
 retained_65_per_seed_macro 42=0.6703,0=0.6589,1=0.6696,2=0.6566,3=0.6531,4=0.649,5=0.6679,6=0.6757,7=0.6723,8=0.681
 
---- 13: random and scaffold cross-validation, full corpus ---
+--- 14: random and scaffold cross-validation, full corpus ---
 n_folds 5
 n_rows 10748
 n_scaffolds 7427
@@ -194,13 +211,13 @@ random_dedup_pooled_per_seed 42=0.8951,0=0.8959,1=0.8954,2=0.8969,3=0.8934,4=0.8
 scaffold_retained_pooled_per_seed 42=0.8965,0=0.8958,1=0.8959,2=0.8964,3=0.8959,4=0.896,5=0.896,6=0.8963,7=0.8957,8=0.8966
 scaffold_dedup_pooled_per_seed 42=0.8965,0=0.8958,1=0.8959,2=0.8964,3=0.8959,4=0.896,5=0.896,6=0.8963,7=0.8957,8=0.8966
 
---- 14: leave-one-family-out and cross-E3 protocols, reference configuration ---
+--- 15: leave-one-family-out and cross-E3 protocols, reference configuration ---
 lofo cohort lofo_family_mapped n_folds 22 macro 0.5498 seed_sd 0.0094 mean_ap 0.5651 target_se 0.0359 per_fold_sd 0.1686
 lofo_per_seed_macro 42=0.5565,0=0.536,1=0.5419,2=0.538,3=0.5591,4=0.5484,5=0.5427,6=0.5587,7=0.5586,8=0.5576
 cross_e3 cohort cross_e3_recruited_ligase n_folds 3 macro 0.6401 seed_sd 0.009 mean_ap 0.6561 target_se 0.0113 per_fold_sd 0.0195
 cross_e3_per_seed_macro 42=0.6282,0=0.6332,1=0.6305,2=0.6352,3=0.6378,4=0.6552,5=0.6502,6=0.648,7=0.6379,8=0.6449
 
---- 15: calibration and coverage, reference arm, from stored predictions ---
+--- 16: calibration and coverage, reference arm, from stored predictions ---
 source results/cell_1000_predictions.json
 seeds 42,0,1,2,3,4,5,6,7,8
 n_pooled 9126
@@ -222,7 +239,7 @@ coverage 0.3 n 2738 pos_rate 0.628 error_rate 0.2969 majority_error 0.372 auroc 
 coverage 0.1 n 913 pos_rate 0.4942 error_rate 0.2951 majority_error 0.4785 auroc 0.6976 brier 0.2174
 coverage 0.05 n 456 pos_rate 0.4616 error_rate 0.3059 majority_error 0.4616 auroc 0.654 brier 0.2303
 
---- 16: maximum Tanimoto to the nearest training compound, by protocol ---
+--- 17: maximum Tanimoto to the nearest training compound, by protocol ---
 cv_seed 42
 n_rows 10748
 loto_folds 61
@@ -235,7 +252,7 @@ random_cv_dedup n 10748 median 0.9091 mean 0.899 q05 0.7251 q25 0.8571 q75 0.982
 scaffold_cv_dedup n 10748 median 0.9091 mean 0.8966 q05 0.725 q25 0.8462 q75 0.9881 q95 1.0 frac_ge_090 0.5457 frac_eq_1 0.212
 loto_dedup n 9126 median 0.4639 mean 0.4792 q05 0.3401 q25 0.4113 q75 0.5262 q95 0.6724 frac_ge_090 0.0058 frac_eq_1 0.002
 
---- 17: reference on the retained cohort, split by whether the test compound occurs verbatim in training ---
+--- 18: reference on the retained cohort, split by whether the test compound occurs verbatim in training ---
 n_folds 65
 cohort loto_eligible_retained
 constituent_excluded False
@@ -251,7 +268,7 @@ per_seed_macro 42=0.6703,0=0.6589,1=0.6696,2=0.6566,3=0.6531,4=0.649,5=0.6679,6=
 novel macro 0.617 seed_sd 0.0137 n_folds 47
 seen macro 0.7787 seed_sd 0.0039 n_folds 35
 
---- 18: source partition by row position ---
+--- 19: source partition by row position ---
 ribes_rows 3181
 ribes_rate 0.3766
 protacdb_rows 7567

@@ -80,6 +80,12 @@ def fewshot():
         ax.errorbar([k for k, _ in ds], [d[key] for _, d in ds],
                     yerr=[d[sd] or 0 for _, d in ds], marker='o', ms=3, lw=1,
                     capsize=2, color=col, label=lb)
+    rnd = [(k, load(f'fewshot_k{k}_random.json')) for k in (5, 10)]
+    rnd = [(k, d) for k, d in rnd if d]
+    if rnd:
+        ax.errorbar([k for k, _ in rnd], [d['macro_auroc'] for _, d in rnd],
+                    yerr=[d['seed_sd'] or 0 for _, d in rnd], marker='s', ms=4,
+                    lw=0, capsize=2, color=C[2], label='macro AUROC, random shots')
     ax.set_xlabel('labelled shots per target'); ax.set_ylabel('score')
     ax.legend(); save(fig, 'fewshot.pdf')
 
@@ -196,7 +202,26 @@ def splits():
         a2.set_xlabel('AUROC, held-out ligase'); a2.set_xlim(0, 1)
     save(fig, 'splits.pdf')
 
-FIGURES = (protocol_collapse, factorial, baselines, fewshot, sweep, label_noise,
+def representations():
+    names = ('cell_1000', 'chemberta', 'morgan_chemberta', 'morgan_esm',
+             'morgan_chemberta_esm', 'chemberta_p64', 'morgan_chemberta_p64',
+             'morgan_esm_p64', 'morgan_chemberta_esm_p64')
+    ds = [(n, load(f'{n}.json')) for n in names]
+    ds = [(n, d) for n, d in ds if d]
+    if len(ds) < 2: return
+    fig, ax = plt.subplots(figsize=(4.2, 2.6))
+    x = np.arange(len(ds))
+    ax.bar(x, [d['macro_auroc'] for _, d in ds],
+           yerr=[d['target_se'] for _, d in ds], capsize=2,
+           color=[C[0]] + [C[2]] * (len(ds) - 1))
+    ax.set_xticks(x); ax.set_xticklabels([n for n, _ in ds], rotation=30,
+                                         ha='right', fontsize=7)
+    ax.axhline(0.5, color='k', lw=0.6, ls=':')
+    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.45, 0.72)
+    save(fig, 'representations.pdf')
+
+FIGURES = (protocol_collapse, factorial, baselines, representations,
+           fewshot, sweep, label_noise,
            cohort_variants, calibration, similarity, overlap, splits)
 
 def main():
