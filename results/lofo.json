@@ -1,324 +1,84 @@
 {
-  "n_targets": 65,
-  "n_families": 26,
-  "lofo_mean_auroc": 0.6166,
-  "loto_mean_auroc": 0.6614,
-  "delta_lofo_minus_loto": -0.0448,
-  "wilcoxon_pval": 0.0065,
-  "family_size_vs_auroc_rho": 0.234,
+ "arm": "lofo",
+ "spec": {
+  "morgan": true
+ },
+ "macro_auroc": 0.5498,
+ "seed_sd": 0.0094,
+ "mean_ap": 0.5651,
+ "ap_seed_sd": 0.005,
+ "per_target_sd": 0.1686,
+ "target_se": 0.0359,
+ "n_targets_paired": 22,
+ "per_seed_macro": {
+  "42": 0.5565,
+  "0": 0.536,
+  "1": 0.5419,
+  "2": 0.538,
+  "3": 0.5591,
+  "4": 0.5484,
+  "5": 0.5427,
+  "6": 0.5587,
+  "7": 0.5586,
+  "8": 0.5576
+ },
+ "per_target": {
+  "Bromodomain": 0.7823,
+  "DUB": 0.5846,
+  "E3_ligase": 0.5787,
+  "GPX4": 0.7789,
+  "HAT_CBP_p300": 0.5314,
+  "HCFC1": 0.7679,
+  "HDAC": 0.5749,
+  "IAP": 0.1298,
+  "IDO1": 0.4803,
+  "Kinase": 0.7485,
+  "NAMPT": 0.5037,
+  "Nuclear_receptor": 0.4547,
+  "PARP": 0.3036,
+  "PRC2": 0.62,
+  "Phosphatase": 0.7683,
+  "RAS": 0.5193,
+  "SMARCA": 0.6057,
+  "STAT": 0.316,
+  "Steroid_enzyme": 0.6214,
+  "Synuclein": 0.4737,
+  "Tau": 0.5587,
+  "Translation_factor": 0.3923
+ },
+ "elapsed_min": 4.2,
+ "_meta": {
   "seeds": [
-    42,
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
+   42,
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
   ],
-  "family_assignments": {
-    "Bromodomain": [
-      "O60674",
-      "O60760",
-      "O60885",
-      "P25440",
-      "Q15059",
-      "Q9NWZ3"
-    ],
-    "DUB": [
-      "Q93009"
-    ],
-    "E3_ligase": [
-      "P40337"
-    ],
-    "GPX4": [
-      "P36969"
-    ],
-    "HAT_CBP_p300": [
-      "Q09472",
-      "Q92793",
-      "Q92793/Q09472"
-    ],
-    "HCFC1": [
-      "Q92918"
-    ],
-    "HDAC": [
-      "O15379",
-      "Q9BY41",
-      "Q9UBN7"
-    ],
-    "IAP": [
-      "P98170"
-    ],
-    "IDO1": [
-      "P14902"
-    ],
-    "Kinase": [
-      "P00533",
-      "P06239",
-      "P08581",
-      "P11802",
-      "P15056",
-      "P24941",
-      "P30530",
-      "P33981",
-      "P36888",
-      "P36897",
-      "P49336",
-      "P49840",
-      "P50750",
-      "Q02750",
-      "Q06187",
-      "Q07889",
-      "Q08881",
-      "Q13422",
-      "Q14004",
-      "Q16539",
-      "Q5S007",
-      "Q96SW2",
-      "Q9NYV4",
-      "Q9UM73"
-    ],
-    "NAMPT": [
-      "P43490"
-    ],
-    "Nuclear_receptor": [
-      "P03372",
-      "P10275"
-    ],
-    "PARP": [
-      "P09874"
-    ],
-    "PRC2": [
-      "O75530"
-    ],
-    "Phosphatase": [
-      "P17706",
-      "P18031",
-      "Q06124"
-    ],
-    "RAS": [
-      "P01116",
-      "P01116/P04049",
-      "P01116/Q07889"
-    ],
-    "SMARCA": [
-      "P51531",
-      "P51531/P51532",
-      "P51532"
-    ],
-    "STAT": [
-      "P40763"
-    ],
-    "Steroid_enzyme": [
-      "P11474"
-    ],
-    "Synuclein": [
-      "P37840"
-    ],
-    "Tau": [
-      "P10636"
-    ],
-    "Translation_factor": [
-      "P15170"
-    ],
-    "singleton_O43924": [
-      "O43924"
-    ],
-    "singleton_Q00534": [
-      "Q00534"
-    ],
-    "singleton_Q9Y2I7": [
-      "Q9Y2I7"
-    ],
-    "singleton_Q9Y616": [
-      "Q9Y616"
-    ]
+  "n_targets": 61,
+  "cohort": "lofo_family_mapped",
+  "min_n": 10,
+  "min_rate": 0.1,
+  "max_rate": 0.9,
+  "constituent_excluded": true,
+  "smiles_dedup": true,
+  "n_folds": 22,
+  "model": "rf",
+  "model_params": {
+   "n_estimators": 200,
+   "min_samples_leaf": 3,
+   "class_weight": "balanced"
   },
-  "per_family_summary": [
-    {
-      "family": "HAT_CBP_p300",
-      "n_targets": 3,
-      "mean_lofo": 0.49276666666666663,
-      "mean_loto": 0.8814000000000001,
-      "mean_drop": -0.38863333333333333
-    },
-    {
-      "family": "RAS",
-      "n_targets": 3,
-      "mean_lofo": 0.509,
-      "mean_loto": 0.6855666666666668,
-      "mean_drop": -0.17656666666666665
-    },
-    {
-      "family": "Bromodomain",
-      "n_targets": 6,
-      "mean_lofo": 0.6655333333333333,
-      "mean_loto": 0.7569499999999999,
-      "mean_drop": -0.09141666666666669
-    },
-    {
-      "family": "Nuclear_receptor",
-      "n_targets": 2,
-      "mean_lofo": 0.4734,
-      "mean_loto": 0.5346,
-      "mean_drop": -0.06120000000000003
-    },
-    {
-      "family": "Phosphatase",
-      "n_targets": 3,
-      "mean_lofo": 0.7674666666666666,
-      "mean_loto": 0.8283333333333333,
-      "mean_drop": -0.06086666666666666
-    },
-    {
-      "family": "Kinase",
-      "n_targets": 24,
-      "mean_lofo": 0.6616333333333333,
-      "mean_loto": 0.6885583333333334,
-      "mean_drop": -0.026925000000000008
-    },
-    {
-      "family": "singleton_Q00534",
-      "n_targets": 1,
-      "mean_lofo": 0.8148,
-      "mean_loto": 0.8148,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "singleton_O43924",
-      "n_targets": 1,
-      "mean_lofo": 0.2778,
-      "mean_loto": 0.2778,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "Translation_factor",
-      "n_targets": 1,
-      "mean_lofo": 0.3231,
-      "mean_loto": 0.3231,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "Tau",
-      "n_targets": 1,
-      "mean_lofo": 0.5686,
-      "mean_loto": 0.5686,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "Synuclein",
-      "n_targets": 1,
-      "mean_lofo": 0.4862,
-      "mean_loto": 0.4862,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "Steroid_enzyme",
-      "n_targets": 1,
-      "mean_lofo": 0.6286,
-      "mean_loto": 0.6286,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "STAT",
-      "n_targets": 1,
-      "mean_lofo": 0.3403,
-      "mean_loto": 0.3403,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "PARP",
-      "n_targets": 1,
-      "mean_lofo": 0.3061,
-      "mean_loto": 0.3061,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "singleton_Q9Y2I7",
-      "n_targets": 1,
-      "mean_lofo": 0.4574,
-      "mean_loto": 0.4574,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "NAMPT",
-      "n_targets": 1,
-      "mean_lofo": 0.4849,
-      "mean_loto": 0.4849,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "IDO1",
-      "n_targets": 1,
-      "mean_lofo": 0.4877,
-      "mean_loto": 0.4877,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "IAP",
-      "n_targets": 1,
-      "mean_lofo": 0.5682,
-      "mean_loto": 0.5682,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "HCFC1",
-      "n_targets": 1,
-      "mean_lofo": 0.7736,
-      "mean_loto": 0.7736,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "GPX4",
-      "n_targets": 1,
-      "mean_lofo": 0.8011,
-      "mean_loto": 0.8011,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "E3_ligase",
-      "n_targets": 1,
-      "mean_lofo": 0.7256,
-      "mean_loto": 0.7256,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "DUB",
-      "n_targets": 1,
-      "mean_lofo": 0.5974,
-      "mean_loto": 0.5974,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "PRC2",
-      "n_targets": 1,
-      "mean_lofo": 0.4429,
-      "mean_loto": 0.4429,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "singleton_Q9Y616",
-      "n_targets": 1,
-      "mean_lofo": 0.8792,
-      "mean_loto": 0.8792,
-      "mean_drop": 0.0
-    },
-    {
-      "family": "SMARCA",
-      "n_targets": 3,
-      "mean_lofo": 0.6342666666666666,
-      "mean_loto": 0.6282000000000001,
-      "mean_drop": 0.006066666666666627
-    },
-    {
-      "family": "HDAC",
-      "n_targets": 3,
-      "mean_lofo": 0.6949333333333333,
-      "mean_loto": 0.6064333333333334,
-      "mean_drop": 0.08850000000000001
-    }
-  ]
+  "morgan_bits": 2048,
+  "radius": 2,
+  "git_commit": "0e51020",
+  "python": "3.12.13",
+  "numpy": "2.5.5",
+  "sklearn": "1.9.1"
+ }
 }

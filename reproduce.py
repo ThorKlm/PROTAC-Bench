@@ -11,7 +11,7 @@ import argparse, json, os, sys
 import numpy as np
 from scipy.stats import wilcoxon
 
-R, DOC, L = 'results', 'results/REPRODUCTION.txt', []
+R, L = 'results', []
 def w(s=''): L.append(s)
 def head(d): w(); w(f'--- @@: {d} ---')
 def g(p):
@@ -25,7 +25,7 @@ def pv(x):
     x = float(x)
     return f'{x:.2e}' if x < 1e-4 else round(x, 4)
 BASE, PARAMS = {}, ('cohort', 'min_n', 'min_rate', 'max_rate',
-                   'constituent_excluded', 'smiles_dedup', 'rf', 'morgan_bits',
+                   'constituent_excluded', 'smiles_dedup', 'model', 'model_params', 'morgan_bits',
                    'radius', 'git_commit', 'python', 'numpy', 'sklearn')
 def meta(d, base=False):
     # the cohort block states the definition once; later blocks print only
@@ -33,7 +33,9 @@ def meta(d, base=False):
     m = d.get('_meta') or d.get('meta') or {}
     if m.get('seeds') and (base or list(m['seeds']) != list(BASE.get('seeds', ()))):
         w('seeds ' + ','.join(str(x) for x in m['seeds']))
-    if 'n_targets' in m: w(f'n_targets {m["n_targets"]}')
+    if 'n_targets' in m and (base or m['n_targets'] != BASE.get('n_targets')):
+        w(f'n_targets {m["n_targets"]}')
+    if 'n_folds' in m: w(f'n_folds {m["n_folds"]}')
     for k in PARAMS:
         if k in m and (base or m[k] != BASE.get(k)):
             x = m[k]
@@ -43,8 +45,8 @@ def meta(d, base=False):
 def agg(d):
     if d.get('spec'): w('spec ' + ','.join(f'{k}={x}' for k, x in d['spec'].items()))
     for k in ('macro_auroc', 'seed_sd', 'mean_ap', 'ap_seed_sd',
-              'per_target_sd', 'target_se', 'elapsed_min'):
-        if k in d: w(f'{k} {v(d[k])}')
+              'per_target_sd', 'target_se'):
+        if k in d and d[k] is not None: w(f'{k} {v(d[k])}')
     if d.get('per_seed_macro'):
         w('per_seed_macro ' + ','.join(f'{k}={v(x)}' for k, x in d['per_seed_macro'].items()))
 def paired(a, b):
@@ -84,7 +86,7 @@ LADDER = [('cell_1000', 'reference, Morgan 2048 radius 2, random forest'),
           ('cell_1111', 'plus five labelled shots')]
 
 def block_cohort(n):
-    d = g(f'{R}/v13/cell_1000.json')
+    d = g(f'{R}/cell_1000.json')
     if not d: return n
     head('cohort definition'); meta(d, base=True)
     import pandas as pd
@@ -98,7 +100,7 @@ def block_cohort(n):
 def block_ladder(n):
     ref = prev = None
     for name, desc in LADDER:
-        d = g(f'{R}/v13/{name}.json')
+        d = g(f'{R}/{name}.json')
         if not d: n += 1; continue
         head(desc); meta(d); agg(d)
         pt = d['per_target']
@@ -114,15 +116,15 @@ def block_warhead_variants(n):
     # self-excluded variant is a distinct measurement
     for name, desc in (('warhead_self_excluded',
                         'warhead, query compound excluded from its own neighbours'),):
-        d = g(f'{R}/v13/{name}.json')
+        d = g(f'{R}/{name}.json')
         if not d: n += 1; continue
         head(desc); meta(d); agg(d); n += 1
     return n
 
 def block_factorial(n):
     import glob
-    fs = sorted(glob.glob(f'{R}/v13/cell_*.json'))
-    if not fs: print(f'gap: {R}/v13/cell_*.json', file=sys.stderr); return n + 1
+    fs = sorted(glob.glob(f'{R}/cell_[01][01][01][01].json'))
+    if not fs: print(f'gap: {R}/cell_*.json', file=sys.stderr); return n + 1
     head('factorial over Morgan, warhead, ADMET, few-shot')
     cells = {}
     for p in fs:
@@ -139,7 +141,7 @@ def block_factorial(n):
     return n + 1
 
 def block_cohort_cells(n):
-    d = g(f'{R}/v12/cohort_cells.json')
+    d = g(f'{R}/cohort_cells.json')
     if not d: return n + 1
     head('cohort variants, reference configuration')
     meta(d)
@@ -155,12 +157,15 @@ def block_cohort_cells(n):
     return n + 1
 
 def block_overlap(n):
-    d = g(f'{R}/v12/overlap_control.json')
-    if not d: return n + 1
-    head('reference split by whether the test compound occurs verbatim in training')
-    meta(d)
-    for k in ('full', 'novel', 'seen'):
-        if k in d: w(f'{k} macro {v(d[k]["macro"])} seed_sd {v(d[k]["seed_sd"])} n_folds {d[k]["n_folds"]}')
+    d, o = g(f'{R}/retained_65.json'), g(f'{R}/overlap.json')
+    if not d or not o:
+        print(f'gap: {R}/overlap.json', file=sys.stderr); return n + 1
+    head('reference on the retained cohort, split by whether the test compound '
+         'occurs verbatim in training')
+    meta(d); agg(d)
+    for k in ('novel', 'seen'):
+        w(f'{k} macro {v(o[k]["macro"])} seed_sd {v(o[k]["seed_sd"])} '
+          f'n_folds {o[k]["n_folds"]}')
     return n + 1
 
 def block_source(n):
@@ -176,7 +181,7 @@ def block_source(n):
     return n + 1
 
 def block_calibration(n):
-    d = g(f'{R}/v13/calibration_C0.json')
+    d = g(f'{R}/calibration.json')
     if not d: return n + 1
     head('calibration and coverage, reference arm, from stored predictions')
     w('source ' + d['source'])
@@ -208,7 +213,7 @@ def flat(d, pre=''):
 def block_fewshot(n):
     pts = [(0, 'cell_1110'), (1, 'fewshot_k1'), (3, 'fewshot_k3'),
            (5, 'cell_1111'), (10, 'fewshot_k10')]
-    got = [(k, g(f'{R}/v13/{f}.json')) for k, f in pts]
+    got = [(k, g(f'{R}/{f}.json')) for k, f in pts]
     if not any(d for _, d in got): return n + 1
     head('few-shot curve across k, full feature set')
     base = dict(got).get(0)
@@ -228,10 +233,10 @@ def block_fewshot(n):
 
 def block_sweep(n):
     import glob
-    fs = sorted(glob.glob(f'{R}/v13/oat_*.json'))
+    fs = sorted(glob.glob(f'{R}/oat_*.json'))
     if not fs:
-        print(f'gap: {R}/v13/oat_*.json', file=sys.stderr); return n + 1
-    ref = g(f'{R}/v13/cell_1000.json')
+        print(f'gap: {R}/oat_*.json', file=sys.stderr); return n + 1
+    ref = g(f'{R}/cell_1000.json')
     head('one-factor-at-a-time configuration sweep around the reference')
     if ref:
         w(f'reference macro {v(ref["macro_auroc"])} seed_sd {v(ref["seed_sd"])} '
@@ -248,12 +253,12 @@ def block_sweep(n):
     return n + 1
 
 def block_protocols(n):
-    d = g(f'{R}/v13/protocols.json')
+    d = g(f'{R}/protocols.json')
     if not d: return n + 1
     head('random and scaffold cross-validation, full corpus')
     meta(d)
     m = d.get('_meta', {})
-    for k in ('n_rows', 'n_folds', 'n_scaffolds', 'corpus', 'dedup_rule'):
+    for k in ('n_rows', 'n_scaffolds', 'corpus', 'dedup_rule'):
         if k in m: w(f'{k} {m[k]}')
     for k, a in d['aggregate'].items():
         w(f'{k} pooled {v(a["pooled_mean"])} across_seed_sd {v(a["across_seed_sd"])} '
@@ -264,7 +269,7 @@ def block_protocols(n):
     return n + 1
 
 def block_similarity(n):
-    d = g(f'{R}/v13/similarity.json')
+    d = g(f'{R}/similarity.json')
     if not d: return n + 1
     head('maximum Tanimoto to the nearest training compound, by protocol')
     m = d.get('_meta', {})
@@ -277,10 +282,70 @@ def block_similarity(n):
           f'frac_ge_090 {x["frac_ge_090"]} frac_eq_1 {x["frac_eq_1"]}')
     return n + 1
 
+def block_panel(n):
+    """Prediction heads on identical folds. Row labels are read from each
+    artefact's own model record rather than written here."""
+    names = ('cell_1000', 'xgb_morgan', 'gin', 'dmpnn')
+    ds = [(nm, g(f'{R}/{nm}.json')) for nm in names]
+    if not any(d for _, d in ds): return n
+    head('baseline prediction heads on the primary cohort, identical folds')
+    ref = None
+    for nm, d in ds:
+        if not d: continue
+        m = d.get('_meta') or {}
+        label = m.get('model') or (d.get('spec') or {}).get('architecture') or nm
+        parts = [nm, f'model {label}', f'macro {v(d["macro_auroc"])}']
+        for k, lbl in (('seed_sd', 'seed_sd'), ('mean_ap', 'ap'),
+                       ('target_se', 'target_se')):
+            if d.get(k) is not None: parts.append(f'{lbl} {v(d[k])}')
+        parts.append(f'folds {d.get("n_targets_paired")}')
+        if ref is not None:
+            _, dl, pv = paired(ref[1], d['per_target'])
+            parts += [f'delta_vs_{ref[0]} {v(dl.mean())}', f'wilcoxon_p {v(pv)}']
+        else:
+            ref = (nm, d['per_target'])
+        w(' '.join(parts))
+        if m.get('model_params'):
+            w('  ' + nm + ' model_params '
+              + ','.join(f'{a}={b}' for a, b in m['model_params'].items()))
+    return n + 1
+
+def block_noise(n):
+    import glob
+    fs = sorted(glob.glob(f'{R}/noise_*.json'))
+    if not fs:
+        print(f'gap: {R}/noise_*.json', file=sys.stderr); return n + 1
+    head('training-label noise injected at the reference configuration')
+    base = None
+    for q in fs:
+        d = json.load(open(q))
+        if base is None: base = d['macro_auroc']
+        w(f'flip {d["spec"].get("flip", 0.0)} macro {v(d["macro_auroc"])} '
+          f'seed_sd {v(d["seed_sd"])} mean_ap {v(d["mean_ap"])} '
+          f'target_se {v(d["target_se"])} '
+          f'delta_vs_flip0 {v(d["macro_auroc"] - base)}')
+    return n + 1
+
+def block_splits(n):
+    ds = [(nm, g(f'{R}/{nm}.json')) for nm in ('lofo', 'cross_e3')]
+    if not any(d for _, d in ds):
+        print(f'gap: {R}/lofo.json', file=sys.stderr); return n + 1
+    head('leave-one-family-out and cross-E3 protocols, reference configuration')
+    for nm, d in ds:
+        if not d: continue
+        m = d.get('_meta') or {}
+        w(f'{nm} cohort {m.get("cohort")} n_folds {m.get("n_folds")} '
+          f'macro {v(d["macro_auroc"])} seed_sd {v(d["seed_sd"])} '
+          f'mean_ap {v(d["mean_ap"])} target_se {v(d["target_se"])} '
+          f'per_fold_sd {v(d["per_target_sd"])}')
+        w(f'{nm}_per_seed_macro '
+          + ','.join(f'{a}={v(b)}' for a, b in d['per_seed_macro'].items()))
+    return n + 1
+
 BLOCKS = [block_cohort, block_ladder, block_warhead_variants, block_factorial,
-          block_fewshot, block_sweep, block_cohort_cells,
-          block_protocols, block_calibration, block_similarity,
-          block_overlap, block_source]
+          block_panel, block_fewshot, block_sweep, block_noise,
+          block_cohort_cells, block_protocols, block_splits,
+          block_calibration, block_similarity, block_overlap, block_source]
 
 def build():
     n = 1
@@ -291,14 +356,61 @@ def build():
         if line.startswith('--- @@: '):
             k += 1; line = line.replace('@@', str(k), 1)
         out.append(line)
-    with open(DOC, 'w') as f: f.write('\n'.join(out).lstrip() + '\n')
-    print(f'{DOC}: {len(L)} lines', file=sys.stderr)
+    from datetime import datetime, timezone
+    doc = f'{R}/reproduction_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.txt'
+    with open(doc, 'w') as f: f.write('\n'.join(out).lstrip() + '\n')
+    print(f'{doc}: {k} blocks, {len(out)} lines', file=sys.stderr)
+
+def ensure_folds():
+    """Fold files are generated from the corpus, so a fresh clone needs no download."""
+    need = [f for f in ('data/loto_primary_folds.json', 'data/lofo_folds.json')
+            if not os.path.exists(f)]
+    if not need: return
+    import subprocess
+    print('generating', ', '.join(need), file=sys.stderr)
+    subprocess.run([sys.executable, 'scripts/generate_fold_files.py'], check=True)
+
+def run_overlap():
+    """Novel and seen decomposition of the retained arm, from its own stored
+    predictions, written once so the document and the figures read one source."""
+    out, pr = f'{R}/overlap.json', f'{R}/retained_65_predictions.json'
+    if os.path.exists(out) or not os.path.exists(pr): return
+    from sklearn.metrics import roc_auc_score
+    import pandas as pd
+    P = json.load(open(pr))
+    df = pd.read_csv('data/protac_bench.csv')
+    tg = df.target_uniprot.astype(str).values
+    smi = df.smiles.astype(str).values
+    rows = {'novel': {}, 'seen': {}}
+    for sd, byt in P.items():
+        for t, rec in byt.items():
+            te = tg == t
+            train = set(smi[~te])
+            seen = np.fromiter((x in train for x in smi[te]), bool, int(te.sum()))
+            y, q = np.asarray(rec['y']), np.asarray(rec['p'])
+            for k, m in (('novel', ~seen), ('seen', seen)):
+                if m.sum() >= 5 and len(np.unique(y[m])) > 1:
+                    rows[k].setdefault(sd, {})[t] = float(roc_auc_score(y[m], q[m]))
+    res = {'_meta': dict(json.load(open(f'{R}/retained_65.json'))['_meta'],
+                         source=pr, min_subset_rows=5)}
+    for k in ('novel', 'seen'):
+        per = {sd: float(np.mean(list(rows[k][sd].values()))) for sd in rows[k]}
+        tgs = sorted({t for sd in rows[k] for t in rows[k][sd]})
+        res[k] = dict(
+            macro=round(float(np.mean(list(per.values()))), 4),
+            seed_sd=round(float(np.std(list(per.values()), ddof=1)), 4),
+            n_folds=len(tgs),
+            per_seed_macro={a: round(b, 4) for a, b in per.items()},
+            per_target={t: round(float(np.mean([rows[k][sd][t] for sd in rows[k]
+                                                if t in rows[k][sd]])), 4) for t in tgs})
+    json.dump(res, open(out, 'w'), indent=1)
+    print('wrote', out, file=sys.stderr)
 
 def run_similarity():
     """Only caller of src.evaluation.tanimoto_nn_by_protocol."""
     import pandas as pd
     from src.evaluation import tanimoto_nn_by_protocol
-    out = f'{R}/v13/similarity.json'
+    out = f'{R}/similarity.json'
     if os.path.exists(out):
         print('have similarity', file=sys.stderr); return
     df = pd.read_csv('data/protac_bench.csv')
@@ -310,36 +422,143 @@ def run_similarity():
         for proto, vals in r.items():
             res[f'{proto}_{tag}'] = summarise(vals)
         print(f'similarity {tag} done', file=sys.stderr)
+    from evaluation.engine import provenance
+    pv = provenance()
     res['_meta'] = dict(cv_seed=42, n_rows=int(len(df)), nbins=NBINS,
                         loto_folds=len([k for k in folds if not k.startswith('_')]),
-                        source_folds='data/loto_primary_folds.json')
+                        source_folds='data/loto_primary_folds.json',
+                        **{k: pv[k] for k in ('git_commit', 'python', 'numpy', 'sklearn')})
     json.dump(res, open(out, 'w'), indent=1)
     print('wrote', out, file=sys.stderr)
 
-def run_core(seeds):
-    from src.cohort import load
+CELLS = ('1111', '1000', '1010', '1100', '1001', '1110', '1101', '1011',
+         '0010', '0100', '0110', '0011', '0101', '0111')
+NOISE = (0.0, 0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40)
+
+def _cell(cid):
+    m, w, a, k = (int(x) for x in cid)
+    return dict(morgan=bool(m), warhead=bool(w), admet=bool(a),
+                k=5 if k else 0, reps=5)
+
+# One place says what the suite contains: name, spec, band, fold source, split.
+# The ladder arms are factorial cells, so nothing here duplicates anything else.
+ARMS = ([(f'cell_{c}', _cell(c), 'core', None, None) for c in CELLS]
+        + [(f'fewshot_k{k}', dict(morgan=True, warhead=True, admet=True, k=k, reps=5),
+            'core', None, None) for k in (1, 3, 10)]
+        + [('warhead_self_excluded',
+            dict(morgan=True, warhead=True, self_excl=True), 'core', None, None),
+           ('oat_bits512', dict(morgan=True, nbits=512), 'core', None, None),
+           ('oat_bits1024', dict(morgan=True, nbits=1024), 'core', None, None),
+           ('oat_radius3', dict(morgan=True, radius=3), 'core', None, None),
+           ('oat_msl1', dict(morgan=True, rf=dict(min_samples_leaf=1)),
+            'core', None, None),
+           ('oat_cw_none', dict(morgan=True, rf=dict(class_weight=None)),
+            'core', None, None),
+           ('oat_trees100', dict(morgan=True, rf=dict(n_estimators=100)),
+            'core', None, None),
+           ('oat_all_defaults',
+            dict(morgan=True, rf=dict(n_estimators=100, min_samples_leaf=1,
+                                      class_weight=None)), 'core', None, None)]
+        + [(f'noise_{int(round(f * 1000)):03d}', dict(morgan=True, flip=f),
+            'core', None, None) for f in NOISE]
+        + [('xgb_morgan', dict(morgan=True, model='xgb'), 'core', None, None),
+           ('lofo', dict(morgan=True), 'core', 'lofo', 'lofo_family_mapped'),
+           ('cross_e3', dict(morgan=True, exclusions=dict(constituent=False)),
+            'core', 'e3', 'cross_e3_recruited_ligase'),
+           ('retained_65',
+            dict(morgan=True, exclusions=dict(constituent=False, dedup=False)),
+            'core', 'retained', 'loto_eligible_retained')])
+
+# the core band carries the headline measurements; the ablation band carries the
+# sweeps, the injected-noise ladder and the feature-off cells of the factorial
+def _ablation(nm):
+    return (nm.startswith(('oat_', 'noise_')) or nm == 'warhead_self_excluded'
+            or (nm.startswith('cell_') and nm[5] == '0'))
+
+ARMS = [(nm, sp, 'ablation' if _ablation(nm) else band, src, split)
+        for nm, sp, band, src, split in ARMS]
+
+def verify_against(prev):
+    """Compare every registered arm against a previous copy of the suite.
+
+    Reported on stderr, since the document carries results rather than checks.
+    An arm whose code path did not change should be bit-identical per target.
+    """
+    same = changed = unpaired = 0
+    for name, *_ in ARMS:
+        a, b = f'{R}/{name}.json', f'{prev}/{name}.json'
+        if not (os.path.exists(a) and os.path.exists(b)):
+            unpaired += 1; continue
+        x, y = json.load(open(a)), json.load(open(b))
+        pa, pb = x.get('per_target', {}), y.get('per_target', {})
+        shared = sorted(set(pa) & set(pb))
+        moved = [t for t in shared if pa[t] != pb[t]]
+        if not moved and x.get('macro_auroc') == y.get('macro_auroc'):
+            same += 1
+        else:
+            changed += 1
+            print(f'{name}: macro {y.get("macro_auroc")} -> {x.get("macro_auroc")}, '
+                  f'{len(moved)} of {len(shared)} per-target values moved',
+                  file=sys.stderr)
+    print(f'verify: identical {same}, changed {changed}, unpaired {unpaired}',
+          file=sys.stderr)
+
+def run_core(seeds, bands=('core',), only=None):
+    """Run every registered arm in the selected bands, skipping what exists.
+
+    Feature matrices are cached per width and radius. Predictions are stored for
+    the reference cell only, since calibration and coverage read them and no
+    other block needs per-compound output.
+    """
+    from src.cohort import load, folds_e3, folds_from_file
     from src.data_utils import compute_morgan, load_admet
-    from scripts.v13.engine import run
-    c = load(); X = compute_morgan(c['df'].smiles.tolist())
+    from evaluation.engine import run
+    c = load()
+    smi = c['df'].smiles.tolist()
     Xa = np.nan_to_num(load_admet(), nan=0.0)
-    specs = [('C0_morgan', dict(morgan=True)),
-             ('C1_morgan_warhead', dict(morgan=True, warhead=True)),
-             ('C2_morgan_warhead_admet', dict(morgan=True, warhead=True, admet=True)),
-             ('C3_morgan_warhead_admet_k5', dict(morgan=True, warhead=True, admet=True, k=5, reps=5))]
-    for name, spec in specs:
-        out = f'{R}/v13/{name}.json'
-        if os.path.exists(out): print(f'have {name}', file=sys.stderr); continue
-        run(name, spec, c, X, Xa, seeds, out=out, store=True)
+    sources = {'lofo': lambda: folds_from_file(c, 'data/lofo_folds.json'),
+               'e3': lambda: folds_e3(c),
+               'retained': lambda: [(t, c['tg'] == t) for t in c['eligible']]}
+    cache = {}
+    sel = [a for a in ARMS if a[2] in bands and not (only and a[0] != only)]
+    for b in bands:
+        if not any(a[2] == b for a in ARMS):
+            print(f'band {b!r} selects no registered arm; the hyperparameter '
+                  f'search and the architecture panel are separate runners and '
+                  f'are not registered', file=sys.stderr)
+    print(f'{len(sel)} arms selected', file=sys.stderr)
+    for name, spec, band, src, split in sel:
+        out = f'{R}/{name}.json'
+        if os.path.exists(out):
+            print(f'have {name}', file=sys.stderr); continue
+        key = (spec.get('radius', 2), spec.get('nbits', 2048))
+        if key not in cache:
+            cache[key] = compute_morgan(smi, radius=key[0], nbits=key[1])
+        print(f'--- {name} {spec} ---', file=sys.stderr, flush=True)
+        run(name, spec, c, cache[key], Xa, seeds, out=out,
+            store=(name in ('cell_1000', 'retained_65')), split=split,
+            folds=sources[src]() if src else None)
+
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--all', action='store_true', help='include the hyperparameter search and the architecture panel')
+    ap.add_argument('--ablation', action='store_true',
+                    help='also run the ablation band')
     ap.add_argument('--print-only', action='store_true')
     ap.add_argument('--seeds', default='canonical')
+    ap.add_argument('--only', default=None, help='run one registered arm by name')
+    ap.add_argument('--verify-against', default=None, metavar='DIR',
+                    help='compare each arm against a previous copy of the suite')
     a = ap.parse_args()
     if not a.print_only:
         from src.seeds import parse
-        run_core(parse(a.seeds))
+        ensure_folds()
+        bands = ('core', 'ablation') if a.ablation else ('core',)
+        run_core(parse(a.seeds), bands=bands, only=a.only)
         run_similarity()
-        if a.all: print('--all arms are not yet ported to the cohort module', file=sys.stderr)
+        run_overlap()
     build()
+    if not a.print_only:
+        from figures.generate_figures import main as render
+        render()
+    if a.verify_against: verify_against(a.verify_against)

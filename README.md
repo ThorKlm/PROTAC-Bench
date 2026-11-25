@@ -1,63 +1,54 @@
 # PROTAC-Bench
 
-A leave-one-target-out (LOTO) benchmark for PROTAC activity prediction. PROTAC-Bench provides 10,748 PROTAC-target activity measurements across 173 unique UniProt protein targets, with 65 LOTO-eligible folds, four primary evaluation splits, and a measurement-variance decomposition framework that attributes the apparent random-CV-to-LOTO generalisation gap to inter-laboratory measurement effects.
+Benchmark corpus and evaluation suite for PROTAC degradation activity prediction.
 
-## Contents
+## Setup
 
-- `data/protac_bench.csv`: canonical 10,748-row dataset with SMILES, UniProt target, E3 ligase, and binary activity labels.
-- `data/loto_folds.json`, `data/lofo_folds.json`, `data/cross_lab_folds.json`, `data/temporal_prospective_folds.json`: fold assignment files for the four primary evaluation splits.
-- `data/metadata.csv`: metadata-enriched 9,384-row subset with cell-line, readout-method, timepoint, and concentration annotations from the dual-LLM enrichment pipeline.
-- `data/croissant.json`: MLCommons Croissant 1.0 metadata with all 20 RAI extension fields populated.
-- `baselines/`: canonical baselines including `rf_morgan.py`, `dm_loto.py`, `gnn_baselines.py`, `chemprop_hpo.py`.
-- `signals/`: full-stack pipeline including `warhead_transfer.py`, `admet_cascade.py`, `fewshot.py`, and `full_stack.py`.
-- `robustness/`: cross-source, non-kinase, cross-E3, and temporal robustness checks.
-- `hpo/`: 21-dimensional HPO V2 search space and validation.
-- `figures/`: figure generation scripts for the canonical results.
-- `src/`: shared utilities (data loading, evaluation, statistics, fingerprints).
+Python 3.12.13.
 
-## Quick start
+    python -m venv .venv
+    .venv/bin/pip install -r requirements.txt
 
-Python 3.10 or newer.
+## Reproduce
 
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-bash reproduce.sh
-```
+    .venv/bin/python reproduce.py
+    .venv/bin/python reproduce.py --ablation
 
-Total runtime: approximately 2 to 3 hours on a single CPU node with 16 cores.
+The first command runs the 15 core arms, the derived passes and the figures; the
+second adds the 24 ablation arms. An arm whose artefact exists is skipped, so an
+interrupted run resumes. Fold files are regenerated from the corpus when absent.
+Core runtime is about twelve hours on sixteen cores; `PB_NJOBS` sets the number
+of worker processes. The two graph baselines in `baselines/gnn_baselines.py`
+require a CUDA device and are run separately.
 
-For a fast smoke test (2 seeds, 5 targets, completes in minutes):
+## Outputs
 
-```bash
-python3 baselines/rf_morgan.py --debug
-```
+    results/reproduction_<UTC timestamp>.txt   every arm present, one block per experiment
+    results/<arm>.json                         aggregate, per seed, per target, provenance
+    figures/*.pdf                              generated from those artefacts
 
-The `--debug` flag is available on all replication entry points.
+## Data
 
-## Dataset
+    data/protac_bench.csv            10748 rows
+    data/loto_primary_folds.json     61 leave-one-target-out folds
+    data/lofo_folds.json             22 leave-one-family-out folds
 
-Hosted on HuggingFace at https://huggingface.co/datasets/ThorKl/protac-bench under CC-BY-4.0.
+The leave-one-target-out and leave-one-family-out fold files are built by
+`scripts/generate_fold_files.py` from the corpus and the cohort definition in
+`src/cohort.py`.
 
-## Citation
+## Layout
 
-If you use PROTAC-Bench, please cite the preprint:
+    src/          cohort definition, features, metrics, seeds
+    evaluation/   fold engine, protocol and calibration passes
+    scripts/      fold-file and auxiliary data builders
+    baselines/    graph neural network baselines
+    figures/      generate_figures.py and its output
+    results/      artefacts and the reproduction file
+    robustness/   runners for protocols outside the reproduced suite
+    signals/      feature builders and runners outside the reproduced suite
+    hpo/          hyperparameter search, not part of the suite
 
-```bibtex
-@misc{klamt2026protacbench,
-  title  = {Decomposing the Generalization Gap in PROTAC Activity Prediction:
-            Variance Attribution and the Inter-Laboratory Ceiling},
-  author = {Klamt, Thor and Nejdl, Wolfgang and Tang, Ming},
-  year   = {2026},
-  eprint = {2605.11764},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.LG},
-  note   = {Preprint; under revision}
-}
-```
+## Seeds
 
-## License
-
-Code released under MIT License. Dataset released under CC-BY-4.0.
+42, 0, 1, 2, 3, 4, 5, 6, 7, 8, defined in `src/seeds.py`.

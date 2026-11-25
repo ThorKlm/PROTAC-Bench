@@ -1,265 +1,292 @@
 {
-  "@context": {
-    "@language": "en",
-    "@vocab": "https://schema.org/",
-    "citeAs": "cr:citeAs",
-    "column": "cr:column",
-    "conformsTo": "dct:conformsTo",
-    "cr": "http://mlcommons.org/croissant/",
-    "rai": "http://mlcommons.org/croissant/RAI/",
-    "data": {
-      "@id": "cr:data",
-      "@type": "@json"
-    },
-    "dataType": {
-      "@id": "cr:dataType",
-      "@type": "@vocab"
-    },
-    "dct": "http://purl.org/dc/terms/",
-    "examples": {
-      "@id": "cr:examples",
-      "@type": "@json"
-    },
-    "extract": "cr:extract",
-    "field": "cr:field",
-    "fileProperty": "cr:fileProperty",
-    "fileObject": "cr:fileObject",
-    "fileSet": "cr:fileSet",
-    "format": "cr:format",
-    "includes": "cr:includes",
-    "isLiveDataset": "cr:isLiveDataset",
-    "jsonPath": "cr:jsonPath",
-    "key": "cr:key",
-    "md5": "cr:md5",
-    "parentField": "cr:parentField",
-    "path": "cr:path",
-    "recordSet": "cr:recordSet",
-    "references": "cr:references",
-    "regex": "cr:regex",
-    "repeated": "cr:repeated",
-    "replace": "cr:replace",
-    "samplingRate": "cr:samplingRate",
-    "sc": "https://schema.org/",
-    "separator": "cr:separator",
-    "source": "cr:source",
-    "subField": "cr:subField",
-    "transform": "cr:transform"
+ "@context": {
+  "@language": "en",
+  "@vocab": "https://schema.org/",
+  "citeAs": "cr:citeAs",
+  "column": "cr:column",
+  "conformsTo": "dct:conformsTo",
+  "cr": "http://mlcommons.org/croissant/",
+  "rai": "http://mlcommons.org/croissant/RAI/",
+  "data": {
+   "@id": "cr:data",
+   "@type": "@json"
   },
-  "@type": "sc:Dataset",
-  "name": "PROTAC-Bench",
-  "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
-  "conformsTo": [
-    "http://mlcommons.org/croissant/1.0",
-    "http://mlcommons.org/croissant/RAI/1.0"
-  ],
-  "license": "https://creativecommons.org/licenses/by/4.0/",
-  "url": "https://huggingface.co/datasets/ThorKl/protac-bench",
-  "version": "1.0.0",
-  "citeAs": "@misc{klamt2026protacbench, title={Decomposing the Generalization Gap in PROTAC Activity Prediction: Variance Attribution and the Inter-Laboratory Ceiling}, author={Klamt, Thor and Nejdl, Wolfgang and Tang, Ming}, year={2026}, eprint={2605.11764}, archivePrefix={arXiv}, primaryClass={cs.LG}, note={Preprint; under revision}}",
-  "datePublished": "2026-05-02",
-  "creator": [
+  "dataType": {
+   "@id": "cr:dataType",
+   "@type": "@vocab"
+  },
+  "dct": "http://purl.org/dc/terms/",
+  "examples": {
+   "@id": "cr:examples",
+   "@type": "@json"
+  },
+  "extract": "cr:extract",
+  "field": "cr:field",
+  "fileProperty": "cr:fileProperty",
+  "fileObject": "cr:fileObject",
+  "fileSet": "cr:fileSet",
+  "format": "cr:format",
+  "includes": "cr:includes",
+  "isLiveDataset": "cr:isLiveDataset",
+  "jsonPath": "cr:jsonPath",
+  "key": "cr:key",
+  "md5": "cr:md5",
+  "parentField": "cr:parentField",
+  "path": "cr:path",
+  "recordSet": "cr:recordSet",
+  "references": "cr:references",
+  "regex": "cr:regex",
+  "repeated": "cr:repeated",
+  "replace": "cr:replace",
+  "samplingRate": "cr:samplingRate",
+  "sc": "https://schema.org/",
+  "separator": "cr:separator",
+  "source": "cr:source",
+  "subField": "cr:subField",
+  "transform": "cr:transform"
+ },
+ "@type": "sc:Dataset",
+ "name": "PROTAC-Bench",
+ "description": "Cold-target evaluation benchmark for PROTAC degradation prediction. 10,748 entries across 173 protein targets with 65 Leave-One-Target-Out (LOTO) folds. Merged from PROTAC-DB 3.0, Ribes et al., and DegradeMaster with canonical SMILES standardization.",
+ "conformsTo": [
+  "http://mlcommons.org/croissant/1.0",
+  "http://mlcommons.org/croissant/RAI/1.0"
+ ],
+ "license": "https://creativecommons.org/licenses/by/4.0/",
+ "url": "https://huggingface.co/datasets/ThorKl/protac-bench",
+ "version": "1.0.0",
+ "citeAs": "@misc{klamt2026protacbench, title={Decomposing the Generalization Gap in PROTAC Activity Prediction: Variance Attribution and the Inter-Laboratory Ceiling}, author={Klamt, Thor and Nejdl, Wolfgang and Tang, Ming}, year={2026}, eprint={2605.11764}, archivePrefix={arXiv}, primaryClass={cs.LG}, note={Preprint; under revision}}",
+ "datePublished": "2026-05-02",
+ "creator": [
+  {
+   "@type": "sc:Person",
+   "name": "Thor Klamt",
+   "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+   "url": "https://orcid.org/0009-0005-6168-3655"
+  },
+  {
+   "@type": "sc:Person",
+   "name": "Wolfgang Nejdl",
+   "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+   "url": "https://orcid.org/0000-0003-3374-2193"
+  },
+  {
+   "@type": "sc:Person",
+   "name": "Ming Tang",
+   "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
+   "url": "https://orcid.org/0000-0002-5993-5906"
+  }
+ ],
+ "keywords": [
+  "PROTAC",
+  "protein degradation",
+  "drug discovery",
+  "benchmark",
+  "cold-target evaluation",
+  "binary classification"
+ ],
+ "rai:dataCollection": "PROTAC-Bench aggregates 10,748 PROTAC-target pairs from three publicly released sources: PROTAC-DB 3.0 (Weng et al., 2023; Nucleic Acids Research), the Ribes et al. (2024) curated benchmark, and DegradeMaster (Liu et al., 2024). Records were de-duplicated on canonical SMILES + UniProt accession pairs. SMILES were standardised with RDKit canonicalisation; targets were mapped to UniProt accessions via UniProt REST API queries on HGNC/UniProt-name strings supplied in source databases.",
+ "rai:dataCollectionType": "Aggregation of pre-existing publicly published datasets; no primary experimental data collection.",
+ "rai:dataCollectionTimeframe": "Source databases span PROTAC publications 2001-2023 (PROTAC-DB 3.0 release); merged corpus frozen 2025-Q4. Temporal split: pre-2022 entries used for training, 2022+ held out for the temporal evaluation fold.",
+ "rai:dataCollectionRawData": "Processed: SMILES are canonicalised, targets are normalised to UniProt accessions, activity labels are binarised (DC50<1 uM OR Dmax>50% -> 1). Raw DC50 / Dmax values are preserved in dc50_nm / dmax_pct columns for users who prefer custom thresholds.",
+ "rai:dataCollectionMissingData": "~38% of entries report only Dmax or only DC50, not both. The binary label is computed from whichever potency endpoint is available. Cell line, assay format, and time-point metadata are NOT included; users needing assay-context-aware modelling should consult the original source publications.",
+ "rai:dataAnnotationProtocol": "Activity labels are inherited from the source databases' published binarisation rules. Each source's primary literature was hand-curated by that source's authors; PROTAC-Bench performs no additional re-annotation. The cross-source label-agreement rate on the 1,247 entries appearing in two or more source DBs is 98.4% (kappa=0.96).",
+ "rai:dataAnnotationPlatform": "No platform - labels propagated from upstream curated databases (PROTAC-DB 3.0 web portal exports, Ribes et al. 2024 supplementary tables, DegradeMaster 2024 release).",
+ "rai:dataAnnotationAnalysis": "Inter-source agreement was measured on the 1,247 entries shared by >=2 source databases: raw agreement 98.4%, Cohen's kappa 0.96. Disagreements (12 cases) were retained as separate rows flagged with source_conflict=true rather than resolved by majority vote, to preserve the upstream signal.",
+ "rai:dataAnnotationPerItemTime": "Not applicable - no per-item human annotation was performed by the PROTAC-Bench authors. Upstream curators do not report per-record annotation timing.",
+ "rai:dataAnnotationDemographics": "Not applicable: labels derive from biochemical assay readouts in source publications, not from human-judgement annotation.",
+ "rai:dataAnnotationTools": "No annotation tools were used - upstream labels were ingested verbatim. Standardisation tooling (not annotation): RDKit 2024.03 for SMILES canonicalisation; UniProt REST API (https://rest.uniprot.org/uniprotkb) for target-name to accession resolution.",
+ "rai:dataPreprocessingProtocol": "SMILES canonicalisation: RDKit MolToSmiles(mol, canonical=True) after MolFromSmiles round-trip with sanitisation. Stereochemistry preserved. Target normalisation: UniProt accessions resolved via the UniProt REST API; entries that fail to resolve to a single canonical accession are dropped (1,043 records, 8.8% of pre-merge total).",
+ "rai:dataPreprocessingImputation": "None. Missing potency values are kept as null; the binary label is computed from whatever potency value is available. Entries with neither DC50 nor Dmax are excluded from the benchmark.",
+ "rai:dataPreprocessingManipulation": "De-duplication on (canonical SMILES, UniProt) tuples; cross-source conflict resolution by majority vote (3 sources) or, if 2 sources conflict (12 cases), retained as separate entries flagged with source_conflict=true.",
+ "rai:dataUseCases": "(1) Benchmarking PROTAC degradation prediction models under cold-target evaluation (held-out UniProt accessions). (2) Studying generalisation decay as molecular similarity to training set decreases. (3) Measuring E3-ligase scaffold transferability (VHL <-> CRBN). (4) Few-shot transfer experiments for low-data targets. NOT INTENDED for direct clinical candidate selection - predictions are research-stage and have not been validated against held-out wet-lab assays beyond the source databases.",
+ "rai:dataBiases": "Documented biases: (a) chemotype concentration in the CRBN and VHL warhead families; (b) target concentration in oncology targets; (c) publication concentration, with the three most frequent source publications accounting for 14.6% of the rows that carry publication metadata, so assay-condition signatures are shared within publications.",
+ "rai:dataSocialImpact": "Positive: lowers the entry barrier for ML-driven PROTAC design, enables reproducible benchmarking and reduces wasted wet-lab effort on poorly-generalising models. Negative / dual-use: PROTAC technology in principle enables targeted degradation of arbitrary proteins; however, this dataset contains only published research-stage compounds and provides no novel uplift for misuse beyond what is already in the primary literature. No human-subject data; no privacy concerns.",
+ "rai:personalSensitiveInformation": "None. The dataset contains chemical structures (SMILES), protein identifiers (UniProt accessions), and biochemical activity labels. No human-subject data, no PII, no patient-derived material.",
+ "rai:dataReleaseMaintenancePlan": "Distributed under CC-BY-4.0 via HuggingFace Datasets. Maintained by the PROTAC-Bench authors; versioned releases tagged in the HF repo and the source repository's RELEASE_MANIFEST.md. Issues / corrections accepted via GitHub issues; merged updates tagged as semver minor releases. No deprecation date - long-term maintenance is committed through at least 2028.",
+ "distribution": [
+  {
+   "@type": "cr:FileObject",
+   "@id": "protac_bench.csv",
+   "name": "protac_bench.csv",
+   "description": "Main dataset: 10,748 PROTAC entries with SMILES, target, E3 ligase type, and binary activity label.",
+   "contentUrl": "data/protac_bench.csv",
+   "encodingFormat": "text/csv",
+   "sha256": "6d273d9fbfb1921f5b2da9ba94a74d46fe787ffd3f6a766058c8d1c3c76d30fa"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "loto_folds.json",
+   "name": "loto_folds.json",
+   "description": "65 pre-computed Leave-One-Target-Out fold assignments with test indices, entry counts, and activity rates.",
+   "contentUrl": "data/loto_folds.json",
+   "encodingFormat": "application/json",
+   "sha256": "61564e68683db7c46424a5b6b58fe25d7cab319ee3dc7a300f86b7611bb4de3c"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "loto_primary_folds.json",
+   "name": "loto_primary_folds.json",
+   "description": "61 primary Leave-One-Target-Out folds, each with test indices and the training rows excluded by the shared-accession and duplicate-compound rules.",
+   "contentUrl": "data/loto_primary_folds.json",
+   "encodingFormat": "application/json",
+   "sha256": "8615b773941cf76662a4deb1df0f41dac6287a8e74f0ff08ac2bfed071fdda32"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "lofo_folds.json",
+   "name": "lofo_folds.json",
+   "description": "Leave-One-Family-Out fold assignments. 22 protein families covering 61 LOFO-eligible targets (LOTO-eligible targets that are mapped to a named family in robustness/lofo.py FAMILY_MAP). Family-level holdout: each fold's test_indices are all rows whose target_uniprot belongs to the family's target set.",
+   "contentUrl": "data/lofo_folds.json",
+   "encodingFormat": "application/json",
+   "sha256": "16d4d2fabe2ac84c0f7528128a49f94832eef92db096edd4f3bf8ee2ed32c8ee"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "cross_lab_folds.json",
+   "name": "cross_lab_folds.json",
+   "description": "Within-target cross-lab fold assignments. 36 targets with >=20 entries, >=3 publications (DOIs), and both classes present. For each (target, paper) holdout where the paper has >=5 entries and both classes, test_indices are the rows matching that target and DOI; train is everything else. Used by the lab-confound analysis (results/task14_within_target_cross_lab.json).",
+   "contentUrl": "data/cross_lab_folds.json",
+   "encodingFormat": "application/json",
+   "sha256": "3beb321d4a2e5e2365501b48a38d885cffc3fecf5b82a99c0c5b268bfc8bd964"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "temporal_prospective_folds.json",
+   "name": "temporal_prospective_folds.json",
+   "description": "Temporal prospective split. Train: rows with publication year < 2023 (1,866 entries). Test: rows with publication year == 2024 (132 entries). 2023 entries are excluded as a temporal gap year. pub_year derived from DOI mapping; rows without resolved pub_year are excluded from the split.",
+   "contentUrl": "data/temporal_prospective_folds.json",
+   "encodingFormat": "application/json",
+   "sha256": "a68950af03b1be29df7ddb47b373e234cd72190fb2101433b2f818f8aa6cc67b"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "admet_scores.csv",
+   "name": "admet_scores.csv",
+   "description": "7-property ADMET cascade scores for all 10,748 entries.",
+   "contentUrl": "data/admet_scores.csv",
+   "encodingFormat": "text/csv",
+   "sha256": "db5c33175ec6c1f1f9608cc230f655b2dd823b1e745df36e34d0616ec056d7e0"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "metadata.csv",
+   "name": "metadata.csv",
+   "description": "Per-compound publication and assay metadata: DOI, UniProt accession, cell line and readout fields.",
+   "contentUrl": "data/metadata.csv",
+   "encodingFormat": "text/csv",
+   "sha256": "664992eb953caffa8f97ca121488c21f7697076010c1b9a980addfaba931eb14"
+  },
+  {
+   "@type": "cr:FileObject",
+   "@id": "target_sequences.json",
+   "name": "target_sequences.json",
+   "description": "Protein sequences keyed by UniProt accession for the dataset targets.",
+   "contentUrl": "data/target_sequences.json",
+   "encodingFormat": "application/json",
+   "sha256": "e1eb0f6d32b8e8e606e67e2cfddc487e0153b297713eb629f2ebc65e500bd20f"
+  }
+ ],
+ "recordSet": [
+  {
+   "@type": "cr:RecordSet",
+   "@id": "protac_entries",
+   "name": "protac_entries",
+   "description": "Individual PROTAC degradation entries.",
+   "field": [
     {
-      "@type": "sc:Person",
-      "name": "Thor Klamt",
-      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
-      "url": "https://orcid.org/0009-0005-6168-3655"
+     "@type": "cr:Field",
+     "@id": "protac_entries/smiles",
+     "name": "smiles",
+     "description": "Canonical SMILES representation of the PROTAC molecule.",
+     "dataType": "sc:Text",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "smiles"
+      }
+     }
     },
     {
-      "@type": "sc:Person",
-      "name": "Wolfgang Nejdl",
-      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
-      "url": "https://orcid.org/0000-0003-3374-2193"
+     "@type": "cr:Field",
+     "@id": "protac_entries/target_uniprot",
+     "name": "target_uniprot",
+     "description": "UniProt accession ID of the target protein.",
+     "dataType": "sc:Text",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "target_uniprot"
+      }
+     }
     },
     {
-      "@type": "sc:Person",
-      "name": "Ming Tang",
-      "affiliation": "L3S Research Center, Leibniz Universitaet Hannover",
-      "url": "https://orcid.org/0000-0002-5993-5906"
+     "@type": "cr:Field",
+     "@id": "protac_entries/e3_type",
+     "name": "e3_type",
+     "description": "E3 ubiquitin ligase type (VHL, CRBN, or Other).",
+     "dataType": "sc:Text",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "e3_type"
+      }
+     }
+    },
+    {
+     "@type": "cr:Field",
+     "@id": "protac_entries/label",
+     "name": "label",
+     "description": "Binary activity label (1 = active: DC50 < 1 uM OR Dmax > 50%, 0 = inactive).",
+     "dataType": "sc:Integer",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "label"
+      }
+     }
+    },
+    {
+     "@type": "cr:Field",
+     "@id": "protac_entries/dc50_nm",
+     "name": "dc50_nm",
+     "description": "Half-maximal degradation concentration in nanomolar. The column is present but unpopulated in this release; the label was derived upstream.",
+     "dataType": "sc:Float",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "dc50_nm"
+      }
+     }
+    },
+    {
+     "@type": "cr:Field",
+     "@id": "protac_entries/dmax_pct",
+     "name": "dmax_pct",
+     "description": "Maximum degradation percentage. The column is present but unpopulated in this release; the label was derived upstream.",
+     "dataType": "sc:Float",
+     "source": {
+      "fileObject": {
+       "@id": "protac_bench.csv"
+      },
+      "extract": {
+       "column": "dmax_pct"
+      }
+     }
     }
-  ],
-  "keywords": [
-    "PROTAC",
-    "protein degradation",
-    "drug discovery",
-    "benchmark",
-    "cold-target evaluation",
-    "binary classification"
-  ],
-  "rai:dataCollection": "PROTAC-Bench aggregates 10,748 PROTAC-target pairs from three publicly released sources: PROTAC-DB 3.0 (Weng et al., 2023; Nucleic Acids Research), the Ribes et al. (2024) curated benchmark, and DegradeMaster (Liu et al., 2024). Records were de-duplicated on canonical SMILES + UniProt accession pairs. SMILES were standardised with RDKit canonicalisation; targets were mapped to UniProt accessions via UniProt REST API queries on HGNC/UniProt-name strings supplied in source databases.",
-  "rai:dataCollectionType": "Aggregation of pre-existing publicly published datasets; no primary experimental data collection.",
-  "rai:dataCollectionTimeframe": "Source databases span PROTAC publications 2001-2023 (PROTAC-DB 3.0 release); merged corpus frozen 2025-Q4. Temporal split: pre-2022 entries used for training, 2022+ held out for the temporal evaluation fold.",
-  "rai:dataCollectionRawData": "Processed: SMILES are canonicalised, targets are normalised to UniProt accessions, activity labels are binarised (DC50<1 uM OR Dmax>50% -> 1). Raw DC50 / Dmax values are preserved in dc50_nm / dmax_pct columns for users who prefer custom thresholds.",
-  "rai:dataCollectionMissingData": "~38% of entries report only Dmax or only DC50, not both. The binary label is computed from whichever potency endpoint is available. Cell line, assay format, and time-point metadata are NOT included; users needing assay-context-aware modelling should consult the original source publications.",
-  "rai:dataAnnotationProtocol": "Activity labels are inherited from the source databases' published binarisation rules. Each source's primary literature was hand-curated by that source's authors; PROTAC-Bench performs no additional re-annotation. The cross-source label-agreement rate on the 1,247 entries appearing in two or more source DBs is 98.4% (kappa=0.96).",
-  "rai:dataAnnotationPlatform": "No platform - labels propagated from upstream curated databases (PROTAC-DB 3.0 web portal exports, Ribes et al. 2024 supplementary tables, DegradeMaster 2024 release).",
-  "rai:dataAnnotationAnalysis": "Inter-source agreement was measured on the 1,247 entries shared by >=2 source databases: raw agreement 98.4%, Cohen's kappa 0.96. Disagreements (12 cases) were retained as separate rows flagged with source_conflict=true rather than resolved by majority vote, to preserve the upstream signal.",
-  "rai:dataAnnotationPerItemTime": "Not applicable - no per-item human annotation was performed by the PROTAC-Bench authors. Upstream curators do not report per-record annotation timing.",
-  "rai:dataAnnotationDemographics": "Not applicable: labels derive from biochemical assay readouts in source publications, not from human-judgement annotation.",
-  "rai:dataAnnotationTools": "No annotation tools were used - upstream labels were ingested verbatim. Standardisation tooling (not annotation): RDKit 2024.03 for SMILES canonicalisation; UniProt REST API (https://rest.uniprot.org/uniprotkb) for target-name to accession resolution.",
-  "rai:dataPreprocessingProtocol": "SMILES canonicalisation: RDKit MolToSmiles(mol, canonical=True) after MolFromSmiles round-trip with sanitisation. Stereochemistry preserved. Target normalisation: UniProt accessions resolved via the UniProt REST API; entries that fail to resolve to a single canonical accession are dropped (1,043 records, 8.8% of pre-merge total).",
-  "rai:dataPreprocessingImputation": "None. Missing potency values are kept as null; the binary label is computed from whatever potency value is available. Entries with neither DC50 nor Dmax are excluded from the benchmark.",
-  "rai:dataPreprocessingManipulation": "De-duplication on (canonical SMILES, UniProt) tuples; cross-source conflict resolution by majority vote (3 sources) or, if 2 sources conflict (12 cases), retained as separate entries flagged with source_conflict=true.",
-  "rai:dataUseCases": "(1) Benchmarking PROTAC degradation prediction models under cold-target evaluation (held-out UniProt accessions). (2) Studying generalisation decay as molecular similarity to training set decreases. (3) Measuring E3-ligase scaffold transferability (VHL <-> CRBN). (4) Few-shot transfer experiments for low-data targets. NOT INTENDED for direct clinical candidate selection - predictions are research-stage and have not been validated against held-out wet-lab assays beyond the source databases.",
-  "rai:dataBiases": "Documented biases: (a) chemotype bias toward CRBN/VHL warhead families documented in the cheminformatics literature; (b) target bias toward oncology targets (BCR-ABL, BTK, AR, EGFR, BRD4 are over-represented); (c) lab-of-origin confounding - three labs contribute >40% of records, introducing potential lab-specific assay-condition signatures that models can latch onto (see task14_within_target_cross_lab.json and the 'lab-confound' analysis in the paper).",
-  "rai:dataSocialImpact": "Positive: lowers the entry barrier for ML-driven PROTAC design, enables reproducible benchmarking and reduces wasted wet-lab effort on poorly-generalising models. Negative / dual-use: PROTAC technology in principle enables targeted degradation of arbitrary proteins; however, this dataset contains only published research-stage compounds and provides no novel uplift for misuse beyond what is already in the primary literature. No human-subject data; no privacy concerns.",
-  "rai:personalSensitiveInformation": "None. The dataset contains chemical structures (SMILES), protein identifiers (UniProt accessions), and biochemical activity labels. No human-subject data, no PII, no patient-derived material.",
-  "rai:dataReleaseMaintenancePlan": "Distributed under CC-BY-4.0 via HuggingFace Datasets. Maintained by the PROTAC-Bench authors; versioned releases tagged in the HF repo and the source repository's RELEASE_MANIFEST.md. Issues / corrections accepted via GitHub issues; merged updates tagged as semver minor releases. No deprecation date - long-term maintenance is committed through at least 2028.",
-  "distribution": [
-    {
-      "@type": "cr:FileObject",
-      "@id": "protac_bench.csv",
-      "name": "protac_bench.csv",
-      "description": "Main dataset: 10,748 PROTAC entries with SMILES, target, E3 ligase type, and binary activity label.",
-      "contentUrl": "data/protac_bench.csv",
-      "encodingFormat": "text/csv",
-      "sha256": "6d273d9fbfb1921f5b2da9ba94a74d46fe787ffd3f6a766058c8d1c3c76d30fa"
-    },
-    {
-      "@type": "cr:FileObject",
-      "@id": "loto_folds.json",
-      "name": "loto_folds.json",
-      "description": "65 pre-computed Leave-One-Target-Out fold assignments with test indices, entry counts, and activity rates.",
-      "contentUrl": "data/loto_folds.json",
-      "encodingFormat": "application/json",
-      "sha256": "61564e68683db7c46424a5b6b58fe25d7cab319ee3dc7a300f86b7611bb4de3c"
-    },
-    {
-      "@type": "cr:FileObject",
-      "@id": "lofo_folds.json",
-      "name": "lofo_folds.json",
-      "description": "Leave-One-Family-Out fold assignments. 22 protein families covering 61 LOFO-eligible targets (LOTO-eligible targets that are mapped to a named family in robustness/lofo.py FAMILY_MAP). Family-level holdout: each fold's test_indices are all rows whose target_uniprot belongs to the family's target set.",
-      "contentUrl": "data/lofo_folds.json",
-      "encodingFormat": "application/json",
-      "sha256": "16d4d2fabe2ac84c0f7528128a49f94832eef92db096edd4f3bf8ee2ed32c8ee"
-    },
-    {
-      "@type": "cr:FileObject",
-      "@id": "cross_lab_folds.json",
-      "name": "cross_lab_folds.json",
-      "description": "Within-target cross-lab fold assignments. 36 targets with >=20 entries, >=3 publications (DOIs), and both classes present. For each (target, paper) holdout where the paper has >=5 entries and both classes, test_indices are the rows matching that target and DOI; train is everything else. Used by the lab-confound analysis (results/task14_within_target_cross_lab.json).",
-      "contentUrl": "data/cross_lab_folds.json",
-      "encodingFormat": "application/json",
-      "sha256": "3beb321d4a2e5e2365501b48a38d885cffc3fecf5b82a99c0c5b268bfc8bd964"
-    },
-    {
-      "@type": "cr:FileObject",
-      "@id": "temporal_prospective_folds.json",
-      "name": "temporal_prospective_folds.json",
-      "description": "Temporal prospective split. Train: rows with publication year < 2023 (1,866 entries). Test: rows with publication year == 2024 (132 entries). 2023 entries are excluded as a temporal gap year. pub_year derived from DOI mapping; rows without resolved pub_year are excluded from the split.",
-      "contentUrl": "data/temporal_prospective_folds.json",
-      "encodingFormat": "application/json",
-      "sha256": "a68950af03b1be29df7ddb47b373e234cd72190fb2101433b2f818f8aa6cc67b"
-    },
-    {
-      "@type": "cr:FileObject",
-      "@id": "admet_scores.csv",
-      "name": "admet_scores.csv",
-      "description": "7-property ADMET cascade scores for all 10,748 entries.",
-      "contentUrl": "data/admet_scores.csv",
-      "encodingFormat": "text/csv",
-      "sha256": "db5c33175ec6c1f1f9608cc230f655b2dd823b1e745df36e34d0616ec056d7e0"
-    }
-  ],
-  "recordSet": [
-    {
-      "@type": "cr:RecordSet",
-      "@id": "protac_entries",
-      "name": "protac_entries",
-      "description": "Individual PROTAC degradation entries.",
-      "field": [
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/smiles",
-          "name": "smiles",
-          "description": "Canonical SMILES representation of the PROTAC molecule.",
-          "dataType": "sc:Text",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "smiles"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/target_uniprot",
-          "name": "target_uniprot",
-          "description": "UniProt accession ID of the target protein.",
-          "dataType": "sc:Text",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "target_uniprot"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/e3_type",
-          "name": "e3_type",
-          "description": "E3 ubiquitin ligase type (VHL, CRBN, or Other).",
-          "dataType": "sc:Text",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "e3_type"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/label",
-          "name": "label",
-          "description": "Binary activity label (1 = active: DC50 < 1 uM OR Dmax > 50%, 0 = inactive).",
-          "dataType": "sc:Integer",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "label"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/dc50_nm",
-          "name": "dc50_nm",
-          "description": "Half-maximal degradation concentration in nanomolar (when available).",
-          "dataType": "sc:Float",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "dc50_nm"
-            }
-          }
-        },
-        {
-          "@type": "cr:Field",
-          "@id": "protac_entries/dmax_pct",
-          "name": "dmax_pct",
-          "description": "Maximum degradation percentage (when available).",
-          "dataType": "sc:Float",
-          "source": {
-            "fileObject": {
-              "@id": "protac_bench.csv"
-            },
-            "extract": {
-              "column": "dmax_pct"
-            }
-          }
-        }
-      ]
-    }
-  ],
-  "rai:dataLimitations": "(1) E3-ligase imbalance: VHL and CRBN account for 87% of records; performance on rare E3 ligases (RNF114, IAP, MDM2, ...) is data-limited. (2) Target-class imbalance: kinases dominate (47% of entries) due to PROTAC literature focus. (3) Activity-label binarisation discards potency gradient - models cannot learn DC50 ranking. (4) Assay heterogeneity is not encoded - the same compound assayed by different labs at different time-points may receive divergent labels. (5) Publication-positivity bias: inactive PROTACs are systematically under-reported in the literature.",
-  "rai:hasSyntheticData": "None. All 10,748 records are literature-derived measurements inherited from PROTAC-DB 3.0, Ribes et al. (2024) and the DegradeMaster corpus. No synthetic or generated structures or labels are included."
+   ]
+  }
+ ],
+ "rai:dataLimitations": "(1) E3-ligase imbalance: CRBN and VHL account for 98.8% of records, so other recruiters are data-limited. (2) Target-family imbalance: the two largest families in the family folds are nuclear receptors at 34.9% and kinases at 27.1% of covered rows. (3) The activity label is binary and the DC50 and Dmax columns are empty in this release, so potency ranking cannot be learned from it. (4) Assay heterogeneity is not encoded: the same compound measured under different conditions may receive divergent labels. (5) Publication-positivity bias: inactive PROTACs are under-reported in the source literature.",
+ "rai:hasSyntheticData": "None. All 10,748 records are literature-derived measurements inherited from PROTAC-DB 3.0, Ribes et al. (2024) and the DegradeMaster corpus. No synthetic or generated structures or labels are included."
 }

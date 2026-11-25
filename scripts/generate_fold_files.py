@@ -32,10 +32,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-REPO_ROOT = Path("/workspace/PROTAC-Bench")
+REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "data"
 PUB_CSV = DATA_DIR / "protac_bench.csv"
-MASTER_CSV = Path("/workspace/results/exp42_metadata_features/master_df.csv")
+MASTER_CSV = DATA_DIR / "master_df.csv"
 
 sys.path.insert(0, str(REPO_ROOT))
 from src.data_utils import get_eligible_targets  # noqa: E402
@@ -53,6 +53,10 @@ TEST_YEAR = 2024                  # test:  pub_year == 2024
 
 def load_aligned_frames():
     pub = pd.read_csv(PUB_CSV)
+    if not MASTER_CSV.exists():
+        # the publication-metadata frame is not part of the public release, so
+        # the builders that need it are skipped rather than failing the run
+        return pub, None
     master = pd.read_csv(MASTER_CSV, low_memory=False)
     if len(pub) != len(master):
         raise RuntimeError(
@@ -243,9 +247,46 @@ def write_json(path: Path, payload: dict) -> int:
     return path.stat().st_size
 
 
+def build_primary_folds() -> dict:
+    """Primary LOTO folds, generated from src.cohort so the released file and
+    every runner come from one definition. Each fold carries the held-out rows
+    and the rows excluded from training, because both exclusions act on the
+    training side and a file listing only test indices would let a reader
+    reproduce the splits while silently reproducing the retained protocol.
+    """
+    import sys
+    sys.path.insert(0, str(REPO_ROOT))
+    from src.cohort import DEFINITION, load, masks, usable
+    c = load()
+    out = {"_meta": dict(
+        split_type="leave_one_target_out_primary", **DEFINITION,
+        n_targets=len(c["cohort"]),
+        eligibility_source="data/loto_folds.json restricted to single-accession labels",
+        exclusion_rule="training rows sharing a UniProt accession with the held-out "
+                       "label, or whose canonical SMILES occurs among the held-out rows",
+        fold_index_basis="row index into data/protac_bench.csv (0-based)")}
+    for t in c["cohort"]:
+        tr, te = masks(t, c)
+        ex = (~tr) & (~te)
+        out[t] = dict(target=t, n_entries=int(te.sum()),
+                      activity_rate=round(float(c["y"][te].mean()), 4),
+                      n_train=int(tr.sum()), usable=bool(usable(t, c)),
+                      test_indices=np.flatnonzero(te).tolist(),
+                      train_excluded_indices=np.flatnonzero(ex).tolist())
+    return out
+
+
 def main():
     pub, master = load_aligned_frames()
-    print(f"Loaded {len(pub)} rows from protac_bench.csv (aligned with master_df.csv)")
+    print(f"Loaded {len(pub)} rows from protac_bench.csv"
+          + (" (aligned with master_df.csv)" if master is not None
+             else f"; {MASTER_CSV.name} absent, metadata folds skipped"))
+
+    print("\n=== PRIMARY LOTO ===")
+    primary = build_primary_folds()
+    print(f"Folds: {primary['_meta']['n_targets']}")
+    sz = write_json(DATA_DIR / "loto_primary_folds.json", primary)
+    print(f"Wrote data/loto_primary_folds.json ({sz} bytes)")
 
     print("\n=== LOFO ===")
     lofo = build_lofo_folds(pub)
@@ -255,6 +296,9 @@ def main():
           f"Excluded singletons: {lofo['_meta']['unmapped_singletons_excluded']}")
     sz = write_json(DATA_DIR / "lofo_folds.json", lofo)
     print(f"Wrote data/lofo_folds.json ({sz} bytes)")
+
+    if master is None:
+        return
 
     print("\n=== CROSS-LAB ===")
     cross = build_cross_lab_folds(pub, master)

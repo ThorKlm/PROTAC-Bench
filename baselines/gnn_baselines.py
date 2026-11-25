@@ -7,7 +7,8 @@ GIN is simpler but surprisingly competitive with D-MPNN on this task.
 Requires torch-geometric. Will fall back gracefully if not installed.
 """
 
-import sys, os, json, argparse
+import sys, os, json, argparse, subprocess
+from datetime import datetime
 import numpy as np
 from collections import defaultdict
 
@@ -300,16 +301,59 @@ def gnn_loto(model_cls, graphs, folds, device, model_kwargs=None, seeds=[42]):
     }
 
 
+def merge(shard_dir, outdir='results'):
+    """One artefact per architecture from the per-seed shards.
+
+    Written in the engine's schema so the printer reads these like any other
+    arm. Average precision is absent because gnn_loto does not compute it.
+    """
+    import glob
+    shards = sorted(glob.glob(os.path.join(shard_dir, '*.json')))
+    if not shards:
+        raise SystemExit(f'no shards in {shard_dir}')
+    per_arch, metas = defaultdict(dict), []
+    for sp in shards:
+        d = json.load(open(sp))
+        metas.append(d.get('meta') or {})
+        for arch, v in d.items():
+            if arch == 'meta':
+                continue
+            per_arch[arch].update(v.get('per_seed') or {})
+    for arch, per_seed in per_arch.items():
+        ss = sorted(per_seed, key=lambda x: (int(x) != 42, int(x)))
+        mac = [float(np.mean(list(per_seed[x].values()))) for x in ss]
+        tg = sorted(set.intersection(*[set(per_seed[x]) for x in ss]))
+        pt = np.array([np.mean([per_seed[x][t] for x in ss]) for t in tg])
+        name = {'GIN': 'gin', 'D-MPNN': 'dmpnn'}.get(arch, arch.lower())
+        res = dict(arm=name, spec=dict(architecture=arch),
+                   macro_auroc=round(float(np.mean(mac)), 4),
+                   seed_sd=round(float(np.std(mac, ddof=1)), 4) if len(mac) > 1 else None,
+                   per_target_sd=round(float(pt.std(ddof=1)), 4),
+                   target_se=round(float(pt.std(ddof=1) / len(pt) ** 0.5), 4),
+                   n_targets_paired=len(tg),
+                   per_seed_macro={x: round(m, 4) for x, m in zip(ss, mac)},
+                   per_target={t: round(float(v), 4) for t, v in zip(tg, pt)},
+                   _meta={**{k: v for k, v in metas[0].items() if k != 'seeds'},
+                          'seeds': [int(x) for x in ss], 'n_shards': len(shards)})
+        out = os.path.join(outdir, f'{name}.json')
+        json.dump(res, open(out, 'w'), indent=1)
+        print(f'{out}: macro {res["macro_auroc"]} sd {res["seed_sd"]} '
+              f'folds {len(tg)} seeds {len(ss)}')
+
 def main():
     if not HAS_PYG:
         sys.exit(1)
 
     parser = argparse.ArgumentParser(description='GNN baselines (GIN + D-MPNN)')
     parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
-    parser.add_argument('--output', default='results/v13/gnn_baselines.json')
+    parser.add_argument('--output', default='results/gnn_baselines.json')
     parser.add_argument('--data', default='data/protac_bench.csv')
     parser.add_argument('--device', default='auto')
+    parser.add_argument('--merge', default=None, metavar='DIR',
+                        help='combine per-seed shards into one artefact per architecture')
     args = parser.parse_args()
+    if args.merge:
+        merge(args.merge); return
 
     seeds = [int(s) for s in args.seeds.split(',')]
     device = torch.device('cuda' if args.device == 'auto' and torch.cuda.is_available()
@@ -342,6 +386,23 @@ def main():
     results = {}
 
     # --- GIN ---
+    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+
+    def save():
+        """Write after each architecture, so a failure costs one arm not the run."""
+        results['meta'] = {
+            **cohort_meta(c, seeds), 'n_rows': int(len(df)),
+            'n_valid_graphs': int(valid_count), 'device': str(device),
+            'torch': torch.__version__,
+            'git_commit': subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
+                                         capture_output=True, text=True).stdout.strip(),
+            'timestamp': datetime.now().isoformat(timespec='seconds'),
+        }
+        with open(args.output, 'w') as f:
+            json.dump(results, f, indent=2, default=str)
+        print(f'saved {sorted(k for k in results if k != "meta")} '
+              f'to {args.output}', flush=True)
+
     print('\n=== GIN (3-layer, hidden=64) ===')
     gin_res = gnn_loto(
         GIN, graphs, folds, device,
@@ -350,6 +411,7 @@ def main():
     )
     print(f'GIN LOTO: {gin_res["mean_auroc"]:.3f} +/- {gin_res["std_auroc"]:.3f}')
     results['GIN'] = gin_res
+    save()
 
     # --- D-MPNN ---
     print('\n=== D-MPNN (depth=3, hidden=64) ===')
@@ -360,6 +422,7 @@ def main():
     )
     print(f'D-MPNN LOTO: {dmpnn_res["mean_auroc"]:.3f} +/- {dmpnn_res["std_auroc"]:.3f}')
     results['D-MPNN'] = dmpnn_res
+    save()
 
     # summary
     print('\n' + '='*40)
@@ -367,18 +430,7 @@ def main():
     print(f'D-MPNN: {dmpnn_res["mean_auroc"]:.3f}')
     print('='*40)
 
-    results['meta'] = {
-        **cohort_meta(c, seeds), 'n_rows': int(len(df)),
-        'n_valid_graphs': int(valid_count), 'device': str(device),
-        'torch': torch.__version__,
-        'git_commit': subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
-                                     capture_output=True, text=True).stdout.strip(),
-        'timestamp': datetime.now().isoformat(timespec='seconds'),
-    }
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
-    with open(args.output, 'w') as f:
-        json.dump(results, f, indent=2, default=str)
-    print(f'\nSaved to {args.output}')
+
 
 
 if __name__ == '__main__':
