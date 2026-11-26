@@ -1,0 +1,80 @@
+{
+ "panel": {
+  "n_targets": 61,
+  "friedman_stat": 1.5836,
+  "friedman_p": 0.6631126089224713,
+  "n_comparisons": 6,
+  "pairwise": [
+   {
+    "a": "xgb_morgan",
+    "b": "dmpnn",
+    "delta": 0.0401,
+    "p": 0.11654626853821902,
+    "p_holm": 0.6993
+   },
+   {
+    "a": "gin",
+    "b": "dmpnn",
+    "delta": 0.0262,
+    "p": 0.12338850656477197,
+    "p_holm": 0.6993
+   },
+   {
+    "a": "cell_1000",
+    "b": "gin",
+    "delta": -0.0334,
+    "p": 0.2023295305836348,
+    "p_holm": 0.8093
+   },
+   {
+    "a": "cell_1000",
+    "b": "xgb_morgan",
+    "delta": -0.0473,
+    "p": 0.3060468636160091,
+    "p_holm": 0.9181
+   },
+   {
+    "a": "xgb_morgan",
+    "b": "gin",
+    "delta": 0.0139,
+    "p": 0.5486650161012336,
+    "p_holm": 1.0
+   },
+   {
+    "a": "cell_1000",
+    "b": "dmpnn",
+    "delta": -0.0072,
+    "p": 0.7221795446480557,
+    "p_holm": 1.0
+   }
+  ]
+ },
+ "composition": {
+  "blocks": {
+   "ribes": {
+    "rows": 3181,
+    "activity_rate": 0.3766
+   },
+   "protacdb": {
+    "rows": 7567,
+    "activity_rate": 0.7769
+   }
+  },
+  "boundary_row": 3181,
+  "overall_activity_rate": 0.6584,
+  "source_only_auroc_empirical": 0.6854,
+  "source_only_auroc_closed_form": 0.6854
+ },
+ "within_source": {
+  "ribes": {
+   "macro": 0.607,
+   "seed_sd": 0.0105,
+   "n_folds": 54
+  },
+  "protacdb": {
+   "macro": 0.5817,
+   "seed_sd": 0.0115,
+   "n_folds": 27
+  }
+ }
+}

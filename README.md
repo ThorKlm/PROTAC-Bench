@@ -53,3 +53,9 @@ The leave-one-target-out and leave-one-family-out fold files are built by
 ## Seeds
 
 42, 0, 1, 2, 3, 4, 5, 6, 7, 8, defined in `src/seeds.py`.
+
+## Preprint
+
+The artefacts and scripts accompanying arXiv:2605.11764 are at tag
+`preprint-2026-05`. The suite on `main` has since been rebuilt on one cohort
+definition and one seed list, so its values differ from those reported there.

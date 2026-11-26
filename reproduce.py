@@ -252,36 +252,48 @@ def block_sweep(n):
     fs = sorted(glob.glob(f'{R}/oat_*.json'))
     if not fs:
         print(f'gap: {R}/oat_*.json', file=sys.stderr); return n + 1
-    ref = g(f'{R}/cell_1000.json')
+    refs = {'rf': g(f'{R}/cell_1000.json'), 'xgb': g(f'{R}/xgb_morgan.json')}
     head('one-factor-at-a-time configuration sweep around the reference')
-    if ref:
-        w(f'reference macro {v(ref["macro_auroc"])} seed_sd {v(ref["seed_sd"])} '
-          f'mean_ap {v(ref["mean_ap"])} target_se {v(ref["target_se"])}')
+    for h, r in refs.items():
+        if r:
+            w(f'reference {h} macro {v(r["macro_auroc"])} seed_sd {v(r["seed_sd"])} '
+              f'mean_ap {v(r["mean_ap"])} target_se {v(r["target_se"])}')
     for p in fs:
         d = json.load(open(p))
         name = os.path.basename(p)[4:-5]
+        hd = (d.get('_meta') or {}).get('model', 'rf')
+        ref = refs.get(hd)
         line = (f'{name} macro {v(d["macro_auroc"])} seed_sd {v(d["seed_sd"])} '
                 f'mean_ap {v(d["mean_ap"])} target_se {v(d["target_se"])}')
         if ref:
-            line += f' delta_vs_reference {v(d["macro_auroc"] - ref["macro_auroc"])}'
+            line += f' delta_vs_reference_{hd} {v(d["macro_auroc"] - ref["macro_auroc"])}'
         w(line)
         w(f'{name}_spec ' + flat(d['spec']))
     return n + 1
 
 def block_protocols(n):
-    d = g(f'{R}/protocols.json')
-    if not d: return n + 1
+    import glob
+    fs = sorted(glob.glob(f'{R}/protocols*.json'))
+    if not fs: return n + 1
     head('random and scaffold cross-validation, full corpus')
-    meta(d)
-    m = d.get('_meta', {})
-    for k in ('n_rows', 'n_scaffolds', 'corpus', 'dedup_rule'):
-        if k in m: w(f'{k} {m[k]}')
-    for k, a in d['aggregate'].items():
-        w(f'{k} pooled {v(a["pooled_mean"])} across_seed_sd {v(a["across_seed_sd"])} '
-          f'within_seed_fold_sd {v(a["mean_within_seed_fold_sd"])} '
-          f'median_train_rows {a["median_train_rows"]} n_seeds {a["n_seeds"]}')
-    for k, per in d['per_seed'].items():
-        w(f'{k}_pooled_per_seed ' + ','.join(f'{q}={v(per[q]["pooled"])}' for q in per))
+    for i, q in enumerate(fs):
+        d = json.load(open(q))
+        m = d.get('_meta') or {}
+        if not i:
+            meta(d)
+            for k in ('n_rows', 'n_scaffolds', 'corpus', 'dedup_rule'):
+                if k in m: w(f'{k} {m[k]}')
+        h = m.get('model', 'rf')
+        for k, a in d['aggregate'].items():
+            w(f'{h} {k} pooled {v(a["pooled_mean"])} '
+              f'macro {v(a.get("macro_mean"))} '
+              f'n_targets_macro {a.get("n_targets_macro")} '
+              f'across_seed_sd {v(a["across_seed_sd"])} '
+              f'within_seed_fold_sd {v(a["mean_within_seed_fold_sd"])} '
+              f'median_train_rows {a["median_train_rows"]} n_seeds {a["n_seeds"]}')
+        for k, per in d['per_seed'].items():
+            w(f'{h} {k}_pooled_per_seed '
+              + ','.join(f'{z}={v(per[z]["pooled"])}' for z in per))
     return n + 1
 
 def block_similarity(n):
@@ -384,8 +396,32 @@ def block_representation(n):
         w(' '.join(parts))
     return n + 1
 
+def block_stats(n):
+    d = g(f'{R}/stats.json')
+    if not d: return n
+    head('panel significance, source composition and the within-source residual')
+    q = d.get('panel')
+    if q:
+        w(f'friedman n_targets {q["n_targets"]} statistic {v(q["friedman_stat"])} '
+          f'p {pv(q["friedman_p"])} n_comparisons {q["n_comparisons"]}')
+        for z in q['pairwise']:
+            w(f'{z["a"]} vs {z["b"]} delta {v(z["delta"])} '
+              f'wilcoxon_p {pv(z["p"])} holm {pv(z["p_holm"])}')
+    c = d.get('composition')
+    if c:
+        for k, b in c['blocks'].items():
+            w(f'{k} rows {b["rows"]} activity_rate {v(b["activity_rate"])}')
+        w(f'boundary_row {c["boundary_row"]} '
+          f'overall_activity_rate {v(c["overall_activity_rate"])}')
+        w(f'source_only_auroc {v(c["source_only_auroc_empirical"])} '
+          f'closed_form {v(c["source_only_auroc_closed_form"])}')
+    for k, x in (d.get('within_source') or {}).items():
+        w(f'within_source {k} macro {v(x["macro"])} seed_sd {v(x["seed_sd"])} '
+          f'n_folds {x["n_folds"]}')
+    return n + 1
+
 BLOCKS = [block_cohort, block_ladder, block_warhead_variants, block_factorial,
-          block_panel, block_representation, block_fewshot, block_sweep, block_noise,
+          block_panel, block_stats, block_representation, block_fewshot, block_sweep, block_noise,
           block_cohort_cells, block_protocols, block_splits,
           block_calibration, block_similarity, block_overlap, block_source]
 
@@ -448,6 +484,75 @@ def run_overlap():
     json.dump(res, open(out, 'w'), indent=1)
     print('wrote', out, file=sys.stderr)
 
+def run_stats():
+    """Omnibus and pairwise tests over the architecture panel, the source-stratified
+    residual of the reference arm, and the activity composition by source block."""
+    out = f'{R}/stats.json'
+    if os.path.exists(out): return
+    from scipy.stats import friedmanchisquare, wilcoxon
+    from sklearn.metrics import roc_auc_score
+    import pandas as pd
+    res = {}
+    heads = ('cell_1000', 'xgb_morgan', 'gin', 'dmpnn')
+    ds = {h: g(f'{R}/{h}.json') for h in heads}
+    ds = {h: d for h, d in ds.items() if d}
+    if len(ds) > 2:
+        common = sorted(set.intersection(*(set(d['per_target']) for d in ds.values())))
+        arr = {h: np.array([d['per_target'][t] for t in common]) for h, d in ds.items()}
+        st, pv = friedmanchisquare(*arr.values())
+        nm, pairs = list(arr), []
+        for i in range(len(nm)):
+            for j in range(i + 1, len(nm)):
+                a, b = nm[i], nm[j]
+                pairs.append(dict(a=a, b=b,
+                                  delta=round(float((arr[b] - arr[a]).mean()), 4),
+                                  p=float(wilcoxon(arr[a], arr[b]).pvalue)))
+        pairs.sort(key=lambda z: z['p'])
+        m, run = len(pairs), 0.0
+        for i, q in enumerate(pairs):
+            run = max(run, min(1.0, q['p'] * (m - i)))
+            q['p_holm'] = round(run, 4)
+        res['panel'] = dict(n_targets=len(common), friedman_stat=round(float(st), 4),
+                            friedman_p=float(pv), n_comparisons=m, pairwise=pairs)
+    df = pd.read_csv('data/protac_bench.csv')
+    y, n = df.label.values, len(df)
+    tg = df.target_uniprot.astype(str).values
+    cut = 3181
+    blocks = {'ribes': np.arange(n) < cut, 'protacdb': np.arange(n) >= cut}
+    comp = {k: dict(rows=int(b.sum()), activity_rate=round(float(y[b].mean()), 4))
+            for k, b in blocks.items()}
+    r1, n1 = comp['ribes']['activity_rate'], comp['ribes']['rows']
+    r2, n2 = comp['protacdb']['activity_rate'], comp['protacdb']['rows']
+    pp = n2 * r2 / (n1 * r1 + n2 * r2)
+    pn = n2 * (1 - r2) / (n1 * (1 - r1) + n2 * (1 - r2))
+    res['composition'] = dict(
+        blocks=comp, boundary_row=cut,
+        overall_activity_rate=round(float(y.mean()), 4),
+        source_only_auroc_empirical=round(float(roc_auc_score(y, blocks['protacdb'])), 4),
+        source_only_auroc_closed_form=round(0.5 * (1 + pp - pn), 4))
+    pr = f'{R}/cell_1000_predictions.json'
+    if os.path.exists(pr):
+        P = json.load(open(pr))
+        per = {k: {} for k in blocks}
+        for sd, byt in P.items():
+            for t, rec in byt.items():
+                te = tg == t
+                yy, qq = np.asarray(rec['y']), np.asarray(rec['p'])
+                for k, b in blocks.items():
+                    m2 = b[te]
+                    if m2.sum() >= 5 and len(np.unique(yy[m2])) > 1:
+                        per[k].setdefault(sd, {})[t] = float(roc_auc_score(yy[m2], qq[m2]))
+        res['within_source'] = {}
+        for k in per:
+            if not per[k]: continue
+            ms = [float(np.mean(list(per[k][sd].values()))) for sd in per[k]]
+            res['within_source'][k] = dict(
+                macro=round(float(np.mean(ms)), 4),
+                seed_sd=round(float(np.std(ms, ddof=1)), 4),
+                n_folds=len(per[k][next(iter(per[k]))]))
+    json.dump(res, open(out, 'w'), indent=1)
+    print('wrote', out, file=sys.stderr)
+
 def run_similarity():
     """Only caller of src.evaluation.tanimoto_nn_by_protocol."""
     import pandas as pd
@@ -503,7 +608,17 @@ ARMS = ([(f'cell_{c}', _cell(c), 'core', None, None) for c in CELLS]
             'core', None, None),
            ('oat_all_defaults',
             dict(morgan=True, rf=dict(n_estimators=100, min_samples_leaf=1,
-                                      class_weight=None)), 'core', None, None)]
+                                      class_weight=None)), 'core', None, None),
+           ('oat_xgb_depth3', dict(morgan=True, model='xgb', xgb=dict(max_depth=3)),
+            'core', None, None),
+           ('oat_xgb_depth10', dict(morgan=True, model='xgb', xgb=dict(max_depth=10)),
+            'core', None, None),
+           ('oat_xgb_lr003',
+            dict(morgan=True, model='xgb', xgb=dict(learning_rate=0.03)),
+            'core', None, None),
+           ('oat_xgb_subsample08',
+            dict(morgan=True, model='xgb', xgb=dict(subsample=0.8)),
+            'core', None, None)]
         + [(f'noise_{int(round(f * 1000)):03d}', dict(morgan=True, flip=f),
             'core', None, None) for f in NOISE]
         + [('xgb_morgan', dict(morgan=True, model='xgb'), 'core', None, None),
@@ -617,6 +732,7 @@ if __name__ == '__main__':
         run_core(parse(a.seeds), bands=bands, only=a.only)
         run_similarity()
         run_overlap()
+        run_stats()
     build()
     if not a.print_only:
         from figures.generate_figures import main as render
