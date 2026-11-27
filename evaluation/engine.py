@@ -50,9 +50,10 @@ def provenance(bits=2048, radius=2, spec=None):
     import subprocess, sys, numpy, sklearn
     try:
         h = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
-                           capture_output=True, text=True).stdout.strip()
-    except Exception:
-        h = ''
+                           capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as e:
+        print(f'git commit unavailable: {e}', file=sys.stderr)
+        h = 'unavailable'
     sp = spec or {}
     name = sp.get('model', 'rf')
     eff = ({**RF, **sp.get('rf', {})} if name == 'rf'
@@ -78,7 +79,9 @@ def embedding(kind, c):
         M = np.zeros((len(c['tg']), P.shape[1]), dtype=np.float32)
         for i, t in enumerate(c['tg']):
             js = [pos[u] for u in str(t).split('/') if u in pos]
-            if js: M[i] = P[js].mean(axis=0)
+            if not js:
+                raise KeyError(f'no protein embedding for {t!r}')
+            M[i] = P[js].mean(axis=0)
     else:
         raise ValueError(f'unknown embedding {kind!r}')
     if len(M) != len(c['tg']):

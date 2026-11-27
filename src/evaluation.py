@@ -62,6 +62,7 @@ def loto_evaluate(X, y, targets, model_fn, eligible=None, seeds=[42], n_jobs=-1)
         'n_seeds': len(seeds),
         'per_seed': {str(s): {k: float(v) for k, v in r.items()}
                      for s, r in all_seed_results.items()},
+        'n_targets_per_seed': {str(s): len(r) for s, r in all_seed_results.items()},
     }
 
 
@@ -73,11 +74,7 @@ def random_cv(X, y, model_fn, n_folds=5, seeds=[42]):
         fold_aurocs = []
         for train_idx, test_idx in skf.split(X, y):
             y_pred = model_fn(X[train_idx], y[train_idx], X[test_idx])
-            try:
-                auc = roc_auc_score(y[test_idx], y_pred)
-                fold_aurocs.append(auc)
-            except ValueError:
-                pass
+            fold_aurocs.append(roc_auc_score(y[test_idx], y_pred))
         all_aurocs.append(np.mean(fold_aurocs))
 
     return {
@@ -99,51 +96,13 @@ def _get_scaffold(smi):
         return 'none'
 
 
-def scaffold_cv(X, y, smiles, model_fn, n_folds=5):
-    """Scaffold-based cross-validation using Murcko scaffolds."""
-    scaffolds = [_get_scaffold(s) for s in smiles]
-
-    # group by scaffold
-    scaffold_to_idx = defaultdict(list)
-    for i, sc in enumerate(scaffolds):
-        scaffold_to_idx[sc].append(i)
-
-    # assign scaffold groups to folds roughly equally
-    groups = sorted(scaffold_to_idx.values(), key=len, reverse=True)
-    fold_sizes = [0] * n_folds
-    fold_indices = [[] for _ in range(n_folds)]
-    for grp in groups:
-        smallest = int(np.argmin(fold_sizes))
-        fold_indices[smallest].extend(grp)
-        fold_sizes[smallest] += len(grp)
-
-    aurocs = []
-    for i in range(n_folds):
-        test_idx = np.array(fold_indices[i])
-        train_idx = np.array([j for j in range(len(y)) if j not in set(test_idx)])
-
-        y_pred = model_fn(X[train_idx], y[train_idx], X[test_idx])
-        try:
-            auc = roc_auc_score(y[test_idx], y_pred)
-            aurocs.append(auc)
-        except ValueError:
-            pass
-
-    return {
-        'mean_auroc': float(np.mean(aurocs)),
-        'std_auroc': float(np.std(aurocs)),
-        'n_folds': n_folds,
-        'per_fold': [float(a) for a in aurocs],
-    }
-
-
 def tanimoto_nn_by_protocol(smiles, y, loto_folds, n_folds=5, seed=42,
                             radius=2, nbits=2048, dedup=False):
     """Maximum Tanimoto to the nearest training compound, per split protocol.
 
     One value per test compound under random cross-validation, scaffold
     cross-validation and leave-one-target-out. Folds are built exactly as
-    random_cv, scaffold_cv and the released fold file build them, so each
+    random_cv and the released fold file build them, so each
     distribution belongs to the protocol it is compared against. Fingerprints
     match the rest of the project, Morgan at the given radius and width.
 

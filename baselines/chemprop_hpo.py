@@ -23,16 +23,16 @@ try:
     import torch
     import torch.nn.functional as F
     from torch_geometric.data import DataLoader
-    HAS_TORCH = True
-except ImportError:
-    HAS_TORCH = False
+except ImportError as e:
+    raise ImportError('torch and torch-geometric are required for this runner; '
+                      'install from requirements.txt') from e
 
 # reuse graph construction from gnn_baselines
 try:
     from baselines.gnn_baselines import mol_to_graph, DMPNN, train_gnn, gnn_loto
-    HAS_GNN = True
-except ImportError:
-    HAS_GNN = False
+except ImportError as e:
+    raise ImportError('run from the repository root so baselines.gnn_baselines '
+                      'is importable') from e
 
 from sklearn.metrics import roc_auc_score
 
@@ -96,13 +96,6 @@ def evaluate_config(model_cls, graphs, y, targets, eval_targets, device, seed=42
 
 
 def main():
-    if not HAS_TORCH:
-        print('ERROR: PyTorch not installed. Exiting.')
-        sys.exit(1)
-    if not HAS_GNN:
-        print('ERROR: Could not import from gnn_baselines. Run from repo root.')
-        sys.exit(1)
-
     parser = argparse.ArgumentParser(description='D-MPNN HPO (slow, optional)')
     parser.add_argument('--output', default='results/chemprop_hpo.json')
     parser.add_argument('--data', default='data/protac_bench.csv')

@@ -33,7 +33,7 @@ def protocol_collapse():
            color=[C[0]] * (len(rows) - 2) + [C[1], C[1]])
     ax.set_xticks(x); ax.set_xticklabels([r[0] for r in rows], rotation=35, ha='right')
     ax.axhline(0.5, color='k', lw=0.6, ls=':')
-    ax.set_ylabel('AUROC'); ax.set_ylim(0.45, 1.0)
+    ax.set_ylabel('AUROC')
     save(fig, 'protocol_collapse.pdf')
 
 def factorial():
@@ -49,7 +49,7 @@ def factorial():
     ax.set_xticks(x)
     ax.set_xticklabels(['+'.join(l for l, b in zip(lab, c) if b == '1') or 'none'
                         for c, _ in ds], rotation=40, ha='right', fontsize=6)
-    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.5, 0.72)
+    ax.set_ylabel('macro AUROC')
     save(fig, 'factorial.pdf')
 
 def baselines():
@@ -65,7 +65,7 @@ def baselines():
                         or (d.get('spec') or {}).get('architecture') or n
                         for n, d in ds], rotation=20, ha='right')
     ax.axhline(0.5, color='k', lw=0.6, ls=':')
-    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.45, 0.70)
+    ax.set_ylabel('macro AUROC')
     save(fig, 'baselines.pdf')
 
 def fewshot():
@@ -77,14 +77,19 @@ def fewshot():
     fig, ax = plt.subplots(figsize=(3.4, 2.6))
     for key, sd, lb, col in (('macro_auroc', 'seed_sd', 'macro AUROC', C[0]),
                              ('mean_ap', 'ap_seed_sd', 'average precision', C[1])):
+        e = [d[sd] for _, d in ds]
+        if any(x is None for x in e):
+            raise ValueError(f'few-shot figure: {sd} absent in an arm')
         ax.errorbar([k for k, _ in ds], [d[key] for _, d in ds],
-                    yerr=[d[sd] or 0 for _, d in ds], marker='o', ms=3, lw=1,
-                    capsize=2, color=col, label=lb)
+                    yerr=e, marker='o', ms=3, lw=1, capsize=2, color=col, label=lb)
     rnd = [(k, load(f'fewshot_k{k}_random.json')) for k in (5, 10)]
     rnd = [(k, d) for k, d in rnd if d]
     if rnd:
+        e = [d['seed_sd'] for _, d in rnd]
+        if any(x is None for x in e):
+            raise ValueError('few-shot figure: seed_sd absent in a random-shot arm')
         ax.errorbar([k for k, _ in rnd], [d['macro_auroc'] for _, d in rnd],
-                    yerr=[d['seed_sd'] or 0 for _, d in rnd], marker='s', ms=4,
+                    yerr=e, marker='s', ms=4,
                     lw=0, capsize=2, color=C[2], label='macro AUROC, random shots')
     ax.set_xlabel('labelled shots per target'); ax.set_ylabel('score')
     ax.legend(); save(fig, 'fewshot.pdf')
@@ -163,7 +168,7 @@ def overlap():
            color=[C[0], C[1], C[3]])
     ax.set_xticks(x); ax.set_xticklabels([r[0] for r in rows])
     ax.axhline(0.5, color='k', lw=0.6, ls=':')
-    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.45, 0.85)
+    ax.set_ylabel('macro AUROC')
     save(fig, 'overlap.pdf')
 
 def cohort_variants():
@@ -177,7 +182,7 @@ def cohort_variants():
            capsize=2, color=[C[1] if d[k]['dedup'] else C[0] for k in ks])
     ax.set_xticks(x); ax.set_xticklabels(ks, rotation=30, ha='right', fontsize=7)
     ax.axhline(0.5, color='k', lw=0.6, ls=':')
-    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.45, 0.75)
+    ax.set_ylabel('macro AUROC')
     save(fig, 'cohort_variants.pdf')
 
 def splits():
@@ -217,7 +222,7 @@ def representations():
     ax.set_xticks(x); ax.set_xticklabels([n for n, _ in ds], rotation=30,
                                          ha='right', fontsize=7)
     ax.axhline(0.5, color='k', lw=0.6, ls=':')
-    ax.set_ylabel('macro AUROC'); ax.set_ylim(0.45, 0.72)
+    ax.set_ylabel('macro AUROC')
     save(fig, 'representations.pdf')
 
 FIGURES = (protocol_collapse, factorial, baselines, representations,

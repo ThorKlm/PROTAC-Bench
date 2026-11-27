@@ -222,7 +222,7 @@ retained_65_per_seed_macro 42=0.6703,0=0.6589,1=0.6696,2=0.6566,3=0.6531,4=0.649
 
 --- 15: random and scaffold cross-validation, full corpus ---
 n_folds 5
-git_commit 2a30ff9
+git_commit 46c018d
 n_rows 10748
 n_scaffolds 7427
 corpus full

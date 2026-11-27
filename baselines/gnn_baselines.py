@@ -21,12 +21,9 @@ try:
     import torch.nn.functional as F
     from torch_geometric.data import Data, DataLoader
     from torch_geometric.nn import GINConv, global_mean_pool
-    HAS_PYG = True
-except ImportError:
-    HAS_PYG = False
-    print('WARNING: torch-geometric not found. Install with:')
-    print('  pip install torch torch-geometric')
-    print('Exiting.')
+except ImportError as e:
+    raise ImportError('torch and torch-geometric are required for the graph '
+                      'baselines; install from requirements.txt') from e
 
 from rdkit import Chem
 from sklearn.metrics import roc_auc_score
@@ -210,10 +207,7 @@ def train_gnn(model, train_loader, val_loader, device, lr=1e-3, epochs=100, pati
 
         if len(set(labels)) < 2:
             continue
-        try:
-            val_auc = roc_auc_score(labels, preds)
-        except ValueError:
-            continue
+        val_auc = roc_auc_score(labels, preds)
 
         if val_auc > best_val_auc:
             best_val_auc = val_auc
@@ -278,11 +272,7 @@ def gnn_loto(model_cls, graphs, folds, device, model_kwargs=None, seeds=[42]):
                     out = torch.sigmoid(model(batch))
                     preds.extend(out.cpu().numpy().tolist())
 
-            try:
-                auc = roc_auc_score(y_test_actual, preds)
-                per_target[tgt] = auc
-            except ValueError:
-                pass
+            per_target[tgt] = roc_auc_score(y_test_actual, preds)
 
             # NOTE: no logging per-target here to keep output clean
         all_seed_results[seed] = per_target
@@ -341,9 +331,6 @@ def merge(shard_dir, outdir='results'):
               f'folds {len(tg)} seeds {len(ss)}')
 
 def main():
-    if not HAS_PYG:
-        sys.exit(1)
-
     parser = argparse.ArgumentParser(description='GNN baselines (GIN + D-MPNN)')
     parser.add_argument('--seeds', default=','.join(str(s) for s in CANONICAL))
     parser.add_argument('--output', default='results/gnn_baselines.json')

@@ -2,14 +2,10 @@
 """Random and scaffold cross-validation for the reference on the full corpus,
 with and without the deduplication rule, at the canonical seeds.
 
-Replaces scripts/v12/protocol_rcv_scaffold.py, which passes a seeds argument
-scaffold_cv does not accept and produces neither the schema nor the values of
-the artefact it writes. Scaffold folds are built exactly as src.evaluation
-builds them, Murcko scaffolds packed greedily into the smallest fold, so the
-split is unchanged. The forest takes random_state explicitly, as the evaluation
-engine does, rather than drawing from the global stream. Deduplication mirrors
-the LOTO rule: training rows whose canonical SMILES occurs in the held-out fold
-are dropped.
+Scaffold folds pack Murcko scaffolds greedily into the smallest fold. The head
+takes random_state explicitly rather than drawing from the global stream, and
+deduplication mirrors the leave-one-target-out rule: training rows whose
+canonical SMILES occurs in the held-out fold are dropped.
 """
 import json, sys, time
 from collections import defaultdict

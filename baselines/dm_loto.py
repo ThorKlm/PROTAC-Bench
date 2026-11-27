@@ -34,9 +34,9 @@ try:
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    HAS_TORCH = True
-except ImportError:
-    HAS_TORCH = False
+except ImportError as e:
+    raise ImportError('torch is required for this runner; install from '
+                      'requirements.txt') from e
 
 
 # --- DM's EGNN architecture (simplified) ---
@@ -145,10 +145,6 @@ def rf_baseline_on_dm(df, seeds):
 
 def dm_loto_evaluation(df, data_dir, device, seeds):
     """Run DegradeMaster model under LOTO protocol."""
-    if not HAS_TORCH:
-        print('PyTorch not available, skipping DM model evaluation')
-        return None
-
     weights_path = os.path.join(data_dir, 'dm_pretrained.pt')
     graphs_dir = os.path.join(data_dir, 'dm_graphs')
 
@@ -198,7 +194,7 @@ def main():
         results['rf_morgan_random'] = rf_random['mean_auroc']
 
         # DM model evaluation
-        device = 'cuda' if args.device == 'auto' and HAS_TORCH and torch.cuda.is_available() else 'cpu'
+        device = 'cuda' if args.device == 'auto' and torch.cuda.is_available() else 'cpu'
         dm_res = dm_loto_evaluation(df, args.dm_data_dir, device, seeds)
 
         if dm_res is not None:

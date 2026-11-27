@@ -213,7 +213,7 @@ def build_temporal_folds(pub: pd.DataFrame, master: pd.DataFrame) -> dict:
             "train_filter": f"pub_year < {TRAIN_YEAR_MAX_EXCLUSIVE}",
             "test_filter": f"pub_year == {TEST_YEAR}",
             "metadata_source": (
-                "pub_year column from /workspace/results/exp42_metadata_features/"
+                "pub_year column from data/master_df.csv, "
                 "master_df.csv (built by scripts/exp42_step0_build_master.py from "
                 "data/preprocessed/doi_years.json)"
             ),

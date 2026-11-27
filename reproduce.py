@@ -14,10 +14,23 @@ from scipy.stats import wilcoxon
 R, L = 'results', []
 def w(s=''): L.append(s)
 def head(d): w(); w(f'--- @@: {d} ---')
+ALLOW_GAPS = False
+
+def gap(p, n):
+    """A missing input is an error; printing a document with one absent has to
+    be asked for explicitly, so a block cannot vanish unnoticed."""
+    if not ALLOW_GAPS:
+        raise FileNotFoundError(f'{p} is absent; run it or pass --allow-gaps')
+    print(f'gap: {p}', file=sys.stderr)
+    return n + 1
+
 def g(p):
     try:
         with open(p) as f: return json.load(f)
     except FileNotFoundError:
+        if not ALLOW_GAPS:
+            raise FileNotFoundError(
+                f'{p} is absent; run it or pass --allow-gaps') from None
         print(f'gap: {p}', file=sys.stderr); return None
 def v(x, n=4): return round(float(x), n) if isinstance(x, (int, float)) else x
 def pv(x):
@@ -124,7 +137,7 @@ def block_warhead_variants(n):
 def block_factorial(n):
     import glob
     fs = sorted(glob.glob(f'{R}/cell_[01][01][01][01].json'))
-    if not fs: print(f'gap: {R}/cell_*.json', file=sys.stderr); return n + 1
+    if not fs: return gap(f'{R}/cell_*.json', n)
     head('factorial over Morgan, warhead, ADMET, few-shot')
     cells = {}
     for p in fs:
@@ -159,7 +172,7 @@ def block_cohort_cells(n):
 def block_overlap(n):
     d, o = g(f'{R}/retained_65.json'), g(f'{R}/overlap.json')
     if not d or not o:
-        print(f'gap: {R}/overlap.json', file=sys.stderr); return n + 1
+        return gap(f'{R}/overlap.json', n)
     head('reference on the retained cohort, split by whether the test compound '
          'occurs verbatim in training')
     meta(d); agg(d)
@@ -251,7 +264,7 @@ def block_sweep(n):
     import glob
     fs = sorted(glob.glob(f'{R}/oat_*.json'))
     if not fs:
-        print(f'gap: {R}/oat_*.json', file=sys.stderr); return n + 1
+        return gap(f'{R}/oat_*.json', n)
     refs = {'rf': g(f'{R}/cell_1000.json'), 'xgb': g(f'{R}/xgb_morgan.json')}
     head('one-factor-at-a-time configuration sweep around the reference')
     for h, r in refs.items():
@@ -342,7 +355,7 @@ def block_noise(n):
     import glob
     fs = sorted(glob.glob(f'{R}/noise_*.json'))
     if not fs:
-        print(f'gap: {R}/noise_*.json', file=sys.stderr); return n + 1
+        return gap(f'{R}/noise_*.json', n)
     head('training-label noise injected at the reference configuration')
     base = None
     for q in fs:
@@ -357,7 +370,7 @@ def block_noise(n):
 def block_splits(n):
     ds = [(nm, g(f'{R}/{nm}.json')) for nm in ('lofo', 'cross_e3')]
     if not any(d for _, d in ds):
-        print(f'gap: {R}/lofo.json', file=sys.stderr); return n + 1
+        return gap(f'{R}/lofo.json', n)
     head('leave-one-family-out and cross-E3 protocols, reference configuration')
     for nm, d in ds:
         if not d: continue
@@ -690,7 +703,9 @@ def run_core(seeds, bands=('core',), only=None):
     from evaluation.engine import run
     c = load()
     smi = c['df'].smiles.tolist()
-    Xa = np.nan_to_num(load_admet(), nan=0.0)
+    Xa = load_admet()
+    if np.isnan(Xa).any():
+        raise ValueError(f'admet has {int(np.isnan(Xa).sum())} missing cells')
     sources = {'lofo': lambda: folds_from_file(c, 'data/lofo_folds.json'),
                'e3': lambda: folds_e3(c),
                'retained': lambda: [(t, c['tg'] == t) for t in c['eligible']]}
@@ -720,11 +735,14 @@ if __name__ == '__main__':
     ap.add_argument('--ablation', action='store_true',
                     help='also run the ablation band')
     ap.add_argument('--print-only', action='store_true')
+    ap.add_argument('--allow-gaps', action='store_true',
+                    help='print with artefacts absent')
     ap.add_argument('--seeds', default='canonical')
     ap.add_argument('--only', default=None, help='run one registered arm by name')
     ap.add_argument('--verify-against', default=None, metavar='DIR',
                     help='compare each arm against a previous copy of the suite')
     a = ap.parse_args()
+    ALLOW_GAPS = a.allow_gaps
     if not a.print_only:
         from src.seeds import parse
         ensure_folds()

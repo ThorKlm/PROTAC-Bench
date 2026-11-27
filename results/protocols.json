@@ -3189,7 +3189,7 @@
   "n_scaffolds": 7427,
   "corpus": "full",
   "dedup_rule": "training rows whose canonical SMILES occurs in the held-out fold",
-  "elapsed_min": 5.9,
+  "elapsed_min": 5.8,
   "model": "rf",
   "model_params": {
    "n_estimators": 200,
@@ -3198,7 +3198,7 @@
   },
   "morgan_bits": 2048,
   "radius": 2,
-  "git_commit": "2a30ff9",
+  "git_commit": "46c018d",
   "python": "3.12.13",
   "numpy": "2.5.5",
   "sklearn": "1.9.1"
